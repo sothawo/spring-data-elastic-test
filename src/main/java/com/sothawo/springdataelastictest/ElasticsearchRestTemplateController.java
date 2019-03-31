@@ -3,7 +3,7 @@
  */
 package com.sothawo.springdataelastictest;
 
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,13 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @RestController
-@RequestMapping("/estc")
-public class ElasticsearchTemplateController {
+@RequestMapping("/esrtc")
+public class ElasticsearchRestTemplateController {
 
-    private final ElasticsearchTemplate elasticsearchTemplate;
+    // uses RestClient
+    private final ElasticsearchRestTemplate elasticsearchRestTemplate;
 
-    public ElasticsearchTemplateController(final ElasticsearchTemplate elasticsearchTemplate) {
-        this.elasticsearchTemplate = elasticsearchTemplate;
+    public ElasticsearchRestTemplateController(final ElasticsearchRestTemplate elasticsearchRestTemplate) {
+        this.elasticsearchRestTemplate = elasticsearchRestTemplate;
     }
 
     @PostMapping("/person")
@@ -32,7 +33,7 @@ public class ElasticsearchTemplateController {
                 .withObject(person)
                 .build();
 
-        final String documentId = elasticsearchTemplate.index(indexQuery);
+        final String documentId = elasticsearchRestTemplate.index(indexQuery);
 
         return documentId;
     }
