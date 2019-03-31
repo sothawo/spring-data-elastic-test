@@ -11,7 +11,7 @@
     <groupId>com.sothawo</groupId>
     <artifactId>spring-data-elastic-test</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>springd-ata-elastic-test</name>
+    <name>spring-data-elastic-test</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
