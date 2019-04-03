@@ -1,12 +1,7 @@
-    package com.sothawo.springdataelastictest;
+package com.sothawo.springdataelastictest;
 
-    import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-    import org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository;
-    import org.springframework.stereotype.Component;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.stereotype.Component;
 
-    @Component
-    public class PersonRepository extends SimpleElasticsearchRepository<Person, Long> {
-        public PersonRepository(ElasticsearchOperations elasticsearchOperations) {
-            super(elasticsearchOperations);
-        }
-    }
+public interface PersonRepository extends ElasticsearchRepository<Person, Long> {
+}

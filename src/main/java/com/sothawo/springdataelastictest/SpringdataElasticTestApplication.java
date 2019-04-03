@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
@@ -19,10 +18,15 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
         }
 
         @Bean
-        ElasticsearchOperations elasticsearchOperations() {
+        RestHighLevelClient elasticsearchClient() {
             final ClientConfiguration configuration = ClientConfiguration.localhost();
             RestHighLevelClient client = RestClients.create(configuration).rest();
-            return new ElasticsearchRestTemplate(client);
+            return client;
+        }
+
+        @Bean
+        ElasticsearchRestTemplate elasticsearchTemplate() {
+            return new ElasticsearchRestTemplate(elasticsearchClient());
         }
     }
 
