@@ -1,6 +1,3 @@
-    /*
-     * (c) Copyright 2019 codecentric AG
-     */
     package com.sothawo.springdataelastictest;
 
     import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
