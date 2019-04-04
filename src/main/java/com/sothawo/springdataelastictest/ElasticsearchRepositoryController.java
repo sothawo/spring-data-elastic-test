@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @RestController
-@RequestMapping("/esrc")
+@RequestMapping("/repo")
 public class ElasticsearchRepositoryController {
 
     private PersonRepository personRepository;
