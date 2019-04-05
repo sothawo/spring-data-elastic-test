@@ -1,7 +1,9 @@
 package com.sothawo.springdataelastictest;
 
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
-import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 public interface PersonRepository extends ElasticsearchRepository<Person, Long> {
+    Optional<Person> findByLastName(final String lastName);
 }
