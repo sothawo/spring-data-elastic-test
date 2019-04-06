@@ -9,25 +9,23 @@ import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
-    @SpringBootApplication
-    @EnableElasticsearchRepositories
-    public class SpringdataElasticTestApplication {
+@SpringBootApplication
+@EnableElasticsearchRepositories
+public class SpringdataElasticTestApplication {
 
-        public static void main(String[] args) {
-            SpringApplication.run(SpringdataElasticTestApplication.class, args);
-        }
-
-        @Bean
-        RestHighLevelClient elasticsearchClient() {
-            final ClientConfiguration configuration = ClientConfiguration.localhost();
-            RestHighLevelClient client = RestClients.create(configuration).rest();
-            return client;
-        }
-
-        @Bean
-        ElasticsearchRestTemplate elasticsearchTemplate() {
-            return new ElasticsearchRestTemplate(elasticsearchClient());
-        }
+    public static void main(String[] args) {
+        SpringApplication.run(SpringdataElasticTestApplication.class, args);
     }
+
+    @Bean
+    RestHighLevelClient elasticsearchClient() {
+        return RestClients.create(ClientConfiguration.localhost()).rest();
+    }
+
+    @Bean
+    ElasticsearchRestTemplate elasticsearchTemplate() {
+        return new ElasticsearchRestTemplate(elasticsearchClient());
+    }
+}
 
 
