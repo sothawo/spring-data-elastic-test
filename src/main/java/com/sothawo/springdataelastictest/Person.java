@@ -5,6 +5,7 @@ package com.sothawo.springdataelastictest;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -13,7 +14,11 @@ import org.springframework.data.elasticsearch.annotations.Document;
 public class Person {
     @Id
     private Long id;
+
+    @Field("last-name")
     private String lastName;
+
+    @Field(name = "first-name")
     private String firstName;
 
     public Long getId() {
