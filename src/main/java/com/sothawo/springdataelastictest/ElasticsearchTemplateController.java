@@ -27,7 +27,7 @@ public class ElasticsearchTemplateController {
     }
 
     @PostMapping("/person")
-    public String hello(@RequestBody Person person) {
+    public String save(@RequestBody Person person) {
 
         final IndexQuery indexQuery = new IndexQueryBuilder()
                 .withId(person.getId().toString())
