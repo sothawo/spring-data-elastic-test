@@ -3,6 +3,7 @@
  */
 package com.sothawo.springdataelastictest;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
@@ -14,8 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-//@RestController
-//@RequestMapping("/estc")
+@Profile("transport")
+@RestController
+@RequestMapping("/template")
 public class ElasticsearchTemplateController {
 
     private final ElasticsearchTemplate elasticsearchTemplate;

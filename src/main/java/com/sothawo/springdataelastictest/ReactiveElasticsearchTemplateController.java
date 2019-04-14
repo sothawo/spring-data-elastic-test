@@ -3,6 +3,7 @@
  */
 package com.sothawo.springdataelastictest;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
@@ -15,8 +16,9 @@ import reactor.core.publisher.Mono;
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
+@Profile("reactive")
 @RestController
-@RequestMapping("/reactive")
+@RequestMapping("/template")
 public class ReactiveElasticsearchTemplateController {
 
     private final ReactiveElasticsearchTemplate reactiveElasticsearchTemplate;

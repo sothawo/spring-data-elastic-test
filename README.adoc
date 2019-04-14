@@ -1,0 +1,18 @@
+= Spring Data Elasticsearch Test Application
+
+Application to use for the  development of Spring Data Elasticsearch.
+
+== Configurations
+
+The application has different configurations for the three different techniques used, these configurations are activated by specifying the corresponding Spring Profile
+
+
+.Profiles and technologies
+|===
+| Profile | Technology
+
+| transport | TransportClient
+| rest      | RestClient
+| reactive  | ReactiveRestClient
+|===
+
