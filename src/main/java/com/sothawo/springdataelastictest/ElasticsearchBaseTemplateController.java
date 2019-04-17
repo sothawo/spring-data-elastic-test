@@ -4,10 +4,9 @@
 package com.sothawo.springdataelastictest;
 
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.query.GetQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -20,12 +19,17 @@ public class ElasticsearchBaseTemplateController {
 		this.elasticsearchOperations = elasticsearchOperations;
 	}
 
-	public String save(@RequestBody Person person) {
+	public String save(final Person person) {
 
 		final IndexQuery indexQuery = new IndexQueryBuilder().withId(person.getId().toString()).withObject(person).build();
 
 		final String documentId = elasticsearchOperations.index(indexQuery);
 
 		return documentId;
+	}
+
+	public Person findById(final Long id) {
+		final Person person = elasticsearchOperations.queryForObject(GetQuery.getById(id.toString()), Person.class);
+		return person;
 	}
 }

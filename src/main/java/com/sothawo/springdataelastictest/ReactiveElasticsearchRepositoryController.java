@@ -1,9 +1,9 @@
 package com.sothawo.springdataelastictest;
 
 import org.springframework.data.elasticsearch.repository.config.EnableReactiveElasticsearchRepositories;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import reactor.core.publisher.Flux;
-
-import java.util.Optional;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -25,6 +25,11 @@ public class ReactiveElasticsearchRepositoryController {
 		this.personRepository = personRepository;
 	}
 
+	@PostMapping("/person")
+	public String savePerson(@RequestBody final Person person) {
+		return personRepository.save(person).block().getId().toString();
+	}
+
 	@GetMapping("/persons")
 	public Flux<Person> allPersons() {
 		Flux<Person> all = personRepository.findAll();
@@ -32,7 +37,7 @@ public class ReactiveElasticsearchRepositoryController {
 	}
 
 	@GetMapping("/persons/{lastName}")
-	public Optional<Person> byLastName(@PathVariable("lastName") final String lastName) {
+	public Flux<Person> byLastName(@PathVariable("lastName") final String lastName) {
 		return personRepository.findByLastName(lastName);
 	}
 
