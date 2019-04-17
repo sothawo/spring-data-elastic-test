@@ -18,24 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Profile("transport")
 @RestController
 @RequestMapping("/template")
-public class ElasticsearchTemplateController {
+public class TransportElasticsearchTemplateController extends ElasticsearchBaseTemplateController{
 
-    private final ElasticsearchTemplate elasticsearchTemplate;
-
-    public ElasticsearchTemplateController(final ElasticsearchTemplate elasticsearchTemplate) {
-        this.elasticsearchTemplate = elasticsearchTemplate;
+    public TransportElasticsearchTemplateController(final ElasticsearchTemplate elasticsearchTemplate) {
+        super(elasticsearchTemplate);
     }
 
     @PostMapping("/person")
     public String save(@RequestBody Person person) {
-
-        final IndexQuery indexQuery = new IndexQueryBuilder()
-                .withId(person.getId().toString())
-                .withObject(person)
-                .build();
-
-        final String documentId = elasticsearchTemplate.index(indexQuery);
-
-        return documentId;
+        return super.save(person);
     }
 }

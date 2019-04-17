@@ -4,6 +4,7 @@
 package com.sothawo.springdataelastictest;
 
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
@@ -18,25 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Profile("rest")
 @RestController
 @RequestMapping("/template")
-public class ElasticsearchRestTemplateController {
+public class RestElasticsearchTemplateController extends ElasticsearchBaseTemplateController {
 
-    // uses RestClient
-    private final ElasticsearchRestTemplate elasticsearchRestTemplate;
-
-    public ElasticsearchRestTemplateController(final ElasticsearchRestTemplate elasticsearchRestTemplate) {
-        this.elasticsearchRestTemplate = elasticsearchRestTemplate;
+    public RestElasticsearchTemplateController(final ElasticsearchRestTemplate elasticsearchRestTemplate) {
+        super(elasticsearchRestTemplate);
     }
 
     @PostMapping("/person")
     public String save(@RequestBody Person person) {
-
-        final IndexQuery indexQuery = new IndexQueryBuilder()
-                .withId(person.getId().toString())
-                .withObject(person)
-                .build();
-
-        final String documentId = elasticsearchRestTemplate.index(indexQuery);
-
-        return documentId;
+        return super.save(person);
     }
 }

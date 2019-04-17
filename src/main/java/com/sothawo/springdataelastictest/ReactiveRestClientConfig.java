@@ -7,10 +7,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
+import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClients;
 import org.springframework.data.elasticsearch.config.AbstractReactiveElasticsearchConfiguration;
-import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.ReactiveElasticsearchTemplate;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -24,4 +26,17 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
 		return ReactiveRestClients.create(clientConfiguration);
 
 	}
+
+	@Bean
+	public ReactiveElasticsearchTemplate reactiveElasticsearchTemplate() {
+		return (ReactiveElasticsearchTemplate) super.reactiveElasticsearchTemplate();
+	}
+
+	// mvcConversionService needs this
+	@Bean
+	public ElasticsearchRestTemplate elasticsearchTemplate() {
+		return new ElasticsearchRestTemplate(RestClients.create(ClientConfiguration.localhost()).rest(),
+				elasticsearchConverter(), resultsMapper());
+	}
+
 }

@@ -30,7 +30,6 @@ public class ReactiveElasticsearchTemplateController {
 	@PostMapping("/person")
 	public String hello(@RequestBody Person person) {
 
-
 		final Mono<Person> mono = reactiveElasticsearchTemplate.save(person);
 
 		return mono.block().getId().toString();
