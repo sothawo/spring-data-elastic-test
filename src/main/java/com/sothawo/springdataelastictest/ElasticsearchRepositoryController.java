@@ -42,7 +42,7 @@ public class ElasticsearchRepositoryController {
 
 	@GetMapping("/persons/{lastName}")
 	public Optional<Person> byLastName(@PathVariable("lastName") final String lastName) {
-		return personRepository.findByLastName(lastName);
+		return personRepository.findByLastNameFuzzy(lastName);
 	}
 
 	@GetMapping("/person/{id}")
