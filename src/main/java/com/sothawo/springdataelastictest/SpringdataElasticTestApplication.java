@@ -25,7 +25,7 @@ public class SpringdataElasticTestApplication {
 		SpringApplication.run(SpringdataElasticTestApplication.class, args);
 	}
 
-	@PostConstruct
+//	@PostConstruct
 	private void startNode() throws NodeValidationException {
 
 		String pathHome = "src/test/resources/test-home-dir";
@@ -34,12 +34,12 @@ public class SpringdataElasticTestApplication {
 
 		node = new NodeClientFactoryBean.TestNode(Settings.builder().put("transport.type", "netty4")
 				.put("http.type", "netty4").put("path.home", pathHome).put("path.data", pathData)
-				.put("cluster.name", clusterName).put("node.max_local_storage_nodes", 100).build(), asList(Netty4Plugin.class));
+				.put("cluster.name", "elasticsearch").put("node.max_local_storage_nodes", 100).build(), asList(Netty4Plugin.class));
 
 		node.start();
 	}
 
-	@PreDestroy
+//	@PreDestroy
 	private void stopNode() throws IOException {
 		node.close();
 	}

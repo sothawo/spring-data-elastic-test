@@ -4,6 +4,7 @@
 package com.sothawo.springdataelastictest;
 
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
@@ -22,8 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/template")
 public class TransportElasticsearchTemplateController extends ElasticsearchBaseTemplateController{
 
-    public TransportElasticsearchTemplateController(final ElasticsearchTemplate elasticsearchTemplate) {
-        super(elasticsearchTemplate);
+    public TransportElasticsearchTemplateController(final ElasticsearchOperations elasticsearchOperations) {
+        super(elasticsearchOperations);
     }
 
     @PostMapping("/person")

@@ -35,7 +35,7 @@ public class TransportClientConfig extends ElasticsearchConfigurationSupport {
 		return client;
 	}
 
-	@Bean
+	@Bean(name = {"elasticsearchOperations", "elasticsearchTemplate"})
 	public ElasticsearchTemplate elasticsearchTemplate() throws UnknownHostException {
 		return new ElasticsearchTemplate(elasticsearchClient(), entityMapper());
 	}

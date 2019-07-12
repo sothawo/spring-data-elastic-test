@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/template")
 public class RestElasticsearchTemplateController extends ElasticsearchBaseTemplateController {
 
-    public RestElasticsearchTemplateController(final ElasticsearchRestTemplate elasticsearchRestTemplate) {
-        super(elasticsearchRestTemplate);
+    public RestElasticsearchTemplateController(ElasticsearchOperations elasticsearchOperations) {
+        super(elasticsearchOperations);
     }
 
     @PostMapping("/person")
