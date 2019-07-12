@@ -16,6 +16,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchEntityMapper;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.EntityMapper;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchTemplate;
+import org.springframework.data.elasticsearch.repository.config.EnableReactiveElasticsearchRepositories;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -25,7 +26,11 @@ import org.springframework.data.elasticsearch.core.ReactiveElasticsearchTemplate
 public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfiguration {
 	@Override
 	public ReactiveElasticsearchClient reactiveElasticsearchClient() {
-		ClientConfiguration clientConfiguration = ClientConfiguration.builder().connectedTo("localhost:9200").build();
+		final ClientConfiguration clientConfiguration = ClientConfiguration.builder()
+				.connectedTo("localhost:9200") //
+				.usingSsl(NotVerifyingSSLContext.getSslContext()) //
+				.withBasicAuth("elastic", "0OM9VeF3opnSSj1DAYVH") //
+				.build();
 		return ReactiveRestClients.create(clientConfiguration);
 
 	}

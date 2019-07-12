@@ -1,12 +1,13 @@
-spring.data.elasticsearch:
-  # dont configure cluster-* properties, these create transport client beans
+#spring.data.elasticsearch:
+# dont configure cluster-* properties, these create transport client beans
 #  cluster-nodes: "localhost:9300"
 #  cluster-name: "pjtest"
 
 logging:
   level:
+    root: warn
     org:
-      springframework:
-        data:
-          elasticsearch: debug
-      elasticsearch: debug
+      springframework: debug
+#        data:
+#          elasticsearch: debug
+#      elasticsearch: debug
