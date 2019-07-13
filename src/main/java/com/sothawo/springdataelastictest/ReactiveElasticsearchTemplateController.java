@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-@Profile("reactive")
 @RestController
 @RequestMapping("/template")
 public class ReactiveElasticsearchTemplateController {

@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
-@Profile("reactive")
 @RestController
-@EnableReactiveElasticsearchRepositories
 @RequestMapping("/repo")
 public class ReactiveElasticsearchRepositoryController {
 
