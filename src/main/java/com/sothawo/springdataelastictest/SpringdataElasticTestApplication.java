@@ -14,9 +14,10 @@ import org.elasticsearch.node.NodeValidationException;
 import org.elasticsearch.transport.Netty4Plugin;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration;
 import org.springframework.data.elasticsearch.client.NodeClientFactoryBean;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = ElasticsearchDataAutoConfiguration.class)
 public class SpringdataElasticTestApplication {
 
 	private Node node;
@@ -25,7 +26,7 @@ public class SpringdataElasticTestApplication {
 		SpringApplication.run(SpringdataElasticTestApplication.class, args);
 	}
 
-//	@PostConstruct
+	@PostConstruct
 	private void startNode() throws NodeValidationException {
 
 		String pathHome = "src/test/resources/test-home-dir";
@@ -39,7 +40,7 @@ public class SpringdataElasticTestApplication {
 		node.start();
 	}
 
-//	@PreDestroy
+	@PreDestroy
 	private void stopNode() throws IOException {
 		node.close();
 	}

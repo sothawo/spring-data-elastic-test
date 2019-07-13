@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
-@Profile("rest")
 @EnableElasticsearchRepositories
 @RestController
 @RequestMapping("/repo")
@@ -41,7 +40,7 @@ public class ElasticsearchRepositoryController {
 	}
 
 	@GetMapping("/persons/{lastName}")
-	public Optional<Person> byLastName(@PathVariable("lastName") final String lastName) {
+	public List<Person> byLastName(@PathVariable("lastName") final String lastName) {
 		return personRepository.findByLastNameFuzzy(lastName);
 	}
 
