@@ -8,6 +8,8 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.util.List;
+
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
@@ -19,8 +21,11 @@ public class Person {
     @Field(value = "last-name", type = FieldType.Text)
     private String lastName;
 
-    @Field(name = "first-name", type = FieldType.Text)
+    @Field(name = "first-name", type = FieldType.Text, fielddata = true)
     private String firstName;
+
+    @Field(type = FieldType.Nested)
+    private List<Movie> movies;
 
     public Long getId() {
         return id;

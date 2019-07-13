@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-@Profile("rest")
 @RestController
 @RequestMapping("/template")
 public class RestElasticsearchTemplateController extends ElasticsearchBaseTemplateController {
