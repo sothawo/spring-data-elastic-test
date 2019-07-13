@@ -5,57 +5,72 @@ package com.sothawo.springdataelastictest;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClients;
 import org.springframework.data.elasticsearch.config.AbstractReactiveElasticsearchConfiguration;
-import org.springframework.data.elasticsearch.core.ElasticsearchEntityMapper;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.EntityMapper;
-import org.springframework.data.elasticsearch.core.ReactiveElasticsearchTemplate;
-import org.springframework.data.elasticsearch.repository.config.EnableReactiveElasticsearchRepositories;
+import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Configuration
-@Profile("reactive")
 public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfiguration {
-	@Override
-	public ReactiveElasticsearchClient reactiveElasticsearchClient() {
-		final ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-				.connectedTo("localhost:9200") //
-				.usingSsl(NotVerifyingSSLContext.getSslContext()) //
-				.withBasicAuth("elastic", "0OM9VeF3opnSSj1DAYVH") //
-				.build();
-		return ReactiveRestClients.create(clientConfiguration);
+    @Override
+    public ReactiveElasticsearchClient reactiveElasticsearchClient() {
+        final ClientConfiguration clientConfiguration = ClientConfiguration.builder() //
+            .connectedTo("localhost:9200") //
+            .withProxy("localhost:8080")
+            // .withPathPrefix("ela")
+            // .usingSsl(NotVerifyingSSLContext.getSslContext()) //
+            // .withBasicAuth("elastic", "stHfzUWETvvX9aAacSTW") //
+            .withWebClientConfigurer(webClient -> {
+                ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+                    .codecs(configurer -> configurer.defaultCodecs()
+                        .maxInMemorySize(-1))
+                    .build();
+                return webClient.mutate().exchangeStrategies(exchangeStrategies).build();
+            })
+            .withHeaders(() -> {
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("currentTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                return headers;
+            })
+            .build();
+        return ReactiveRestClients.create(clientConfiguration);
 
-	}
+    }
 
-	@Bean
-	public ReactiveElasticsearchTemplate reactiveElasticsearchTemplate() {
-		return (ReactiveElasticsearchTemplate) super.reactiveElasticsearchTemplate();
-	}
+//    @Override
+//    public ElasticsearchCustomConversions elasticsearchCustomConversions() {
+//        Collection<Converter<?, ?>> converters = new ArrayList<>();
+//        converters.add(StringReverseConverter.INSTANCE);
+//        return new ElasticsearchCustomConversions(converters);
+//    }
 
-	// mvcConversionService needs this
-	@Bean
-	public ElasticsearchRestTemplate elasticsearchTemplate() {
-		return new ElasticsearchRestTemplate(RestClients.create(ClientConfiguration.localhost()).rest(),
-				elasticsearchConverter(), resultsMapper());
-	}
+    enum StringReverseConverter implements Converter<String, String> {
 
-	// use the ElasticsearchEntityMapper
-	@Bean
-	@Override
-	public EntityMapper entityMapper() {
-		ElasticsearchEntityMapper entityMapper = new ElasticsearchEntityMapper(elasticsearchMappingContext(),
-				new DefaultConversionService());
-		entityMapper.setConversions(elasticsearchCustomConversions());
+        INSTANCE;
 
-		return entityMapper;
-	}
+        @Override
+        public String convert(String source) {
+            return new StringBuilder(source).reverse().toString();
+        }
+    }
 
+    // mvcConversionService needs this
+    @Bean
+    public ElasticsearchRestTemplate elasticsearchTemplate() {
+        return new ElasticsearchRestTemplate(RestClients.create(ClientConfiguration.localhost()).rest());
+    }
 }
