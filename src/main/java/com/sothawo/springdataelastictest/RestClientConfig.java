@@ -3,71 +3,76 @@
  */
 package com.sothawo.springdataelastictest;
 
-import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
-import org.springframework.core.convert.support.DefaultConversionService;
-import org.springframework.data.elasticsearch.annotations.Query;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
-import org.springframework.data.elasticsearch.core.ElasticsearchEntityMapper;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.EntityMapper;
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
-import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
+import org.springframework.http.HttpHeaders;
 
-import java.util.Optional;
+import javax.crypto.spec.RC2ParameterSpec;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Configuration
-@Profile("rest")
 public class RestClientConfig extends AbstractElasticsearchConfiguration {
 
-	public interface PersonRepository extends ElasticsearchRepository<Person, Long> {
-		Optional<Person> findByLastName(final String lastName);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestClientConfig.class);
 
-		@Query(value = "{\"fuzzy\":{\"last-name\":\"?0\"}}")
-		Optional<Person> findByLastNameFuzzy(final String lastName);
-	}
+    @Override
+    @Bean
+    public RestHighLevelClient elasticsearchClient() {
 
-	@Bean
-	public RestClient restClient(RestHighLevelClient client) {
-		return client.getLowLevelClient();
-	}
+        final ClientConfiguration clientConfiguration = ClientConfiguration.builder() //
+            .connectedTo("localhost:9200") //
+//            .usingSsl(NotVerifyingSSLContext.getSslContext()) //
+            .withProxy("localhost:8080")
+//            .withPathPrefix("ela")
+            .withBasicAuth("elastic", "stHfzUWETvvX9aAacSTW") //
+            .withHeaders(() -> {
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("currentTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+                return headers;
+            })
+            .withConnectTimeout(Duration.ofSeconds(10))
+            .withSocketTimeout(Duration.ofSeconds(1)) //
+            .build();
 
-	@Override
-	@Bean(name = { "restHighLevelClient" })
-	public RestHighLevelClient elasticsearchClient() {
+        return RestClients.create(clientConfiguration).rest();
+    }
 
-		final ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-				.connectedTo("localhost:9200") //
-				.usingSsl(NotVerifyingSSLContext.getSslContext()) //
-				.withBasicAuth("elastic", "0OM9VeF3opnSSj1DAYVH") //
-				.build();
+//    @Override
+//    public ElasticsearchCustomConversions elasticsearchCustomConversions() {
+//        Collection<Converter<?, ?>> converters = new ArrayList<>();
+//        converters.add(StringReverseConverter.INSTANCE);
+//        return new ElasticsearchCustomConversions(converters);
+//    }
 
-		return RestClients.create(clientConfiguration).rest();
-	}
 
-	@Bean
-	@Primary
-	public ElasticsearchOperations elasticsearchTemplate() {
-		return elasticsearchOperations();
-	}
-
-	// use the ElasticsearchEntityMapper
-	@Bean
-	@Override
-	public EntityMapper entityMapper() {
-		ElasticsearchEntityMapper entityMapper = new ElasticsearchEntityMapper(elasticsearchMappingContext(),
-				new DefaultConversionService());
-		entityMapper.setConversions(elasticsearchCustomConversions());
-
-		return entityMapper;
-	}
+    @Override
+    public ElasticsearchOperations elasticsearchOperations(ElasticsearchConverter elasticsearchConverter) {
+        return new ElasticsearchRestTemplate(elasticsearchClient(), elasticsearchConverter) {
+            @Override
+            public <T> T execute(ClientCallback<T> callback) {
+                try {
+                    return super.execute(callback);
+                } catch (DataAccessResourceFailureException e) {
+                    // retry
+                    LOGGER.warn("Retrying because of {}", e.getMessage());
+                    return super.execute(callback);
+                }
+            }
+        };
+    }
 }
