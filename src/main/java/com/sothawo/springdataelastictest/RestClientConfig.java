@@ -34,7 +34,7 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 
         final ClientConfiguration clientConfiguration = ClientConfiguration.builder() //
             .connectedTo("localhost:9200") //
-            .usingSsl() //
+//            .usingSsl() //
 //             .usingSsl(NotVerifyingSSLContext.getSslContext()) //
 //            .withProxy("localhost:8080")
             // .withPathPrefix("ela") //
