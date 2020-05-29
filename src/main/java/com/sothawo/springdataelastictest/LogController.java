@@ -3,6 +3,7 @@
  */
 package com.sothawo.springdataelastictest;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ public class LogController {
         this.logRepository = logRepository;
     }
 
+    @Scheduled(initialDelay = 5, fixedDelay = 5_000)
     @PostMapping
     public String log() {
         LogEntity logEntity = new LogEntity();

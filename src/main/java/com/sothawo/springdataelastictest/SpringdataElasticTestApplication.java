@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.elasticsearch.config.EnableElasticsearchAuditing;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -16,6 +17,7 @@ import java.util.Optional;
 @SpringBootApplication(exclude = ElasticsearchDataAutoConfiguration.class)
 @EnableElasticsearchRepositories
 @EnableElasticsearchAuditing
+@EnableScheduling
 public class SpringdataElasticTestApplication {
 
     public static void main(String[] args) {
