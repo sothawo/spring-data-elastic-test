@@ -69,8 +69,8 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
     }
 
     // mvcConversionService needs this
-    @Bean
-    public ElasticsearchRestTemplate elasticsearchTemplate() {
-        return new ElasticsearchRestTemplate(RestClients.create(ClientConfiguration.localhost()).rest());
-    }
+//    @Bean
+//    public ElasticsearchRestTemplate elasticsearchTemplate() {
+//        return new ElasticsearchRestTemplate(RestClients.create(ClientConfiguration.localhost()).rest());
+//    }
 }
