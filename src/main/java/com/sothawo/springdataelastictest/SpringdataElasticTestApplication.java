@@ -2,10 +2,11 @@ package com.sothawo.springdataelastictest;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration;
 import org.springframework.data.elasticsearch.config.EnableElasticsearchAuditing;
 import org.springframework.data.elasticsearch.repository.config.EnableReactiveElasticsearchRepositories;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = ElasticsearchDataAutoConfiguration.class)
 @EnableReactiveElasticsearchRepositories
 @EnableElasticsearchAuditing
 public class SpringdataElasticTestApplication {
