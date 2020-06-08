@@ -3,23 +3,21 @@
  */
 package com.sothawo.springdataelastictest;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
-import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClients;
 import org.springframework.data.elasticsearch.config.AbstractReactiveElasticsearchConfiguration;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 import org.springframework.http.HttpHeaders;
+import org.springframework.lang.Nullable;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
+
+import static org.elasticsearch.action.support.WriteRequest.*;
+import static org.elasticsearch.action.support.WriteRequest.RefreshPolicy.*;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -51,7 +49,13 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
 
     }
 
-//    @Override
+    @Override
+    @Nullable
+    protected RefreshPolicy refreshPolicy() {
+        return NONE;
+    }
+
+    //    @Override
 //    public ElasticsearchCustomConversions elasticsearchCustomConversions() {
 //        Collection<Converter<?, ?>> converters = new ArrayList<>();
 //        converters.add(StringReverseConverter.INSTANCE);

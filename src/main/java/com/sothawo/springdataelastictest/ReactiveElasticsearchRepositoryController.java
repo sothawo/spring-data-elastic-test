@@ -8,12 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/repo")
@@ -28,6 +25,11 @@ public class ReactiveElasticsearchRepositoryController {
     @PostMapping("/person")
     public Mono<String> savePerson(@RequestBody final Person person) {
         return personRepository.save(person).map(it -> it.getId().toString());
+    }
+
+    @PostMapping("/persons")
+    public Flux<Person> savePersons(@RequestBody Flux<Person> persons) {
+        return personRepository.saveAll(persons);
     }
 
     @GetMapping("/persons")
