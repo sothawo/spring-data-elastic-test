@@ -19,6 +19,7 @@ public class SampleEntityController {
 
     private final SampleEntityRepository sampleEntityRepository;
 
+
     public SampleEntityController(SampleEntityRepository sampleEntityRepository) {
         this.sampleEntityRepository = sampleEntityRepository;
     }
@@ -32,5 +33,9 @@ public class SampleEntityController {
     @Nullable
     public SampleEntity getById(@PathVariable("id") String id) {
         return sampleEntityRepository.findById(id).orElse(null);
+    }
+
+    @GetMapping("/test")
+    public void test() {
     }
 }
