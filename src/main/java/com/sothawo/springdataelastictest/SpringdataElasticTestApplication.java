@@ -26,7 +26,7 @@ public class SpringdataElasticTestApplication {
 		SpringApplication.run(SpringdataElasticTestApplication.class, args);
 	}
 
-	@PostConstruct
+//	@PostConstruct
 	private void startNode() throws NodeValidationException {
 
 		String pathHome = "src/test/resources/test-home-dir";
@@ -40,7 +40,7 @@ public class SpringdataElasticTestApplication {
 		node.start();
 	}
 
-	@PreDestroy
+//	@PreDestroy
 	private void stopNode() throws IOException {
 		node.close();
 	}
