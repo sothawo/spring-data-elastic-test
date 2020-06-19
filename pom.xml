@@ -2,22 +2,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.3.0.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.sothawo</groupId>
     <artifactId>spring-data-elastic-test</artifactId>
     <version>4.1.0-SNAPSHOT</version>
     <name>spring-data-elastic-test</name>
-    <description>Demo project for Spring Boot</description>
+    <description>Test project for Spring Data Elasticsearch</description>
 
     <properties>
         <java.version>1.8</java.version>
 
         <elasticsearch.version>7.7.1</elasticsearch.version>
+        <netty>4.1.50.Final</netty>
+        <reactor>2020.0.0-SNAPSHOT</reactor>
         <springdata.commons>2.4.0-SNAPSHOT</springdata.commons>
         <spring-data-elasticsearch>4.1.0-SNAPSHOT</spring-data-elasticsearch>
     </properties>
@@ -34,6 +38,25 @@
             <url>https://repo.spring.io/milestone</url>
         </repository>
     </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>${netty}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.projectreactor</groupId>
+                <artifactId>reactor-bom</artifactId>
+                <version>${reactor}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- no boot starter for spring data elasticsearch, set ip up by config -->
@@ -64,25 +87,9 @@
                 </exclusion>
             </exclusions>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-actuator</artifactId>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webflux</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.projectreactor.netty</groupId>
-            <artifactId>reactor-netty</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -93,7 +100,6 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-<!--            <version>2.9.1</version>-->
             <scope>provided</scope>
         </dependency>
 
