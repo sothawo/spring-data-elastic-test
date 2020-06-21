@@ -28,9 +28,10 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
     public ReactiveElasticsearchClient reactiveElasticsearchClient() {
         final ClientConfiguration clientConfiguration = ClientConfiguration.builder() //
             .connectedTo("localhost:9200") //
+//            .usingSsl()
+//             .usingSsl(NotVerifyingSSLContext.getSslContext()) //
             .withProxy("localhost:8080")
-            // .withPathPrefix("ela")
-            // .usingSsl(NotVerifyingSSLContext.getSslContext()) //
+//            .withPathPrefix("ela")
             // .withBasicAuth("elastic", "stHfzUWETvvX9aAacSTW") //
             .withWebClientConfigurer(webClient -> {
                 ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
