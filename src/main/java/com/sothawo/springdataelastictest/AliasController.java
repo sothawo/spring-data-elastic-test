@@ -9,6 +9,9 @@ import org.springframework.data.elasticsearch.core.index.AliasAction;
 import org.springframework.data.elasticsearch.core.index.AliasActionParameters;
 import org.springframework.data.elasticsearch.core.index.AliasActions;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
+import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,4 +50,16 @@ public class AliasController {
         return indexOps.alias(aliasActions);
     }
 
+    @PostMapping("/person/firstName/{firstName}")
+    public boolean createPersonWithFilter(@PathVariable String firstName) {
+
+        AliasActions aliasActions = new AliasActions();
+        Query query = new CriteriaQuery(new Criteria("firstName").is(firstName));
+        aliasActions.add(new AliasAction.Add(AliasActionParameters.builder()
+            .withIndices("person")
+            .withAliases(firstName.toLowerCase())
+            .withFilterQuery(query, Person.class)
+            .build()));
+        return indexOps.alias(aliasActions);
+    }
 }
