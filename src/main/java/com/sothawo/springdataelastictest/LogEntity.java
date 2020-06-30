@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-@Document(indexName = "logs-#{@logIndexNameProvider.timeSuffix()}")
+@Document(indexName = "log-#{T(java.time.LocalDate).now().toString()}")
 public class LogEntity {
     @Id
     private String id = UUID.randomUUID().toString();
@@ -24,10 +24,8 @@ public class LogEntity {
     @Field(type = FieldType.Text)
     private String text;
 
-    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
+    @Field(name = "log-time", type = FieldType.Date, format = DateFormat.basic_date_time)
     private ZonedDateTime logTime = ZonedDateTime.now();
-
-    private Date legacyDate = new Date();
 
     public String getId() {
         return id;
@@ -39,14 +37,6 @@ public class LogEntity {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public Date getLegacyDate() {
-        return legacyDate;
-    }
-
-    public void setLegacyDate(Date legacyDate) {
-        this.legacyDate = legacyDate;
     }
 
     public ZonedDateTime getLogTime() {
