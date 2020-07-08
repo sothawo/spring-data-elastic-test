@@ -133,6 +133,15 @@ public class Person implements Persistable<Long> {
         this.lastModifiedBy = lastModifiedBy;
     }
 
+    @Nullable
+    public List<Movie> getMovies() {
+        return movies;
+    }
+
+    public void setMovies(@Nullable List<Movie> movies) {
+        this.movies = movies;
+    }
+
     @Override
     @JsonIgnore
     public boolean isNew() {
