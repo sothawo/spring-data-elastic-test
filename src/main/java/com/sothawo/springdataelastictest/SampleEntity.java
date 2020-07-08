@@ -10,6 +10,8 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.core.query.SeqNoPrimaryTerm;
 import org.springframework.lang.Nullable;
 
+import java.util.List;
+
 @Document(indexName = "sample-entities")
 public class SampleEntity {
     @Id
@@ -18,6 +20,9 @@ public class SampleEntity {
 
     @Field(type = FieldType.Text)
     private String message;
+
+    @Field(type = FieldType.Nested)
+    private List<Object> objects;
 
     private SeqNoPrimaryTerm seqNoPrimaryTerm;
 
@@ -44,5 +49,13 @@ public class SampleEntity {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public List<Object> getObjects() {
+        return objects;
+    }
+
+    public void setObjects(List<Object> objects) {
+        this.objects = objects;
     }
 }
