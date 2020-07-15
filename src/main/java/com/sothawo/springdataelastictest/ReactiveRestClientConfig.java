@@ -29,7 +29,7 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
     @Override
     public ReactiveElasticsearchClient reactiveElasticsearchClient() {
         final ClientConfiguration clientConfiguration = ClientConfiguration.builder() //
-            .connectedTo("localhost:9200") //
+            .connectedTo("localhost:9400") //
             .withProxy("localhost:8080")
             // .withPathPrefix("ela")
             // .usingSsl(NotVerifyingSSLContext.getSslContext()) //
