@@ -6,8 +6,10 @@ package com.sothawo.springdataelastictest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.IndexOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.index.AliasAction;
+import org.springframework.data.elasticsearch.core.index.AliasActionParameters;
+import org.springframework.data.elasticsearch.core.index.AliasActions;
 import org.springframework.data.elasticsearch.core.index.DeleteTemplateRequest;
-import org.springframework.data.elasticsearch.core.index.ExistsTemplateRequest;
 import org.springframework.data.elasticsearch.core.index.GetTemplateRequest;
 import org.springframework.data.elasticsearch.core.index.PutTemplateRequest;
 import org.springframework.data.elasticsearch.core.index.TemplateData;
@@ -79,6 +81,10 @@ public class LogController {
         PutTemplateRequest putTemplateRequest = PutTemplateRequest.builder(TEMPLATE_NAME, "log-*")
             .withSettings(indexOps.createSettings())
             .withMappings(indexOps.createMapping())
+            .withAliasActions(new AliasActions().add(
+                new AliasAction.Add(AliasActionParameters.builderForTemplate()
+                    .withAliases("log-all")
+                    .build())))
             .build();
 
         return indexOps.putTemplate(putTemplateRequest);
@@ -86,8 +92,10 @@ public class LogController {
 
     @GetMapping("/template")
     public ResponseEntity<TemplateData> getTemplate() {
-        if (indexOps.existsTemplate(new ExistsTemplateRequest(TEMPLATE_NAME))) {
-            return ResponseEntity.ok(indexOps.getTemplate(new GetTemplateRequest(TEMPLATE_NAME)));
+
+        TemplateData template = indexOps.getTemplate(new GetTemplateRequest(TEMPLATE_NAME));
+        if (template != null) {
+            return ResponseEntity.ok(template);
         } else {
             return ResponseEntity.notFound().build();
         }

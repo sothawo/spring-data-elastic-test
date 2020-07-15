@@ -10,13 +10,12 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-@Document(indexName = "log-#{T(java.time.LocalDate).now().toString()}")
+@Document(indexName = "log-#{T(java.time.LocalDate).now().toString()}", createIndex = false)
 public class LogEntity {
     @Id
     private String id = UUID.randomUUID().toString();
