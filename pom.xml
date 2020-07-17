@@ -17,7 +17,7 @@
     <properties>
         <java.version>1.8</java.version>
 
-        <elasticsearch.version>7.7.1</elasticsearch.version>
+        <elasticsearch.version>7.8.0</elasticsearch.version>
         <springdata.commons>2.4.0-SNAPSHOT</springdata.commons>
         <spring-data-elasticsearch>4.1.0-SNAPSHOT</spring-data-elasticsearch>
     </properties>
@@ -67,18 +67,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webflux</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.projectreactor.netty</groupId>
-            <artifactId>reactor-netty</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
