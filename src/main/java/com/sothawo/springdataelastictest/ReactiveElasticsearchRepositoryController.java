@@ -23,8 +23,8 @@ public class ReactiveElasticsearchRepositoryController {
     }
 
     @PostMapping("/person")
-    public Mono<String> savePerson(@RequestBody final Person person) {
-        return personRepository.save(person).map(it -> it.getId().toString());
+    public Mono<Person> savePerson(@RequestBody final Person person) {
+        return personRepository.save(person);
     }
 
     @PostMapping("/persons")

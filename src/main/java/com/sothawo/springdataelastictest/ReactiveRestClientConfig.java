@@ -10,14 +10,10 @@ import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsea
 import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClients;
 import org.springframework.data.elasticsearch.config.AbstractReactiveElasticsearchConfiguration;
 import org.springframework.http.HttpHeaders;
-import org.springframework.lang.Nullable;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
-import static org.elasticsearch.action.support.WriteRequest.*;
-import static org.elasticsearch.action.support.WriteRequest.RefreshPolicy.*;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -48,12 +44,6 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
             .build();
         return ReactiveRestClients.create(clientConfiguration);
 
-    }
-
-    @Override
-    @Nullable
-    protected RefreshPolicy refreshPolicy() {
-        return NONE;
     }
 
     //    @Override
