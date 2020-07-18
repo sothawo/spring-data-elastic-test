@@ -9,6 +9,7 @@ import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.SearchPage;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -73,8 +74,8 @@ public class PersonRepositoryController {
     }
 
     @PostMapping("/person")
-    public String savePerson(@RequestBody final Person person) {
-        return personRepository.save(person).getId().toString();
+    public Person savePerson(@RequestBody final Person person) {
+        return personRepository.save(person);
     }
 
     @GetMapping("/persons")
@@ -94,9 +95,9 @@ public class PersonRepositoryController {
     }
 
     @GetMapping("/person/{id}")
-    public Person byId(@PathVariable("id") final Long id) {
+    public ResponseEntity<Person> byId(@PathVariable("id") final Long id) {
         LOG.info("check with exists: {}", personRepository.existsById(id));
-        return personRepository.findById(id).orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
+        return personRepository.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/persons/birthday")
