@@ -13,14 +13,13 @@ import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.elasticsearch.config.ElasticsearchConfigurationSupport;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Configuration
-public class TransportClientConfig extends ElasticsearchConfigurationSupport {
+public class TransportClientConfig  {
 
 	@Bean
 	public Client elasticsearchClient() throws UnknownHostException {

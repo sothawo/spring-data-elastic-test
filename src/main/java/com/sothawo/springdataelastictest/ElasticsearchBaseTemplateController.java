@@ -29,7 +29,9 @@ public class ElasticsearchBaseTemplateController {
 	}
 
 	public Person findById(final Long id) {
-		final Person person = elasticsearchOperations.queryForObject(GetQuery.getById(id.toString()), Person.class);
+		GetQuery getQuery = new GetQuery();
+		getQuery.setId(id.toString());
+		final Person person = elasticsearchOperations.queryForObject(getQuery, Person.class);
 		return person;
 	}
 }

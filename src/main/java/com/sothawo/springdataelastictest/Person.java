@@ -16,10 +16,10 @@ public class Person {
     @Id
     private Long id;
 
-    @Field(value = "last-name", type = FieldType.Text)
+    @Field(type = FieldType.Text)
     private String lastName;
 
-    @Field(name = "first-name", type = FieldType.Text)
+    @Field(type = FieldType.Text)
     private String firstName;
 
     public Long getId() {
