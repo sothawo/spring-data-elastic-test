@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.SearchPage;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,7 +31,7 @@ public class PersonRepositoryController {
 
     private static final Logger LOG = LoggerFactory.getLogger(PersonRepositoryController.class);
 
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
 
     Fairy fairy = Fairy.create(Locale.ENGLISH);
 
@@ -82,8 +80,7 @@ public class PersonRepositoryController {
     public List<Person> allPersons() {
         Iterable<Person> all = personRepository.findAll(Pageable.unpaged());
 //        final List<Person> all = personRepository.findAllByOrderByFirstName();
-        final List<Person> list = StreamSupport.stream(all.spliterator(), false).collect(Collectors.toList());
-        return list;
+        return StreamSupport.stream(all.spliterator(), false).collect(Collectors.toList());
     }
 
     @GetMapping("/persons/{name}")
@@ -131,7 +128,6 @@ public class PersonRepositoryController {
 
     @GetMapping("persons/firstname/{name}")
     public SearchHits<Person> firstName(@PathVariable("name") String name) {
-        SearchHits<Person> searchHits = personRepository.queryWithFirstName(name);
-        return searchHits;
+        return personRepository.queryWithFirstName(name);
     }
 }
