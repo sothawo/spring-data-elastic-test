@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 
-public interface PersonRepository extends ElasticsearchRepository<Person, Long>, CustomRepository<Person> {
+public interface PersonRepository extends ElasticsearchRepository<Person, Long>, PersonCustomRepository {
     List<Person> findByLastName(final String lastName);
 
     SearchHits<Person> findByLastNameOrFirstName(String lastName, String firstName);
