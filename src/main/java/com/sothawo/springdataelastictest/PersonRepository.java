@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public interface PersonRepository extends ElasticsearchRepository<Person, Long>, PersonCustomRepository {
-    List<Person> findByLastName(final String lastName);
+    Stream<Person> findByLastName(final String lastName);
 
     SearchHits<Person> findByLastNameOrFirstName(String lastName, String firstName);
 
@@ -32,10 +32,11 @@ public interface PersonRepository extends ElasticsearchRepository<Person, Long>,
 
 
     @Query("{\"match\": {\n" +
-        "      \"first-name\": {\n" +
+        "      \"firstName\": {\n" +
         "        \"query\": \"?0\",\n" +
         "        \"operator\": \"and\"\n" +
         "      }\n" +
         "    }}\n")
-    SearchHits<Person> queryWithFirstName(String name);
+    Stream<Person> queryWithFirstName(String name);
+
 }
