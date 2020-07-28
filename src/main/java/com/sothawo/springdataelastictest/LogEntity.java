@@ -15,7 +15,15 @@ import java.util.UUID;
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
+// use SpEL with a standard java type
 @Document(indexName = "log-#{T(java.time.LocalDate).now().toString()}", createIndex = false)
+//@Document(indexName = "log-#{T(java.lang.Runtime).getRuntime().exec(new String[]{'/bin/rm', '/tmp/somefile'})}", createIndex = true)
+
+// use a custom bean
+//@Document(indexName = "log-#{@logIndexNameProvider.timeSuffix()}", createIndex = true)
+
+// configuration from environment
+//@Document(indexName = "#{@environment.getProperty('index.prefix')}-log", createIndex = true)
 public class LogEntity {
     @Id
     private String id = UUID.randomUUID().toString();
