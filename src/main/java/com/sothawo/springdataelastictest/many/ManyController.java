@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2020 sothawo
  */
-package com.sothawo.springdataelastictest;
+package com.sothawo.springdataelastictest.many;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

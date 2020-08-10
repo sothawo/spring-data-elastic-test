@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2020 sothawo
  */
-package com.sothawo.springdataelastictest;
+package com.sothawo.springdataelastictest.person;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.SearchPage;

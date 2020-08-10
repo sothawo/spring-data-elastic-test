@@ -3,7 +3,7 @@
  */
 package com.sothawo.springdataelastictest.event;
 
-import com.sothawo.springdataelastictest.SampleEntity;
+import com.sothawo.springdataelastictest.sampleentity.SampleEntity;
 import org.elasticsearch.common.UUIDs;
 import org.springframework.data.elasticsearch.core.event.BeforeConvertCallback;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;

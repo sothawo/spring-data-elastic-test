@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2020 sothawo
  */
-package com.sothawo.springdataelastictest;
+package com.sothawo.springdataelastictest.log;
 
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2019 sothawo
  */
-package com.sothawo.springdataelastictest;
+package com.sothawo.springdataelastictest.movies;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.elasticsearch.core.SearchHit;

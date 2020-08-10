@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2020 codecentric AG
  */
-package com.sothawo.springdataelastictest;
+package com.sothawo.springdataelastictest.sampleentity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;

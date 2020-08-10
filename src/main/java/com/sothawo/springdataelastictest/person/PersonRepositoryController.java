@@ -1,4 +1,4 @@
-package com.sothawo.springdataelastictest;
+package com.sothawo.springdataelastictest.person;
 
 import com.devskiller.jfairy.Fairy;
 import org.elasticsearch.search.aggregations.Aggregation;

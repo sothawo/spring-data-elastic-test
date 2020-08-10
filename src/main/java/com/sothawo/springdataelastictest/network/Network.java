@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2019 sothawo
  */
-package com.sothawo.springdataelastictest;
+package com.sothawo.springdataelastictest.network;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.CreatedBy;

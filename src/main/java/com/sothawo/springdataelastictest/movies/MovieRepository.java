@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2019 sothawo
  */
-package com.sothawo.springdataelastictest;
+package com.sothawo.springdataelastictest.movies;
 
 import org.springframework.data.elasticsearch.annotations.Highlight;
 import org.springframework.data.elasticsearch.annotations.HighlightField;
@@ -9,7 +9,6 @@ import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 /**

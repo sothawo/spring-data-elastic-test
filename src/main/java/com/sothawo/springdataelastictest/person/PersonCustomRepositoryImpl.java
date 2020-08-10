@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2020 sothawo
  */
-package com.sothawo.springdataelastictest;
+package com.sothawo.springdataelastictest.person;
 
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.Pageable;

@@ -3,7 +3,7 @@
  */
 package com.sothawo.springdataelastictest.event;
 
-import com.sothawo.springdataelastictest.Person;
+import com.sothawo.springdataelastictest.person.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.event.BeforeConvertCallback;

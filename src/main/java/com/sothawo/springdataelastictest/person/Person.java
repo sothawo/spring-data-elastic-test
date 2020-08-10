@@ -1,9 +1,10 @@
 /*
  * (c) Copyright 2019 sothawo
  */
-package com.sothawo.springdataelastictest;
+package com.sothawo.springdataelastictest.person;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sothawo.springdataelastictest.movies.Movie;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;

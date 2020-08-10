@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2019 sothawo
  */
-package com.sothawo.springdataelastictest;
+package com.sothawo.springdataelastictest.network;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)

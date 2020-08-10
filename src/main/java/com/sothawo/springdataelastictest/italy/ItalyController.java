@@ -13,12 +13,12 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  */
-package com.sothawo.springdataelastictest;
+package com.sothawo.springdataelastictest.italy;
 
 import com.devskiller.jfairy.Fairy;
 import com.devskiller.jfairy.producer.person.Address;
 import com.devskiller.jfairy.producer.person.Person;
-import com.sothawo.springdataelastictest.Italy.City;
+import com.sothawo.springdataelastictest.italy.Italy.City;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.InnerHitBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;

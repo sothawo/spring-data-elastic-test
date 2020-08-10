@@ -3,6 +3,7 @@
  */
 package com.sothawo.springdataelastictest;
 
+import com.sothawo.springdataelastictest.person.Person;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.IndexOperations;
 import org.springframework.data.elasticsearch.core.index.AliasAction;

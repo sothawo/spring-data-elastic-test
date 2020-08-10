@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2019 sothawo
  */
-package com.sothawo.springdataelastictest;
+package com.sothawo.springdataelastictest.person;
 
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.springframework.data.domain.PageRequest;

@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2020 sothawo
  */
-package com.sothawo.springdataelastictest;
+package com.sothawo.springdataelastictest.person;
 
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.IndexOperations;
@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("templates")
-public class TemplatesController {
+public class PersonTemplatesController {
 
     private final ElasticsearchOperations operations;
 
-    public TemplatesController(ElasticsearchOperations operations) {
+    public PersonTemplatesController(ElasticsearchOperations operations) {
         this.operations = operations;
     }
 

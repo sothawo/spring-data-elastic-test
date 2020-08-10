@@ -3,11 +3,9 @@
  */
 package com.sothawo.springdataelastictest.event;
 
-import com.sothawo.springdataelastictest.Person;
+import com.sothawo.springdataelastictest.person.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.elasticsearch.core.document.Document;
-import org.springframework.data.elasticsearch.core.event.AfterConvertCallback;
 import org.springframework.data.elasticsearch.core.event.AfterSaveCallback;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.stereotype.Component;
