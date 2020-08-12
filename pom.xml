@@ -22,7 +22,7 @@
         <elasticsearch.version>7.8.1</elasticsearch.version>
         <netty>4.1.50.Final</netty>
         <reactor>2020.0.0-SNAPSHOT</reactor>
-        <spring-framework.version>5.3.0-M1</spring-framework.version>
+        <spring-framework.version>5.3.0-M2</spring-framework.version>
         <springdata.commons>2.4.0-SNAPSHOT</springdata.commons>
         <spring-data-elasticsearch>4.1.0-SNAPSHOT</spring-data-elasticsearch>
     </properties>
