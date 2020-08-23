@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-@Component
+//@Component
 public class PersonAfterConvertCallback implements AfterConvertCallback<Person> {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonAfterConvertCallback.class);
 
