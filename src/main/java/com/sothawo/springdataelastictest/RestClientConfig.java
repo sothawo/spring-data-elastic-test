@@ -39,7 +39,7 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 //            .usingSsl(NotVerifyingSSLContext.getSslContext()) //
             .withProxy("localhost:8080")
 //            .withPathPrefix("ela")
-            .withBasicAuth("elastic", "stHfzUWETvvX9aAacSTW") //
+//            .withBasicAuth("elastic", "stHfzUWETvvX9aAacSTW") //
             .withHeaders(() -> {
                 HttpHeaders headers = new HttpHeaders();
                 headers.add("currentTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
