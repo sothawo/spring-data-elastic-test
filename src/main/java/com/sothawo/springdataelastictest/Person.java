@@ -30,15 +30,15 @@ public class Person implements Persistable<Long> {
     @Nullable
     private Long id;
 
-    @Field(value = "last-name", type = FieldType.Text, fielddata = true)
+    @Field(type = FieldType.Text, fielddata = true)
     @Nullable
     private String lastName;
 
-    @Field(name = "first-name", type = FieldType.Text, fielddata = true)
+    @Field(type = FieldType.Text, fielddata = true)
     @Nullable
     private String firstName;
 
-    @Field(name = "birth-date", type = FieldType.Date, format = DateFormat.basic_date)
+    @Field(type = FieldType.Date, format = DateFormat.basic_date)
     @Nullable
     private LocalDate birthDate;
 
