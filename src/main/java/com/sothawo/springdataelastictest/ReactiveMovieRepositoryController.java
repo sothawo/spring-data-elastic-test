@@ -68,7 +68,7 @@ public class ReactiveMovieRepositoryController {
         return movieRepository.findFirst3ByTitleOrderByYearDesc(title);
     }
 
-    @PostMapping("load")
+    @PostMapping("/load")
     public String loadMovies() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 

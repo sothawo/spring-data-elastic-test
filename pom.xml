@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.0.RELEASE</version>
+        <version>2.4.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -17,14 +17,14 @@
     <description>Test project for Spring Data Elasticsearch</description>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>15</java.version>
 
-        <elasticsearch.version>7.9.2</elasticsearch.version>
+        <elasticsearch.version>7.10.0</elasticsearch.version>
         <netty>4.1.52.Final</netty>
         <reactor>2020.0.0-SNAPSHOT</reactor>
         <spring-framework.version>5.3.0-RC2</spring-framework.version>
-        <springdata.commons>2.4.0-SNAPSHOT</springdata.commons>
-        <spring-data-elasticsearch>4.1.0-SNAPSHOT</spring-data-elasticsearch>
+        <springdata.commons>2.5.0-SNAPSHOT</springdata.commons>
+        <spring-data-elasticsearch>4.2.0-SNAPSHOT</spring-data-elasticsearch>
     </properties>
 
     <repositories>
@@ -61,12 +61,16 @@
 
     <dependencies>
         <!-- no boot starter for spring data elasticsearch, set ip up by config -->
-
 <!--        <dependency>-->
 <!--            <groupId>org.springframework.boot</groupId>-->
 <!--            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>-->
 <!--        </dependency>-->
 
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-elasticsearch</artifactId>
@@ -116,7 +120,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.1.6.RELEASE</version>
+                <version>2.3.3.RELEASE</version>
             </plugin>
         </plugins>
     </build>

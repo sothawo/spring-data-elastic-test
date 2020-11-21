@@ -3,6 +3,7 @@
  */
 package com.sothawo.springdataelastictest;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
@@ -20,7 +21,9 @@ import java.time.format.DateTimeFormatter;
  */
 @Configuration
 public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfiguration {
+
     @Override
+    @Bean
     public ReactiveElasticsearchClient reactiveElasticsearchClient() {
         final ClientConfiguration clientConfiguration = ClientConfiguration.builder() //
             .connectedTo("localhost:9400") //
@@ -45,27 +48,4 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
         return ReactiveRestClients.create(clientConfiguration);
 
     }
-
-    //    @Override
-//    public ElasticsearchCustomConversions elasticsearchCustomConversions() {
-//        Collection<Converter<?, ?>> converters = new ArrayList<>();
-//        converters.add(StringReverseConverter.INSTANCE);
-//        return new ElasticsearchCustomConversions(converters);
-//    }
-
-    enum StringReverseConverter implements Converter<String, String> {
-
-        INSTANCE;
-
-        @Override
-        public String convert(String source) {
-            return new StringBuilder(source).reverse().toString();
-        }
-    }
-
-    // mvcConversionService needs this
-//    @Bean
-//    public ElasticsearchRestTemplate elasticsearchTemplate() {
-//        return new ElasticsearchRestTemplate(RestClients.create(ClientConfiguration.localhost()).rest());
-//    }
 }
