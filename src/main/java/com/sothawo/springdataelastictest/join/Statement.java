@@ -10,11 +10,12 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.JoinTypeRelation;
 import org.springframework.data.elasticsearch.annotations.JoinTypeRelations;
 import org.springframework.data.elasticsearch.core.join.JoinField;
+import org.springframework.lang.Nullable;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-@Document(indexName = "statements")
+@Document(indexName = "statements", routing = "route")
 public class Statement {
     @Id
     private String id;
@@ -30,6 +31,9 @@ public class Statement {
             }
     )
     private JoinField<String> relation;
+
+    @Nullable
+    private String route;
 
     private Statement() {
     }
@@ -63,11 +67,20 @@ public class Statement {
         this.relation = relation;
     }
 
+    @Nullable
+    public String getRoute() {
+        return route;
+    }
+
+    public void setRoute(@Nullable String route) {
+        this.route = route;
+    }
 
     public static final class StatementBuilder {
         private String id;
         private String text;
         private JoinField<String> relation;
+        private String routing;
 
         private StatementBuilder() {
         }
@@ -82,6 +95,11 @@ public class Statement {
             return this;
         }
 
+        public StatementBuilder withRouting(String routing) {
+            this.routing = routing;
+            return this;
+        }
+
         public StatementBuilder withRelation(JoinField<String> relation) {
             this.relation = relation;
             return this;
@@ -92,6 +110,7 @@ public class Statement {
             statement.setId(id);
             statement.setText(text);
             statement.setRelation(relation);
+            statement.setRoute(routing);
             return statement;
         }
     }
