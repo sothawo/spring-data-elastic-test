@@ -9,8 +9,11 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.join.JoinField;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,9 +36,35 @@ public class StatementController {
         this.operations = operations;
     }
 
+    @DeleteMapping("/clear")
+    void clear() {
+        repository.deleteAll();
+    }
+
     @GetMapping
     SearchHits<Statement> all() {
         return repository.searchAllBy();
+    }
+
+    @GetMapping("/{id}/{routing}")
+    Statement get(@PathVariable String id, @PathVariable(required = false) String routing) {
+        return routing != null ? operations.get(id, routing, Statement.class) : operations.get(id, Statement.class);
+    }
+
+    @PostMapping
+    Statement insert(@RequestBody Statement statement) {
+        return repository.save(statement);
+    }
+
+    @DeleteMapping
+    void deleteStatement(@RequestBody Statement statement) {
+        repository.delete(statement);
+    }
+
+    @DeleteMapping("/{id}/{routing}")
+    void deleteById(@PathVariable String id, @PathVariable(required = false) String routing) {
+        operations.delete(id, routing, Statement.class);
+        operations.indexOps(Statement.class).refresh();
     }
 
     @PostMapping("/init")
@@ -69,12 +98,14 @@ public class StatementController {
         repository.save(
             Statement.builder()
                 .withText("+1 for the sun")
+                .withRouting(savedWeather.getId())
                 .withRelation(new JoinField<>("vote", sunnyAnswer.getId()))
                 .build());
 
         Statement vote2 = repository.save(
             Statement.builder()
                 .withText("-1 for the sun")
+                .withRouting(savedWeather.getId())
                 .withRelation(new JoinField<>("vote", sunnyAnswer.getId()))
                 .build());
 

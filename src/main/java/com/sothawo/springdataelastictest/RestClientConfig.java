@@ -67,8 +67,8 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 
 
     @Override
-    public ElasticsearchOperations elasticsearchOperations(ElasticsearchConverter elasticsearchConverter) {
-        return new ElasticsearchRestTemplate(elasticsearchClient(), elasticsearchConverter) {
+    public ElasticsearchOperations elasticsearchOperations(ElasticsearchConverter elasticsearchConverter, RestHighLevelClient elasticsearchClient) {
+        return new ElasticsearchRestTemplate(elasticsearchClient, elasticsearchConverter) {
             @Override
             public <T> T execute(ClientCallback<T> callback) {
                 try {
