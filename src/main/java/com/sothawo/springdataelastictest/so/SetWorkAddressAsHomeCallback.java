@@ -15,9 +15,9 @@ import org.springframework.stereotype.Component;
 public class SetWorkAddressAsHomeCallback implements AfterConvertCallback<Foo> {
     @Override
     public Foo onAfterConvert(Foo foo, Document document, IndexCoordinates indexCoordinates) {
-        if (foo.workAddressSameAsHome) {
-            foo.home = foo.work;
-        }
+//        if (foo.workAddressSameAsHome) {
+//            foo.home = foo.work;
+//        }
         return foo;
     }
 }

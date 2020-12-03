@@ -46,10 +46,10 @@ public class StatementController {
         return repository.searchAllBy();
     }
 
-    @GetMapping("/{id}/{routing}")
-    Statement get(@PathVariable String id, @PathVariable(required = false) String routing) {
-        return routing != null ? operations.get(id, routing, Statement.class) : operations.get(id, Statement.class);
-    }
+//    @GetMapping("/{id}/{routing}")
+//    Statement get(@PathVariable String id, @PathVariable(required = false) String routing) {
+//        return routing != null ? operations.get(id, routing, Statement.class) : operations.get(id, Statement.class);
+//    }
 
     @PostMapping
     Statement insert(@RequestBody Statement statement) {
@@ -61,11 +61,11 @@ public class StatementController {
         repository.delete(statement);
     }
 
-    @DeleteMapping("/{id}/{routing}")
-    void deleteById(@PathVariable String id, @PathVariable(required = false) String routing) {
-        operations.delete(id, routing, Statement.class);
-        operations.indexOps(Statement.class).refresh();
-    }
+//    @DeleteMapping("/{id}/{routing}")
+//    void deleteById(@PathVariable String id, @PathVariable(required = false) String routing) {
+//        operations.delete(id, routing, Statement.class);
+//        operations.indexOps(Statement.class).refresh();
+//    }
 
     @PostMapping("/init")
     void init() {

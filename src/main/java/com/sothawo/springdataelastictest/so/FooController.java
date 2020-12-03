@@ -3,6 +3,8 @@
  */
 package com.sothawo.springdataelastictest.so;
 
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,5 +32,10 @@ public class FooController {
     @RequestMapping("/{id}")
     public Foo get(@PathVariable String id) {
         return fooRepository.findById(id).orElse(null);
+    }
+
+    @GetMapping
+    public SearchHits<Foo> all() {
+        return fooRepository.searchBy();
     }
 }

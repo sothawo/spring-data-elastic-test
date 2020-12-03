@@ -15,7 +15,7 @@ import org.springframework.lang.Nullable;
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-@Document(indexName = "statements", routing = "route")
+@Document(indexName = "statements" /*, routing = "$"*/)
 public class Statement {
     @Id
     private String id;
@@ -33,7 +33,8 @@ public class Statement {
     private JoinField<String> relation;
 
     @Nullable
-    private String route;
+    @Field(type = FieldType.Keyword)
+    private String routing;
 
     private Statement() {
     }
@@ -68,12 +69,12 @@ public class Statement {
     }
 
     @Nullable
-    public String getRoute() {
-        return route;
+    public String getRouting() {
+        return routing;
     }
 
-    public void setRoute(@Nullable String route) {
-        this.route = route;
+    public void setRouting(@Nullable String routing) {
+        this.routing = routing;
     }
 
     public static final class StatementBuilder {
@@ -110,7 +111,7 @@ public class Statement {
             statement.setId(id);
             statement.setText(text);
             statement.setRelation(relation);
-            statement.setRoute(routing);
+            statement.setRouting(routing);
             return statement;
         }
     }

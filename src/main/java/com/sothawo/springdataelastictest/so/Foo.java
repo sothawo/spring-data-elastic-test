@@ -5,18 +5,13 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-@Document(indexName = "foo")
+@Document(indexName = "status")
 public class Foo {
     @Id
     private String id;
 
-    @Field(type = FieldType.Object)
-    Address work;
-
-    boolean workAddressSameAsHome;
-
-    @Field(type = FieldType.Object)
-    Address home;
+    @Field(name="Header")
+    private Header header;
 
     public String getId() {
         return id;
@@ -26,63 +21,24 @@ public class Foo {
         this.id = id;
     }
 
-    public Address getWork() {
-        return work;
+    public Header getHeader() {
+        return header;
     }
 
-    public void setWork(Address work) {
-        this.work = work;
+    public void setHeader(Header header) {
+        this.header = header;
     }
 
-    public boolean isWorkAddressSameAsHome() {
-        return workAddressSameAsHome;
-    }
+    static class Header {
+        @Field(name = "Version")
+        private String version;
 
-    public void setWorkAddressSameAsHome(boolean workAddressSameAsHome) {
-        this.workAddressSameAsHome = workAddressSameAsHome;
-    }
-
-    public Address getHome() {
-        return home;
-    }
-
-    public void setHome(Address home) {
-        this.home = home;
-    }
-
-    static class Address {
-        String address1, country, state, zip;
-
-        public String getAddress1() {
-            return address1;
+        public String getVersion() {
+            return version;
         }
 
-        public void setAddress1(String address1) {
-            this.address1 = address1;
-        }
-
-        public String getCountry() {
-            return country;
-        }
-
-        public void setCountry(String country) {
-            this.country = country;
-        }
-
-        public String getState() {
-            return state;
-        }
-
-        public void setState(String state) {
-            this.state = state;
-        }
-
-        public String getZip() {
-            return zip;
-        }
-
-        public void setZip(String zip) {
-            this.zip = zip;
+        public void setVersion(String version) {
+            this.version = version;
         }
     }
 }
