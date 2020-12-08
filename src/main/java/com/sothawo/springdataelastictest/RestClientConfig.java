@@ -17,8 +17,6 @@ import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
 import org.springframework.http.HttpHeaders;
 
-import javax.crypto.spec.RC2ParameterSpec;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Supplier;
@@ -69,8 +67,8 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 
 
     @Override
-    public ElasticsearchOperations elasticsearchOperations(ElasticsearchConverter elasticsearchConverter) {
-        return new ElasticsearchRestTemplate(elasticsearchClient(), elasticsearchConverter) {
+    public ElasticsearchOperations elasticsearchOperations(ElasticsearchConverter elasticsearchConverter, RestHighLevelClient client) {
+        return new ElasticsearchRestTemplate(client, elasticsearchConverter) {
             @Override
             public <T> T execute(ClientCallback<T> callback) {
                 try {
