@@ -4,6 +4,7 @@
 package com.sothawo.springdataelastictest.network;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sothawo.springdataelastictest.annotations.BasicDateTime;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -24,16 +25,21 @@ import java.time.LocalDateTime;
 public class Network implements Persistable<String> {
     @Id
     private String name;
+
     @Field(type = FieldType.Ip_Range)
     private String cidr;
+
     @CreatedDate
-    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
+    @BasicDateTime("creationDate")
     private LocalDateTime created;
+
     @CreatedBy
     private String createdBy;
+
     @LastModifiedDate
-    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
+    @BasicDateTime("modifiedDate")
     private LocalDateTime lastModified;
+
     @LastModifiedBy
     private String lastModifiedBy;
 
