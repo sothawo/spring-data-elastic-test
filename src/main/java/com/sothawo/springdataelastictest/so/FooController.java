@@ -3,6 +3,8 @@
  */
 package com.sothawo.springdataelastictest.so;
 
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.IndexOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,9 +21,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class FooController {
 
     private final FooRepository fooRepository;
+    private final ElasticsearchOperations operations;
 
-    public FooController(FooRepository fooRepository) {
+    public FooController(FooRepository fooRepository, ElasticsearchOperations operations) {
         this.fooRepository = fooRepository;
+        this.operations = operations;
+    }
+
+    @GetMapping("/init")
+    public void writeIndex() {
+        IndexOperations esMappingIndex =
+            operations.indexOps(Foo.class);
+        esMappingIndex.delete();
+        esMappingIndex.create();
+        esMappingIndex.putMapping(esMappingIndex.createMapping());
+        esMappingIndex.refresh();
     }
 
     @PostMapping

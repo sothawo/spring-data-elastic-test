@@ -1,17 +1,21 @@
 package com.sothawo.springdataelastictest.so;
 
+import org.elasticsearch.common.geo.GeoPoint;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.GeoPointField;
 
-@Document(indexName = "status")
+@Document(indexName = "geopoint-test")
 public class Foo {
     @Id
     private String id;
 
-    @Field(name="Header")
-    private Header header;
+    @GeoPointField
+    private GeoPoint location;
+    private double latitude;
+    private double longitude;
 
     public String getId() {
         return id;
@@ -21,24 +25,27 @@ public class Foo {
         this.id = id;
     }
 
-    public Header getHeader() {
-        return header;
+    public GeoPoint getLocation() {
+        return location;
     }
 
-    public void setHeader(Header header) {
-        this.header = header;
+    public void setLocation(GeoPoint location) {
+        this.location = location;
     }
 
-    static class Header {
-        @Field(name = "Version")
-        private String version;
+    public double getLatitude() {
+        return latitude;
+    }
 
-        public String getVersion() {
-            return version;
-        }
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
 
-        public void setVersion(String version) {
-            this.version = version;
-        }
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }
