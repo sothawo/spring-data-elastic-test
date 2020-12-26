@@ -9,13 +9,15 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.JoinTypeRelation;
 import org.springframework.data.elasticsearch.annotations.JoinTypeRelations;
+import org.springframework.data.elasticsearch.annotations.Routing;
 import org.springframework.data.elasticsearch.core.join.JoinField;
 import org.springframework.lang.Nullable;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-@Document(indexName = "statements" /*, routing = "$"*/)
+@Document(indexName = "statements")
+@Routing("routing")
 public class Statement {
     @Id
     private String id;

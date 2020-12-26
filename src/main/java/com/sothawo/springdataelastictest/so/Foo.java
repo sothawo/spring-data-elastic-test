@@ -2,14 +2,17 @@ package com.sothawo.springdataelastictest.so;
 
 import org.elasticsearch.common.geo.GeoPoint;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.ReadOnlyProperty;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.GeoPointField;
 
-@Document(indexName = "geopoint-test")
+@Document(indexName = "foo")
 public class Foo {
     @Id
+    @ReadOnlyProperty
     private String id;
 
     @GeoPointField

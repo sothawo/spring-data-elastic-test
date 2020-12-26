@@ -28,16 +28,6 @@ public class FooController {
         this.operations = operations;
     }
 
-    @GetMapping("/init")
-    public void writeIndex() {
-        IndexOperations esMappingIndex =
-            operations.indexOps(Foo.class);
-        esMappingIndex.delete();
-        esMappingIndex.create();
-        esMappingIndex.putMapping(esMappingIndex.createMapping());
-        esMappingIndex.refresh();
-    }
-
     @PostMapping
     public void add(@RequestBody Foo foo) {
         fooRepository.save(foo);

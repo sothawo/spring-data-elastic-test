@@ -9,6 +9,7 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.join.JoinField;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.routing.RoutingResolver;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,10 +47,10 @@ public class StatementController {
         return repository.searchAllBy();
     }
 
-//    @GetMapping("/{id}/{routing}")
-//    Statement get(@PathVariable String id, @PathVariable(required = false) String routing) {
-//        return routing != null ? operations.get(id, routing, Statement.class) : operations.get(id, Statement.class);
-//    }
+    @GetMapping("/{id}/{routing}")
+    Statement get(@PathVariable String id, @PathVariable(required = false) String routing) {
+        return routing != null ? operations.withRouting(RoutingResolver.just(routing)).get(id, Statement.class) : operations.get(id, Statement.class);
+    }
 
     @PostMapping
     Statement insert(@RequestBody Statement statement) {
@@ -61,11 +62,10 @@ public class StatementController {
         repository.delete(statement);
     }
 
-//    @DeleteMapping("/{id}/{routing}")
-//    void deleteById(@PathVariable String id, @PathVariable(required = false) String routing) {
-//        operations.delete(id, routing, Statement.class);
-//        operations.indexOps(Statement.class).refresh();
-//    }
+    @DeleteMapping("/{id}/{routing}")
+    void deleteById(@PathVariable String id, @PathVariable(required = false) String routing) {
+        operations.withRouting(RoutingResolver.just(routing)).delete(id, Statement.class);
+    }
 
     @PostMapping("/init")
     void init() {

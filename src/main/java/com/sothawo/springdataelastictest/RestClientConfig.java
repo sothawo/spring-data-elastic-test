@@ -14,6 +14,7 @@ import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.RefreshPolicy;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
 import org.springframework.http.HttpHeaders;
 
@@ -68,7 +69,7 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 
     @Override
     public ElasticsearchOperations elasticsearchOperations(ElasticsearchConverter elasticsearchConverter, RestHighLevelClient elasticsearchClient) {
-        return new ElasticsearchRestTemplate(elasticsearchClient, elasticsearchConverter) {
+        ElasticsearchRestTemplate template = new ElasticsearchRestTemplate(elasticsearchClient, elasticsearchConverter) {
             @Override
             public <T> T execute(ClientCallback<T> callback) {
                 try {
@@ -80,5 +81,12 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
                 }
             }
         };
+        template.setRefreshPolicy(refreshPolicy());
+        return template;
+    }
+
+    @Override
+    protected RefreshPolicy refreshPolicy() {
+        return RefreshPolicy.IMMEDIATE;
     }
 }
