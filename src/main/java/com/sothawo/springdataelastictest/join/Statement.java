@@ -15,7 +15,7 @@ import org.springframework.lang.Nullable;
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-@Document(indexName = "statements", routing = "route")
+@Document(indexName = "statements"/*, routing = "route"*/)
 public class Statement {
     @Id
     private String id;

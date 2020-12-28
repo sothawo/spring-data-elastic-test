@@ -57,7 +57,7 @@ public class StatementHandler {
         var id = request.pathVariable("id");
         var routing = pathVariables.getOrDefault("routing", null);
 
-        return (routing != null ? operations.get(id, routing, Statement.class) : operations.get(id, Statement.class))
+        return (routing != null ? operations.get(id, Statement.class) : operations.get(id, Statement.class))
             .flatMap(it -> ServerResponse.ok().bodyValue(it))
             .switchIfEmpty(ServerResponse.notFound().build());
     }
@@ -67,7 +67,7 @@ public class StatementHandler {
         var id = request.pathVariable("id");
         var routing = pathVariables.getOrDefault("routing", null);
 
-        return (routing != null ? operations.delete(id, routing, Statement.class) : operations.delete(id, Statement.class))
+        return (routing != null ? operations.delete(id, Statement.class) : operations.delete(id, Statement.class))
             .then(ServerResponse.ok().build())
             .switchIfEmpty(ServerResponse.notFound().build());
     }
