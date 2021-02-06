@@ -67,7 +67,7 @@ public class PersonTemplateController {
         ElasticsearchConverter elasticsearchConverter = operations.getElasticsearchConverter();
         Criteria criteria = new Criteria("lastName").is(name);
         CriteriaQuery query = new CriteriaQuery(criteria);
-        elasticsearchConverter.updateQuery(query, Person.class);
+        query.setExplain(true);
         return operations.search(query, Person.class, index);
     }
 
