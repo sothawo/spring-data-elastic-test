@@ -10,6 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -30,6 +31,9 @@ public class Person implements Persistable<Long> {
     @Id
     @Nullable
     private Long id;
+
+    @Nullable @Version
+    Long version;
 
     @Field(type = FieldType.Text, fielddata = true)
     @Nullable
@@ -69,6 +73,15 @@ public class Person implements Persistable<Long> {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Nullable
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(@Nullable Long version) {
+        this.version = version;
     }
 
     @Nullable

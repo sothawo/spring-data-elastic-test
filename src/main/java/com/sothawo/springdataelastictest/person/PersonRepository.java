@@ -1,6 +1,7 @@
 package com.sothawo.springdataelastictest.person;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.annotations.CountQuery;
 import org.springframework.data.elasticsearch.annotations.Highlight;
 import org.springframework.data.elasticsearch.annotations.HighlightField;
 import org.springframework.data.elasticsearch.annotations.Query;
@@ -21,8 +22,11 @@ public interface PersonRepository extends ElasticsearchRepository<Person, Long>,
     @Highlight(fields = {@HighlightField(name = "firstName"), @HighlightField(name = "lastName")})
     SearchHits<Person> queryByLastNameOrFirstNameOrderByBirthDate(String lastName, String firstName);
 
-    @Query(value = "{\"fuzzy\":{\"last-name\":\"?0\"}}")
-    List<Person> findByLastNameFuzzy(final String lastName);
+    @Query("{\"fuzzy\":{\"lastName\":\"?0\"}}")
+    SearchHits<Person> findByLastNameFuzzy(final String lastName);
+
+    @CountQuery("{\"fuzzy\":{\"lastName\":\"?0\"}}")
+    long countByLastNameFuzzy(final String lastName);
 
     List<Person> findAllByOrderByFirstName();
 

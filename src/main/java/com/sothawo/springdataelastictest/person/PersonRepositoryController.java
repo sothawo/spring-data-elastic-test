@@ -83,6 +83,12 @@ public class PersonRepositoryController {
         return personRepository.save(person);
     }
 
+    @GetMapping("/persons/fuzzy/{name}")
+    public SearchHits<Person> fuzzy(@PathVariable String name) {
+        LOG.info("getting count: " + personRepository.countByLastNameFuzzy(name));
+        return personRepository.findByLastNameFuzzy(name);
+    }
+
     @GetMapping("/persons")
     public List<Person> allPersons() {
         Iterable<Person> all = personRepository.findAll(Pageable.unpaged());
