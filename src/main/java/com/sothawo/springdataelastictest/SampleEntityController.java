@@ -4,18 +4,31 @@
 package com.sothawo.springdataelastictest;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/payload")
+@RequestMapping("/sample-entities")
 public class SampleEntityController {
 
-    private final SampleEntityRepository sampleEntityRepository;
+    private final SampleEntityRepository repository;
 
     public SampleEntityController(SampleEntityRepository sampleEntityRepository) {
-        this.sampleEntityRepository = sampleEntityRepository;
+        this.repository = sampleEntityRepository;
+    }
+
+    @PostMapping
+    public Mono<SampleEntity> add(@RequestBody SampleEntity sampleEntity) {
+        return repository.save(sampleEntity);
+    }
+
+    @GetMapping("/{id}")
+    public Mono<SampleEntity> get(@PathVariable String id) {
+        return repository.findById(id);
     }
 
     @GetMapping("/save")
@@ -23,11 +36,11 @@ public class SampleEntityController {
         final SampleEntity sampleEntity = new SampleEntity();
         sampleEntity.setId("42");
         sampleEntity.setMessage("This is a message");
-        sampleEntityRepository.save(sampleEntity).block();
+        repository.save(sampleEntity).block();
     }
 
     @GetMapping("/load")
     public Mono<SampleEntity> load() {
-        return sampleEntityRepository.findById("42");
+        return repository.findById("42");
     }
 }

@@ -26,7 +26,7 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
     @Bean
     public ReactiveElasticsearchClient reactiveElasticsearchClient() {
         final ClientConfiguration clientConfiguration = ClientConfiguration.builder() //
-            .connectedTo("localhost:9400") //
+            .connectedTo("localhost:9200") //
 //            .usingSsl()
 //             .usingSsl(NotVerifyingSSLContext.getSslContext()) //
             .withProxy("localhost:8080")

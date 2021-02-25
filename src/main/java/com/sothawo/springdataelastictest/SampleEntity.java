@@ -8,7 +8,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-@Document(indexName = "sample-entity")
+@Document(indexName = "sample-entities")
 public class SampleEntity {
     @Id
     private String id;
