@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController
  */
 @RestController
 @RequestMapping("/template")
-class RestElasticsearchTemplateController(elasticsearchOperations: ElasticsearchOperations) : ElasticsearchBaseTemplateController(elasticsearchOperations) {
+class RestElasticsearchTemplateController(private val operations: ElasticsearchOperations){
 
     @PostMapping("/person")
-    override fun save(@RequestBody person: Person): String = super.save(person)
+    fun save(@RequestBody person: Person)= operations.save(person)
 
     @GetMapping("/person/{id}")
-    override fun findById(@PathVariable("id") id: Long): Person? = super.findById(id)
+    fun findById(@PathVariable("id") id: Long) = operations.get(id.toString(), Person::class.java)
 }

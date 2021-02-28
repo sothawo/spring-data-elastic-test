@@ -19,11 +19,11 @@ import java.time.Duration
 @Configuration
 class RestClientConfig : AbstractElasticsearchConfiguration() {
 
-    // needed for actuator
-    @Bean
-    fun restClient(client: RestHighLevelClient): RestClient {
-        return client.lowLevelClient
-    }
+//    // needed for actuator
+//    @Bean
+//    fun restClient(client: RestHighLevelClient): RestClient {
+//        return client.lowLevelClient
+//    }
 
     @Primary
     @Bean // (name = { "restHighLevelClient" })
@@ -31,6 +31,7 @@ class RestClientConfig : AbstractElasticsearchConfiguration() {
 
         val clientConfiguration = ClientConfiguration.builder() //
             .connectedTo("localhost:9200") //
+            .withProxy("localhost:8080")
             // .usingSsl(NotVerifyingSSLContext.getSslContext()) //
             .withBasicAuth("elastic", "stHfzUWETvvX9aAacSTW") //
             .withSocketTimeout(Duration.ofSeconds(60)).build()
