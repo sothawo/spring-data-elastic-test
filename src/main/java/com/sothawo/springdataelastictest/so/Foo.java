@@ -1,24 +1,19 @@
 package com.sothawo.springdataelastictest.so;
 
-import org.elasticsearch.common.geo.GeoPoint;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.ReadOnlyProperty;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.GeoPointField;
+import org.springframework.data.elasticsearch.annotations.InnerField;
+import org.springframework.data.elasticsearch.annotations.MultiField;
 
 @Document(indexName = "foo")
 public class Foo {
     @Id
-    @ReadOnlyProperty
     private String id;
 
-    @GeoPointField
-    private GeoPoint location;
-    private double latitude;
-    private double longitude;
+    @Field(type = FieldType.Nested)
+    private AE ae;
 
     public String getId() {
         return id;
@@ -28,27 +23,39 @@ public class Foo {
         this.id = id;
     }
 
-    public GeoPoint getLocation() {
-        return location;
+    public AE getAe() {
+        return ae;
     }
 
-    public void setLocation(GeoPoint location) {
-        this.location = location;
+    public void setAe(AE ae) {
+        this.ae = ae;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
+    static class AE {
+        @Field(type = FieldType.Text)
+        private String atb;
+        @MultiField(
+            mainField = @Field(type = FieldType.Text),
+            otherFields = {
+                @InnerField(suffix = "keyword", type = FieldType.Keyword)
+            }
+        )
+        private String su;
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
+        public String getAtb() {
+            return atb;
+        }
 
-    public double getLongitude() {
-        return longitude;
-    }
+        public void setAtb(String atb) {
+            this.atb = atb;
+        }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+        public String getSu() {
+            return su;
+        }
+
+        public void setSu(String su) {
+            this.su = su;
+        }
     }
 }
