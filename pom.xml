@@ -15,11 +15,12 @@
     <description>Demo project for Spring Boot</description>
 
     <properties>
-        <java.version>15</java.version>
+        <java.version>11</java.version>
 
         <elasticsearch.version>7.11.1</elasticsearch.version>
         <springdata.commons>2.5.0-SNAPSHOT</springdata.commons>
         <spring-data-elasticsearch>4.2.0-SNAPSHOT</spring-data-elasticsearch>
+        <spring-native>0.9.0</spring-native>
     </properties>
 
     <repositories>
@@ -33,7 +34,20 @@
             <name>Spring Snapshot Repository</name>
             <url>https://repo.spring.io/milestone</url>
         </repository>
+        <repository>
+            <id>spring-release</id>
+            <name>Spring release</name>
+            <url>https://repo.spring.io/release</url>
+        </repository>
     </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-release</id>
+            <name>Spring release</name>
+            <url>https://repo.spring.io/release</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <dependencies>
         <dependency>
@@ -74,6 +88,11 @@
             <artifactId>jfairy</artifactId>
             <version>0.6.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.experimental</groupId>
+            <artifactId>spring-native</artifactId>
+            <version>${spring-native}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -96,6 +115,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.3.3.RELEASE</version>
                 <configuration>
+                    <classifier>exec</classifier>
                     <layers>
                         <enabled>true</enabled>
                     </layers>
@@ -103,5 +123,51 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>native-image</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.experimental</groupId>
+                        <artifactId>spring-aot-maven-plugin</artifactId>
+                        <version>0.9.0</version>
+                        <executions>
+                            <execution>
+                                <id>test-generate</id>
+                                <goals>
+                                    <goal>test-generate</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>generate</id>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.graalvm.nativeimage</groupId>
+                        <artifactId>native-image-maven-plugin</artifactId>
+                        <version>21.0.0</version>
+                        <configuration>
+                            <!-- The native image build needs to know the entry point to your application -->
+                            <mainClass>com.sothawo.springdataelastictest.SpringdataElasticTestApplication</mainClass>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>native-image</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
