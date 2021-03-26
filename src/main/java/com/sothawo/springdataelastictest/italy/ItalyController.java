@@ -15,9 +15,8 @@
  */
 package com.sothawo.springdataelastictest.italy;
 
-import com.devskiller.jfairy.Fairy;
-import com.devskiller.jfairy.producer.person.Address;
-import com.devskiller.jfairy.producer.person.Person;
+import com.github.javafaker.Address;
+import com.github.javafaker.Faker;
 import com.sothawo.springdataelastictest.italy.Italy.City;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.InnerHitBuilder;
@@ -57,25 +56,24 @@ public class ItalyController {
     public void load() {
         repository.deleteAll();
 
-        Fairy fairy = Fairy.create(Locale.forLanguageTag("it-IT"));
+        Faker faker = new Faker(Locale.ITALY);
 
         Map<String, City> cities = new LinkedHashMap<>();
 
         for (int i = 0; i < 100; i++) {
-            Person person = fairy.person();
 
-            Address address = person.getAddress();
-            String cityName = address.getCity();
+            Address address = faker.address();
+            String cityName = address.cityName();
 
             City city = cities.computeIfAbsent(cityName, City::new);
 
-            int number = new Integer(address.getStreetNumber());
+            int number = Integer.parseInt(address.streetAddressNumber());
             number %= 50;
             number++;
-            Italy.House houseKey = new Italy.House(address.getStreet(), String.valueOf(number));
+            Italy.House houseKey = new Italy.House(address.streetName(), String.valueOf(number));
 
             Italy.House house = city.getHousesMap().computeIfAbsent(houseKey, Function.identity());
-            house.getInhabitants().add(new Italy.Inhabitant(person.getFirstName(), person.getLastName()));
+            house.getInhabitants().add(new Italy.Inhabitant(faker.name().firstName(), faker.name().lastName()));
         }
 
         cities.values().forEach(City::close);

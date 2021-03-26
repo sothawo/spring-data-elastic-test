@@ -1,6 +1,7 @@
 package com.sothawo.springdataelastictest.person;
 
-import com.devskiller.jfairy.Fairy;
+import com.github.javafaker.Faker;
+import com.github.javafaker.Zelda;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -20,9 +21,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -40,7 +44,7 @@ public class PersonRepositoryController {
 
     private final PersonRepository personRepository;
 
-    Fairy fairy = Fairy.create(Locale.ENGLISH);
+    Faker faker = new Faker(Locale.GERMANY);
 
     public PersonRepositoryController(PersonRepository personRepository) {
         this.personRepository = personRepository;
@@ -70,11 +74,13 @@ public class PersonRepositoryController {
 
     private Person createPerson(long id) {
         Person person = new Person();
-        com.devskiller.jfairy.producer.person.Person fairyPerson = fairy.person();
         person.setId(id);
-        person.setFirstName(fairyPerson.getFirstName());
-        person.setLastName(fairyPerson.getLastName());
-        person.setBirthDate(fairyPerson.getDateOfBirth());
+        person.setFirstName(faker.name().firstName());
+        person.setLastName(faker.name().lastName());
+        var birthday = faker.date().birthday();
+        var instant = Instant.ofEpochMilli(birthday.getTime());
+        var localDate = LocalDate.ofInstant(instant, ZoneId.of("UTC"));
+        person.setBirthDate(localDate);
         return person;
     }
 
