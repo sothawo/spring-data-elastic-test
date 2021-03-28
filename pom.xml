@@ -17,7 +17,7 @@
     <description>Test project for Spring Data Elasticsearch</description>
 
     <properties>
-        <java.version>15</java.version>
+        <java.version>11</java.version>
 
         <elasticsearch.version>7.11.1</elasticsearch.version>
         <netty>4.1.52.Final</netty>
