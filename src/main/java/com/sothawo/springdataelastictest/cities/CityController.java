@@ -17,13 +17,10 @@ package com.sothawo.springdataelastictest.cities;
 
 import com.github.javafaker.Address;
 import com.github.javafaker.Faker;
-import org.apache.lucene.search.join.ScoreMode;
-import org.elasticsearch.index.query.InnerHitBuilder;
-import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,8 +30,6 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -86,15 +81,6 @@ public class CityController {
 
     @GetMapping("/firstName/{firstName}")
     public SearchHits<City> searchByFirstName(@PathVariable String firstName) {
-        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
-
-        NestedQueryBuilder nestedQueryBuilder = nestedQuery("houses.inhabitants",
-            matchQuery("houses.inhabitants.firstName", firstName),
-            ScoreMode.Avg);
-        nestedQueryBuilder.innerHit(new InnerHitBuilder());
-        queryBuilder.withQuery(nestedQueryBuilder);
-
-        NativeSearchQuery query = queryBuilder.build();
-        return operations.search(query, City.class);
+        return operations.search(new CriteriaQuery(new Criteria("houses.inhabitants.firstName").is(firstName)), City.class);
     }
 }
