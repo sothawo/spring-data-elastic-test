@@ -10,6 +10,8 @@ import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClients;
 import org.springframework.data.elasticsearch.config.AbstractReactiveElasticsearchConfiguration;
+import org.springframework.data.mapping.model.CamelCaseSplittingFieldNamingStrategy;
+import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 
@@ -47,5 +49,16 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
             .build();
         return ReactiveRestClients.create(clientConfiguration);
 
+    }
+
+    @Override
+    protected FieldNamingStrategy fieldNamingStrategy() {
+        return new KebabCaseFieldNamingStrategy();
+    }
+
+    static class KebabCaseFieldNamingStrategy extends CamelCaseSplittingFieldNamingStrategy {
+        public KebabCaseFieldNamingStrategy() {
+            super("-");
+        }
     }
 }
