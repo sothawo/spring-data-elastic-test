@@ -83,4 +83,11 @@ public class CityController {
     public SearchHits<City> searchByFirstName(@PathVariable String firstName) {
         return operations.search(new CriteriaQuery(new Criteria("houses.inhabitants.firstName").is(firstName)), City.class);
     }
+
+    @GetMapping("/street-keyword/{keyword}")
+    public SearchHits<City> searchByStreetKeyword(@PathVariable String keyword) {
+        return operations.search(new CriteriaQuery(new Criteria("houses.street.keyword").is(keyword)), City.class);
+    }
+
+
 }
