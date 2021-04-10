@@ -3,9 +3,9 @@
  */
 package com.sothawo.springdataelastictest;
 
+import org.springframework.boot.actuate.health.ReactiveHealthContributor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClients;
@@ -24,16 +24,15 @@ import java.time.format.DateTimeFormatter;
 @Configuration
 public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfiguration {
 
-    @Override
     @Bean
-    public ReactiveElasticsearchClient reactiveElasticsearchClient() {
-        final ClientConfiguration clientConfiguration = ClientConfiguration.builder() //
+    public ClientConfiguration clientConfiguration() {
+        return ClientConfiguration.builder() //
             .connectedTo("localhost:9200") //
 //            .usingSsl()
 //             .usingSsl(NotVerifyingSSLContext.getSslContext()) //
             .withProxy("localhost:8080")
 //            .withPathPrefix("ela")
-            // .withBasicAuth("elastic", "stHfzUWETvvX9aAacSTW") //
+            .withBasicAuth("pj", "pj0706") //
             .withWebClientConfigurer(webClient -> {
                 ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
                     .codecs(configurer -> configurer.defaultCodecs()
@@ -47,8 +46,19 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
                 return headers;
             })
             .build();
+    }
+
+    @Override
+    @Bean
+    public ReactiveElasticsearchClient reactiveElasticsearchClient() {
+        final ClientConfiguration clientConfiguration = clientConfiguration();
         return ReactiveRestClients.create(clientConfiguration);
 
+    }
+
+    @Bean
+    public ReactiveHealthContributor elasticsearchHealthContributor(ReactiveElasticsearchClient reactiveElasticsearchClient, ClientConfiguration clientConfiguration) {
+        return new CustomElasticsearchReactiveHealthIndicator(reactiveElasticsearchClient, clientConfiguration);
     }
 
     @Override
