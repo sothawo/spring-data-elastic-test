@@ -58,7 +58,7 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
 
     @Bean
     public ReactiveHealthContributor elasticsearchHealthContributor(ReactiveElasticsearchClient reactiveElasticsearchClient, ClientConfiguration clientConfiguration) {
-        return new CustomElasticsearchReactiveHealthIndicator(reactiveElasticsearchClient, clientConfiguration);
+        return new CustomElasticsearchReactiveHealthIndicator(reactiveElasticsearchClient);
     }
 
     @Override

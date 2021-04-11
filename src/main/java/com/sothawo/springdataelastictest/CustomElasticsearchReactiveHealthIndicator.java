@@ -16,18 +16,19 @@
 
 package com.sothawo.springdataelastictest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
+import org.elasticsearch.cluster.health.ClusterHealthStatus;
 import org.springframework.boot.actuate.health.AbstractReactiveHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.actuate.health.Status;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient;
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -37,52 +38,32 @@ import java.util.Map;
  */
 public class CustomElasticsearchReactiveHealthIndicator extends AbstractReactiveHealthIndicator {
 
-    private static final ParameterizedTypeReference<Map<String, Object>> STRING_OBJECT_MAP = new ParameterizedTypeReference<Map<String, Object>>() {
-    };
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private static final String RED_STATUS = "red";
+    private final ReactiveElasticsearchClient reactiveElasticsearchClient;
 
-    private final ReactiveElasticsearchClient client;
-    private final ClientConfiguration clientConfiguration;
-
-    public CustomElasticsearchReactiveHealthIndicator(ReactiveElasticsearchClient reactiveElasticsearchClient, ClientConfiguration clientConfiguration) {
+    public CustomElasticsearchReactiveHealthIndicator(ReactiveElasticsearchClient reactiveElasticsearchClient) {
         super("Elasticsearch health check failed");
-        this.client = reactiveElasticsearchClient;
-        this.clientConfiguration = clientConfiguration;
+        this.reactiveElasticsearchClient = reactiveElasticsearchClient;
     }
 
     @Override
     protected Mono<Health> doHealthCheck(Health.Builder builder) {
-        return this.client.execute((webClient) -> getHealth(builder, webClient));
+        return reactiveElasticsearchClient.cluster().health(new ClusterHealthRequest())
+            .map(response -> builder
+                .status(response.getStatus() == ClusterHealthStatus.RED ? Status.OUT_OF_SERVICE : Status.UP)
+                .withDetails(getDetails(response))
+                .build())
+            .onErrorResume(throwable -> Mono.just(builder.down(throwable).build()));
     }
 
-    private Mono<Health> getHealth(Health.Builder builder, WebClient webClient) {
-        return webClient.get() //
-            .uri("/_cluster/health/")//
-            .headers(headers -> {
-                HttpHeaders suppliedHeaders = clientConfiguration.getHeadersSupplier().get();
-                if (suppliedHeaders != null && suppliedHeaders != HttpHeaders.EMPTY) {
-                    headers.addAll(suppliedHeaders);
-                }
-            })
-            .exchangeToMono((response) -> doHealthCheck(builder, response));
-    }
-
-    private Mono<Health> doHealthCheck(Health.Builder builder, ClientResponse response) {
-        if (response.statusCode().is2xxSuccessful()) {
-            return response.bodyToMono(STRING_OBJECT_MAP).map((body) -> getHealth(builder, body));
+    private Map<String, ?> getDetails(ClusterHealthResponse clusterHealthResponse) {
+        Map<String, ?> details;
+        try {
+            details = OBJECT_MAPPER.readerFor(Map.class).readValue(clusterHealthResponse.toString());
+        } catch (JsonProcessingException e) {
+            details = Collections.singletonMap("Error parsing response body: ", e.getMessage());
         }
-        builder.down();
-        builder.withDetail("statusCode", response.rawStatusCode());
-        builder.withDetail("reasonPhrase", response.statusCode().getReasonPhrase());
-        return response.releaseBody().thenReturn(builder.build());
+        return details;
     }
-
-    private Health getHealth(Health.Builder builder, Map<String, Object> body) {
-        String status = (String) body.get("status");
-        builder.status(RED_STATUS.equals(status) ? Status.OUT_OF_SERVICE : Status.UP);
-        builder.withDetails(body);
-        return builder.build();
-    }
-
 }
