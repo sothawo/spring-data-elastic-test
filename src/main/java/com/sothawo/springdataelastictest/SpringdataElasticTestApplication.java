@@ -11,12 +11,26 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.User;
+import reactor.blockhound.BlockHound;
 
 @SpringBootApplication(exclude = ElasticsearchDataAutoConfiguration.class)
 @EnableReactiveElasticsearchRepositories
 @EnableReactiveElasticsearchAuditing
 public class SpringdataElasticTestApplication {
+
+    static {
+        BlockHound.install(
+            builder -> builder.allowBlockingCallsInside("org.springframework.data.elasticsearch.support.VersionInfo", "logVersions"),
+            builder -> builder.allowBlockingCallsInside("org.elasticsearch.Build", "<clinit>"),
+            builder -> builder.allowBlockingCallsInside("org.elasticsearch.common.xcontent.XContentBuilder", "<clinit>"),
+            builder -> builder.blockingMethodCallback(it -> {
+                new Error(it.toString()).printStackTrace();
+            })
+        );
+    }
+
     public static void main(String[] args) {
+
         SpringApplication.run(SpringdataElasticTestApplication.class, args);
     }
 
