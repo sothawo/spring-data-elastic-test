@@ -4,7 +4,6 @@
 package com.sothawo.springdataelastictest.so;
 
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.IndexOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,10 +21,12 @@ public class FooController {
 
     private final FooRepository fooRepository;
     private final ElasticsearchOperations operations;
+    private final TableRepository tableRepository;
 
-    public FooController(FooRepository fooRepository, ElasticsearchOperations operations) {
+    public FooController(FooRepository fooRepository, ElasticsearchOperations operations, TableRepository tableRepository) {
         this.fooRepository = fooRepository;
         this.operations = operations;
+        this.tableRepository = tableRepository;
     }
 
     @PostMapping
@@ -41,5 +42,17 @@ public class FooController {
     @GetMapping
     public SearchHits<Foo> all() {
         return fooRepository.searchBy();
+    }
+
+    @GetMapping("/table")
+    public Iterable<Table> table() {
+        var table = new Table();
+        table.setId("42");
+        Student student = new Student();
+        student.setName("Study");
+        table.setStudent(student);
+
+        tableRepository.save(table);
+        return tableRepository.findAll();
     }
 }
