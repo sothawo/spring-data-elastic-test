@@ -4,7 +4,6 @@
 package com.sothawo.springdataelastictest.person;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sothawo.springdataelastictest.movies.Movie;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -32,7 +31,8 @@ public class Person implements Persistable<Long> {
     @Nullable
     private Long id;
 
-    @Nullable @Version
+    @Nullable
+    @Version
     Long version;
 
     @Field(type = FieldType.Text, fielddata = true)
@@ -49,7 +49,7 @@ public class Person implements Persistable<Long> {
 
     @Field(type = FieldType.Nested)
     @Nullable
-    private List<Movie> movies;
+    private List<Car> cars;
 
     @CreatedDate
     @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
@@ -148,12 +148,12 @@ public class Person implements Persistable<Long> {
     }
 
     @Nullable
-    public List<Movie> getMovies() {
-        return movies;
+    public List<Car> getCars() {
+        return cars;
     }
 
-    public void setMovies(@Nullable List<Movie> movies) {
-        this.movies = movies;
+    public void setCars(@Nullable List<Car> cars) {
+        this.cars = cars;
     }
 
     @Override
@@ -169,7 +169,7 @@ public class Person implements Persistable<Long> {
             ", lastName='" + lastName + '\'' +
             ", firstName='" + firstName + '\'' +
             ", birthDate=" + birthDate +
-            ", movies=" + movies +
+            ", cars=" + cars +
             ", created=" + created +
             ", createdBy='" + createdBy + '\'' +
             ", lastModified=" + lastModified +
