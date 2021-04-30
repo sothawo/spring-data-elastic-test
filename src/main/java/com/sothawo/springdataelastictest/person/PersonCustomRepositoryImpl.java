@@ -16,15 +16,14 @@ import org.springframework.stereotype.Component;
 import static org.elasticsearch.search.aggregations.AggregationBuilders.*;
 
 /**
- * the name must bethe one from the base repository+Impl because of a bug in spring native
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Component
-public class PersonRepositoryImpl implements PersonCustomRepository {
+public class PersonCustomRepositoryImpl implements PersonCustomRepository {
 
     private final ElasticsearchOperations operations;
 
-    public PersonRepositoryImpl(ElasticsearchOperations operations) {
+    public PersonCustomRepositoryImpl(ElasticsearchOperations operations) {
         this.operations = operations;
     }
 

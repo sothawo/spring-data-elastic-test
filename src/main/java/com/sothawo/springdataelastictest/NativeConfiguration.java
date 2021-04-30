@@ -19,7 +19,6 @@ import org.springframework.nativex.hint.TypeHint;
     types = {
         @TypeHint(types = HighlightField.class, access = AccessBits.DECLARED_METHODS),
         @TypeHint(types = {AuditingEntityCallback.class}),
-//        @TypeHint(typeNames = {"com.sothawo.springdataelastictest.person.PersonRepositoryImpl"}, access = AccessBits.ALL),
         @TypeHint(types = {ObjectFactoryCreatingFactoryBean.class})
     }
 )
