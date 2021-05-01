@@ -17,6 +17,9 @@
     <properties>
         <java.version>16</java.version>
 
+        <!-- need Jackson 2.12 for java records -->
+        <jackson-bom.version>2.12.3</jackson-bom.version>
+
         <elasticsearch.version>7.12.1</elasticsearch.version>
         <springdata.commons>2.6.0-SNAPSHOT</springdata.commons>
         <spring-data-elasticsearch>4.3.0-SNAPSHOT</spring-data-elasticsearch>
