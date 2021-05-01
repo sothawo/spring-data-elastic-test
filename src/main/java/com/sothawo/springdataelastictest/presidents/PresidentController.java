@@ -3,6 +3,8 @@
  */
 package com.sothawo.springdataelastictest.presidents;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.Criteria;
@@ -19,6 +21,8 @@ import java.util.Arrays;
 @RestController
 @RequestMapping("presidents")
 public class PresidentController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PresidentController.class);
 
     private final PresidentRepository repository;
     private final ElasticsearchOperations operations;
@@ -56,6 +60,10 @@ public class PresidentController {
         if (requestCache != null) {
             query.setRequestCache(requestCache);
         }
+
+        var count = operations.count(query, President.class);
+        LOGGER.info("#presidents: {}", count);
+
         return operations.search(query, President.class);
     }
 }
