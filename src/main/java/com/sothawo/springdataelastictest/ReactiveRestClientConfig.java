@@ -56,10 +56,11 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
 
     }
 
-    @Bean
-    public ReactiveHealthContributor elasticsearchHealthContributor(ReactiveElasticsearchClient reactiveElasticsearchClient, ClientConfiguration clientConfiguration) {
-        return new CustomElasticsearchReactiveHealthIndicator(reactiveElasticsearchClient);
-    }
+    //use this in case of pre 4.2.1 SD ES and dynamic headers
+//    @Bean
+//    public ReactiveHealthContributor elasticsearchHealthContributor(ReactiveElasticsearchClient reactiveElasticsearchClient, ClientConfiguration clientConfiguration) {
+//        return new CustomElasticsearchReactiveHealthIndicator(reactiveElasticsearchClient);
+//    }
 
     @Override
     protected FieldNamingStrategy fieldNamingStrategy() {
