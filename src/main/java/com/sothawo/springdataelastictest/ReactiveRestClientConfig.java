@@ -10,6 +10,7 @@ import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClients;
 import org.springframework.data.elasticsearch.config.AbstractReactiveElasticsearchConfiguration;
+import org.springframework.data.elasticsearch.core.RefreshPolicy;
 import org.springframework.data.mapping.model.CamelCaseSplittingFieldNamingStrategy;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.http.HttpHeaders;
@@ -54,6 +55,11 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
         final ClientConfiguration clientConfiguration = clientConfiguration();
         return ReactiveRestClients.create(clientConfiguration);
 
+    }
+
+    @Override
+    protected RefreshPolicy refreshPolicy() {
+        return RefreshPolicy.IMMEDIATE;
     }
 
     //use this in case of pre 4.2.1 SD ES and dynamic headers
