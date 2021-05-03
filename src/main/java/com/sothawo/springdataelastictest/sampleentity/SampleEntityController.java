@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -35,63 +36,5 @@ public class SampleEntityController {
     @Nullable
     public SampleEntity getById(@PathVariable("id") String id) {
         return sampleEntityRepository.findById(id).orElse(null);
-    }
-
-    @GetMapping("/test")
-    public void test() {
-    }
-
-    @GetMapping("/putWithObjects")
-    public void putWithObjects() {
-        SampleEntity sampleEntity = new SampleEntity();
-        sampleEntity.setId("42");
-        Map<String, Long> map = new LinkedHashMap<String, Long>();
-        map.put("one", 1l);
-        map.put("two", 2l);
-        sampleEntity.setObjects(Arrays.asList(new Foo("foo"), new Bar("bar"), map));
-        sampleEntityRepository.save(sampleEntity);
-    }
-
-    @GetMapping("/getWithObjects")
-    public SampleEntity getWithObjects() {
-        return sampleEntityRepository.findById("42").orElse(null);
-    }
-
-    static class Foo {
-        private String foo;
-
-        public Foo() {
-        }
-
-        public Foo(String foo) {
-            this.foo = foo;
-        }
-
-        public String getFoo() {
-            return foo;
-        }
-
-        public void setFoo(String foo) {
-            this.foo = foo;
-        }
-    }
-
-    static class Bar {
-        private String bar;
-
-        public Bar() {
-        }
-
-        public Bar(String bar) {
-            this.bar = bar;
-        }
-
-        public String getBar() {
-            return bar;
-        }
-
-        public void setBar(String bar) {
-            this.bar = bar;
-        }
     }
 }

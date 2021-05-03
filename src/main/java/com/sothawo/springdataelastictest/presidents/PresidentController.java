@@ -3,6 +3,7 @@
  */
 package com.sothawo.springdataelastictest.presidents;
 
+import com.sothawo.springdataelastictest.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -33,8 +34,9 @@ public class PresidentController {
     }
 
     @GetMapping("/load")
-    public void load() {
-        repository.saveAll(Arrays.asList(
+    public Iterable<President> load() {
+        repository.deleteAll();
+        return repository.saveAll(Arrays.asList(
             President.of("Dwight D Eisenhower", 1953, 1961),
             President.of("Lyndon B Johnson", 1963, 1969),
             President.of("Richard Nixon", 1969, 1974),
@@ -65,5 +67,16 @@ public class PresidentController {
         LOGGER.info("#presidents: {}", count);
 
         return operations.search(query, President.class);
+    }
+
+    @GetMapping("/{id}")
+    @Nullable
+    public President byId(@PathVariable String id) {
+
+        var president = operations.get(id, President.class);
+        if (president == null) {
+            throw new ResourceNotFoundException();
+        }
+        return president;
     }
 }

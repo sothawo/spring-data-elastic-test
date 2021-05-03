@@ -3,59 +3,76 @@
  */
 package com.sothawo.springdataelastictest.sampleentity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.domain.Persistable;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.core.query.SeqNoPrimaryTerm;
 import org.springframework.lang.Nullable;
 
+import java.time.Instant;
 import java.util.List;
 
 @Document(indexName = "sample-entities")
-public class SampleEntity {
+public record SampleEntity(
     @Id
     @Nullable
-    private String id;
+    String id,
 
     @Field(type = FieldType.Text)
-    private String message;
+    @Nullable String message,
+
+    @CreatedDate
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
+    @Nullable
+    Instant created,
+
+    @CreatedBy
+    @Nullable
+    String createdBy,
+
+    @LastModifiedDate
+    @Field(type = FieldType.Date, format = DateFormat.basic_date_time)
+    @Nullable
+    Instant lastModified,
+
+    @LastModifiedBy
+    @Nullable
+    String lastModifiedBy,
 
     @Field(type = FieldType.Nested)
-    private List<Object> objects;
+    List<Object> objects,
 
-    private SeqNoPrimaryTerm seqNoPrimaryTerm;
+    @Nullable SeqNoPrimaryTerm seqNoPrimaryTerm
+) implements Persistable<String> {
+    @PersistenceConstructor
+    public SampleEntity {
+    }
 
-    @Nullable
+    public SampleEntity(@Nullable String id, List<Object> objects) {
+        this(id, null, null, null, null, null, objects, null);
+    }
+
+    @Override
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    @JsonIgnore
+    @Override
+    public boolean isNew() {
+        return id == null || (createdBy == null && created == null);
     }
 
-    public SeqNoPrimaryTerm getSeqNoPrimaryTerm() {
-        return seqNoPrimaryTerm;
-    }
-
-    public void setSeqNoPrimaryTerm(SeqNoPrimaryTerm seqNoPrimaryTerm) {
-        this.seqNoPrimaryTerm = seqNoPrimaryTerm;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public List<Object> getObjects() {
-        return objects;
-    }
-
-    public void setObjects(List<Object> objects) {
-        this.objects = objects;
+    public SampleEntity withId(String id) {
+        return new SampleEntity(id, this.message, this.created, this.createdBy, this.lastModified, this.lastModifiedBy, this.objects, this.seqNoPrimaryTerm);
     }
 }

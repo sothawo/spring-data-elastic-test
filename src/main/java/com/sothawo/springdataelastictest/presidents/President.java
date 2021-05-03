@@ -26,13 +26,14 @@ public record President(
     Term term) {
 
     @PersistenceConstructor
-    public President{}
+    public President {
+    }
 
     public President(String name, Term term) {
         this(UUID.randomUUID().toString(), name, term);
     }
 
     static President of(String name, Integer from, Integer to) {
-        return new President(UUID.randomUUID().toString(), name, new Term(from, to));
+        return new President(name, new Term(from, to));
     }
 }

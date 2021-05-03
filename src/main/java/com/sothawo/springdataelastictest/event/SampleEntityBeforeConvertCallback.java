@@ -19,7 +19,7 @@ public class SampleEntityBeforeConvertCallback implements BeforeConvertCallback<
     public SampleEntity onBeforeConvert(SampleEntity sampleEntity, IndexCoordinates indexCoordinates) {
 
         if (sampleEntity.getId() == null) {
-            sampleEntity.setId(UUIDs.randomBase64UUID());
+            return sampleEntity.withId(UUIDs.randomBase64UUID());
         }
 
         return sampleEntity;
