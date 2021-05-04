@@ -1,0 +1,10 @@
+package com.sothawo.springdataelastictest
+
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.ResponseStatus
+
+/**
+ * @author P.J. Meisch (pj.meisch@sothawo.com)
+ */
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class ResourceNotFoundException : RuntimeException()

@@ -33,7 +33,7 @@ class RestClientConfig : AbstractElasticsearchConfiguration() {
             .connectedTo("localhost:9200") //
             .withProxy("localhost:8080")
             // .usingSsl(NotVerifyingSSLContext.getSslContext()) //
-            .withBasicAuth("elastic", "stHfzUWETvvX9aAacSTW") //
+//            .withBasicAuth("elastic", "stHfzUWETvvX9aAacSTW") //
             .withSocketTimeout(Duration.ofSeconds(60)).build()
 
         return RestClients.create(clientConfiguration).rest()

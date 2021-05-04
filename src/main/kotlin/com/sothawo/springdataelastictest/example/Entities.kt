@@ -19,14 +19,14 @@ data class Example(
     val name: String,
     @Field(type = FieldType.Nested)
     val inner: List<ExampleInner>,
-    @Field(type = FieldType.Date, format = DateFormat.date)
+    @Field(type = FieldType.Date, format = [DateFormat.date])
     val date: LocalDate
 )
 
 data class ExampleInner(
     val id: UUID,
     val name: String,
-    @Field(type = FieldType.Date, format = DateFormat.date)
+    @Field(type = FieldType.Date, format = [DateFormat.date])
     val date: LocalDate
 )
 
