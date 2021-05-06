@@ -11,6 +11,9 @@ import org.springframework.context.annotation.Primary
 import org.springframework.data.elasticsearch.client.ClientConfiguration
 import org.springframework.data.elasticsearch.client.RestClients
 import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration
+import org.springframework.data.elasticsearch.core.RefreshPolicy
+import org.springframework.data.elasticsearch.core.mapping.KebabCaseFieldNamingStrategy
+import org.springframework.data.mapping.model.FieldNamingStrategy
 import java.time.Duration
 
 /**
@@ -36,6 +39,11 @@ class RestClientConfig : AbstractElasticsearchConfiguration() {
 //            .withBasicAuth("elastic", "stHfzUWETvvX9aAacSTW") //
             .withSocketTimeout(Duration.ofSeconds(60)).build()
 
+
         return RestClients.create(clientConfiguration).rest()
     }
+
+    override fun refreshPolicy(): RefreshPolicy = RefreshPolicy.IMMEDIATE
+
+    override fun fieldNamingStrategy(): FieldNamingStrategy = KebabCaseFieldNamingStrategy()
 }
