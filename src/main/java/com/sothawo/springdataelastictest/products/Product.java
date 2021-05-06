@@ -11,7 +11,8 @@ import org.springframework.data.elasticsearch.annotations.ScriptedField;
  */
 @Document(indexName = "products")
 public record Product(
-    @Id String id,
+    @Id
+    String id,
     @Field(type = FieldType.Text)
     String name,
     @Field(type = FieldType.Double)

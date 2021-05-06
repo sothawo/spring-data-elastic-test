@@ -16,6 +16,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.RefreshPolicy;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
+import org.springframework.data.elasticsearch.core.mapping.KebabCaseFieldNamingStrategy;
 import org.springframework.data.mapping.model.CamelCaseSplittingFieldNamingStrategy;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.http.HttpHeaders;
@@ -96,11 +97,4 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
     protected FieldNamingStrategy fieldNamingStrategy() {
         return new KebabCaseFieldNamingStrategy();
     }
-
-    static class KebabCaseFieldNamingStrategy extends CamelCaseSplittingFieldNamingStrategy {
-        public KebabCaseFieldNamingStrategy() {
-            super("-");
-        }
-    }
-
 }
