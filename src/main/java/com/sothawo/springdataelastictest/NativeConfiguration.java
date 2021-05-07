@@ -29,7 +29,10 @@ import org.springframework.nativex.hint.TypeHint;
         },
         resources = {
                 // for the Faker data
-                @ResourceHint( patterns = {".*.yml", "en/.*.yml"})
+                @ResourceHint( patterns = {".*.yml", "en/.*.yml"}),
+
+                @ResourceHint( patterns = {"org.springframework.security.messages"}, isBundle = true)
+
         }
 )
 @Configuration
