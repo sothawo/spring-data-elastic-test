@@ -74,7 +74,7 @@ public class PersonRepositoryController {
 
     private Person createPerson(long id) {
         Person person = new Person();
-        person.setId(id);
+        person.setInternalId(id);
         person.setFirstName(faker.name().firstName());
         person.setLastName(faker.name().lastName());
         var birthday = faker.date().birthday();

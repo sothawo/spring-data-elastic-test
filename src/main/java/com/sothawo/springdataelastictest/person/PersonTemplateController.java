@@ -104,7 +104,7 @@ public class PersonTemplateController {
     @GetMapping("/test")
     public void test() {
         var person = new Person();
-        person.setId(42L);
+        person.setInternalId(42L);
         person.setFirstName("John");
         person.setLastName("Doe");
         var electricCar = new Car.ElectricCar();

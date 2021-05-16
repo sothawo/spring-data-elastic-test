@@ -4,22 +4,27 @@
 package com.sothawo.springdataelastictest.person;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.javafaker.Faker;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.ScriptedField;
 import org.springframework.lang.Nullable;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -27,9 +32,12 @@ import java.util.List;
 @Document(indexName = "person")
 public class Person implements Persistable<Long> {
 
+    private static final Faker FAKER = new Faker(Locale.GERMANY);
+
     @Id
     @Nullable
-    private Long id;
+    @Field(type = FieldType.Long, name="id")
+    private Long internalId;
 
     @Nullable
     @Version
@@ -46,6 +54,11 @@ public class Person implements Persistable<Long> {
     @Field(type = FieldType.Date, format = DateFormat.basic_date)
     @Nullable
     private LocalDate birthDate;
+
+    @ScriptedField
+    @ReadOnlyProperty // do not write to prevent ES from automapping
+    @Nullable
+    private Integer age;
 
     @Field(type = FieldType.Nested)
     @Nullable
@@ -67,13 +80,19 @@ public class Person implements Persistable<Long> {
     private String lastModifiedBy;
 
     @Nullable
-    public Long getId() {
-        return id;
+    public Long getInternalId() {
+        return internalId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setInternalId(@Nullable Long internalId) {
+        this.internalId = internalId;
     }
+
+    @Nullable
+    public Long getId() {
+        return internalId;
+    }
+
 
     @Nullable
     public Long getVersion() {
@@ -109,6 +128,14 @@ public class Person implements Persistable<Long> {
 
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     @Nullable
@@ -159,13 +186,13 @@ public class Person implements Persistable<Long> {
     @Override
     @JsonIgnore
     public boolean isNew() {
-        return id == null || (createdBy == null && created == null);
+        return internalId == null || (createdBy == null && created == null);
     }
 
     @Override
     public String toString() {
         return "Person{" +
-            "id=" + id +
+            "id=" + internalId +
             ", lastName='" + lastName + '\'' +
             ", firstName='" + firstName + '\'' +
             ", birthDate=" + birthDate +
@@ -176,4 +203,17 @@ public class Person implements Persistable<Long> {
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
             '}';
     }
+
+    public static Person create(long id) {
+        Person person = new Person();
+        person.setInternalId(id);
+        person.setFirstName(FAKER.name().firstName());
+        person.setLastName(FAKER.name().lastName());
+        var birthday = FAKER.date().birthday();
+        var instant = Instant.ofEpochMilli(birthday.getTime());
+        var localDate = LocalDate.ofInstant(instant, ZoneId.of("UTC"));
+        person.setBirthDate(localDate);
+        return person;
+    }
+
 }
