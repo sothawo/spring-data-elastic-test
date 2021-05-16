@@ -21,12 +21,10 @@ public class FooController {
 
     private final FooRepository fooRepository;
     private final ElasticsearchOperations operations;
-    private final TableRepository tableRepository;
 
-    public FooController(FooRepository fooRepository, ElasticsearchOperations operations, TableRepository tableRepository) {
+    public FooController(FooRepository fooRepository, ElasticsearchOperations operations) {
         this.fooRepository = fooRepository;
         this.operations = operations;
-        this.tableRepository = tableRepository;
     }
 
     @PostMapping
@@ -42,17 +40,5 @@ public class FooController {
     @GetMapping
     public SearchHits<Foo> all() {
         return fooRepository.searchBy();
-    }
-
-    @GetMapping("/table")
-    public Iterable<Table> table() {
-        var table = new Table();
-        table.setId("42");
-        Student student = new Student();
-        student.setName("Study");
-        table.setStudent(student);
-
-        tableRepository.save(table);
-        return tableRepository.findAll();
     }
 }
