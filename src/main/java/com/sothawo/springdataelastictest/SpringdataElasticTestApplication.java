@@ -21,8 +21,10 @@ public class SpringdataElasticTestApplication {
     static {
         BlockHound.install(
             builder -> builder.allowBlockingCallsInside("org.springframework.data.elasticsearch.support.VersionInfo", "logVersions"),
+            builder -> builder.allowBlockingCallsInside("org.springframework.data.elasticsearch.core.index.MappingBuilder", "addRuntimeFields"),
             builder -> builder.allowBlockingCallsInside("org.elasticsearch.Build", "<clinit>"),
             builder -> builder.allowBlockingCallsInside("org.elasticsearch.common.xcontent.XContentBuilder", "<clinit>"),
+            builder -> builder.allowBlockingCallsInside("com.github.javafaker.service.FakeValues", "loadValues"),
             builder -> builder.blockingMethodCallback(it -> {
                 new Error(it.toString()).printStackTrace();
             })
