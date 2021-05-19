@@ -14,6 +14,7 @@ import org.springframework.data.elasticsearch.annotations.DateFormat
 import org.springframework.data.elasticsearch.annotations.Document
 import org.springframework.data.elasticsearch.annotations.Field
 import org.springframework.data.elasticsearch.annotations.FieldType
+import org.springframework.data.elasticsearch.annotations.Mapping
 import org.springframework.data.elasticsearch.annotations.ScriptedField
 import org.springframework.lang.Nullable
 import java.time.Instant
@@ -25,6 +26,7 @@ import java.util.Locale
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Document(indexName = "person")
+@Mapping(runtimeFieldsPath = "/runtime-fields-person.json")
 data class Person(
 
     @Id
@@ -48,7 +50,6 @@ data class Person(
     @Nullable
     val birthDate: LocalDate? = null,
 
-    @ScriptedField
     @ReadOnlyProperty // do not write to prevent ES from automapping
     @Nullable
     val age: Int? = null,
