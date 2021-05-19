@@ -57,7 +57,6 @@ public class Person implements Persistable<Long> {
     @Nullable
     private LocalDate birthDate;
 
-//    @ScriptedField
     @ReadOnlyProperty // do not write to prevent ES from automapping
     @Nullable
     private Integer age;
