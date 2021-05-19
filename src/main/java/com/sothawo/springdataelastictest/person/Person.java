@@ -17,6 +17,7 @@ import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.elasticsearch.annotations.ScriptedField;
 import org.springframework.lang.Nullable;
 
@@ -30,6 +31,7 @@ import java.util.Locale;
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Document(indexName = "person")
+@Mapping(runtimeFieldsPath = "/runtime-fields-person.json")
 public class Person implements Persistable<Long> {
 
     private static final Faker FAKER = new Faker(Locale.GERMANY);
@@ -55,7 +57,7 @@ public class Person implements Persistable<Long> {
     @Nullable
     private LocalDate birthDate;
 
-    @ScriptedField
+//    @ScriptedField
     @ReadOnlyProperty // do not write to prevent ES from automapping
     @Nullable
     private Integer age;
