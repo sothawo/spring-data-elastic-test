@@ -56,7 +56,7 @@ public class PresidentService {
         return repository.searchByTerm(year);
     }
 
-    public Flux<SearchHit<President>> searchByTName(String name, Boolean requestCache) {
+    public Flux<SearchHit<President>> searchByName(String name, Boolean requestCache) {
         var query = new CriteriaQuery(new Criteria("name").is(name));
         if (requestCache != null) {
             query.setRequestCache(requestCache);

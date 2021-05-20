@@ -4,15 +4,10 @@ import com.sothawo.springdataelastictest.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.Arrays;
 
 import static org.springframework.web.reactive.function.server.ServerResponse.*;
 
@@ -48,7 +43,7 @@ class PresidentHandler {
             requestCache = Boolean.parseBoolean(queryParam.get());
         }
 
-        var searchHits = service.searchByTName(name, requestCache);
+        var searchHits = service.searchByName(name, requestCache);
 
         return ok().body(searchHits, SearchHit.class);
     }
