@@ -29,12 +29,12 @@ public class SpringdataElasticTestApplication {
 
     static {
         BlockHound.install(
-            builder -> builder.allowBlockingCallsInside("org.elasticsearch.Build", "<clinit>"),
-            builder -> builder.allowBlockingCallsInside("org.elasticsearch.common.xcontent.XContentBuilder", "<clinit>"),
-            builder -> builder.allowBlockingCallsInside("com.github.javafaker.service.FakeValues", "loadValues"),
-            builder -> builder.blockingMethodCallback(it -> {
-                throw new BlockingOperationError(it);
-            })
+            builder -> builder.allowBlockingCallsInside("org.elasticsearch.Build", "<clinit>")
+                .allowBlockingCallsInside("org.elasticsearch.common.xcontent.XContentBuilder", "<clinit>")
+                .allowBlockingCallsInside("com.github.javafaker.service.FakeValues", "loadValues")
+                .blockingMethodCallback(it -> {
+                    throw new BlockingOperationError(it);
+                })
         );
     }
 
