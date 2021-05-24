@@ -9,8 +9,6 @@ import org.springframework.data.elasticsearch.config.EnableReactiveElasticsearch
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchTemplate
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories
-import reactor.blockhound.BlockHound
-import reactor.blockhound.BlockingOperationError
 
 
 @SpringBootApplication
