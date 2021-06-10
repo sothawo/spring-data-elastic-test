@@ -52,7 +52,7 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 //            .usingSsl(NotVerifyingSSLContext.getSslContext()) //
             .withProxy("localhost:8080")
 //            .withPathPrefix("ela")
-//            .withBasicAuth("elastic", "stHfzUWETvvX9aAacSTW") //
+            .withBasicAuth("elastic", "hcraescitsale") //
 //            .withDefaultHeaders(defaultHeaders)
             .withHeaders(currentTimeHeaders)
 //            .withConnectTimeout(Duration.ofSeconds(10))
