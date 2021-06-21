@@ -48,11 +48,16 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 
         ClientConfiguration clientConfiguration = ClientConfiguration.builder() //
             .connectedTo("localhost:9200") //
+
+            // OpenSearch
+            .usingSsl(NotVerifyingSSLContext.getSslContext()) //
+            .withBasicAuth("admin", "admin") //
+
 //            .usingSsl()
 //            .usingSsl(NotVerifyingSSLContext.getSslContext()) //
             .withProxy("localhost:8080")
 //            .withPathPrefix("ela")
-            .withBasicAuth("elastic", "hcraescitsale") //
+//            .withBasicAuth("elastic", "hcraescitsale") //
 //            .withDefaultHeaders(defaultHeaders)
             .withHeaders(currentTimeHeaders)
 //            .withConnectTimeout(Duration.ofSeconds(10))
