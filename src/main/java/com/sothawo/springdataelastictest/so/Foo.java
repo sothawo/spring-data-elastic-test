@@ -1,13 +1,13 @@
 package com.sothawo.springdataelastictest.so;
 
-import org.elasticsearch.common.geo.GeoPoint;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.ReadOnlyProperty;
-import org.springframework.data.annotation.Transient;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.GeoPointField;
+
+import java.time.LocalDate;
 
 @Document(indexName = "foo")
 public class Foo {
@@ -15,10 +15,8 @@ public class Foo {
     @ReadOnlyProperty
     private String id;
 
-    @GeoPointField
-    private GeoPoint location;
-    private double latitude;
-    private double longitude;
+    @Field(type = FieldType.Date, format = DateFormat.date_optional_time, index = false)
+    private LocalDate executionDate;
 
     public String getId() {
         return id;
@@ -28,27 +26,11 @@ public class Foo {
         this.id = id;
     }
 
-    public GeoPoint getLocation() {
-        return location;
+    public LocalDate getExecutionDate() {
+        return executionDate;
     }
 
-    public void setLocation(GeoPoint location) {
-        this.location = location;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setExecutionDate(LocalDate executionDate) {
+        this.executionDate = executionDate;
     }
 }
