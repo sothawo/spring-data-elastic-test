@@ -3,6 +3,7 @@ package com.sothawo.springdataelastictest.population
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.util.function.BiConsumer
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -43,5 +44,25 @@ class PopulationService(private val personRepository: PopulationPersonRepository
 	fun createPersonsInHouses(numPersons: Int, numHouses: Int): Mono<Void> {
 		return createHouses(numHouses)
 			.then(createPersons(numPersons).then())
+	}
+
+	fun getByPersonsName(name: String): Flux<HouseDTO> {
+
+		return personRepository.searchByLastName(name)
+			.collectMap { it.house!! }
+			.map { it.keys }
+			.flatMapMany { houseIds ->
+				houseRepository.findAllById(houseIds)
+					.flatMap { house ->
+						personRepository.searchByHouse(house.id!!)
+							.collectList()
+							.map { persons ->
+								HouseDTO(
+									house.id!!, house.zip, house.city, house.street, house.streetNumber,
+									persons.map { HouseDTO.PersonDTO(it.id!!, it.lastName, it.firstName) }
+								)
+							}
+					}
+			}
 	}
 }

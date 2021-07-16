@@ -5,5 +5,5 @@ import org.springframework.data.elasticsearch.repository.ReactiveElasticsearchRe
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-interface PopulationHouseRepository : ReactiveElasticsearchRepository<House, Long> {
+interface PopulationHouseRepository : ReactiveElasticsearchRepository<House, String> {
 }
