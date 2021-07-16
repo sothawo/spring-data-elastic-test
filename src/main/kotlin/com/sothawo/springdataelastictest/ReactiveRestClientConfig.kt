@@ -30,7 +30,7 @@ class ReactiveRestClientConfig : AbstractReactiveElasticsearchConfiguration() {
             //            .usingSsl()
             //             .usingSsl(NotVerifyingSSLContext.getSslContext()) //
             .withProxy("localhost:8080") //            .withPathPrefix("ela")
-            .withBasicAuth("pj", "pj0706") //
+            .withBasicAuth("elastic", "hcraescitsale") //
             .withWebClientConfigurer { webClient ->
                 webClient.mutate().exchangeStrategies(ExchangeStrategies.builder()
                     .codecs { configurer ->
