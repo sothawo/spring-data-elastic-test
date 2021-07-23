@@ -3,6 +3,7 @@ package com.sothawo.springdataelastictest.population
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.function.server.bodyAndAwait
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -27,5 +28,10 @@ class PopulationHandler(private val populationService: PopulationService) {
 	fun personsByName(request: ServerRequest): Mono<ServerResponse> {
 		val name = request.pathVariable("name")
 		return ServerResponse.ok().body (populationService.getByPersonsName(name), Flux::class.java)
+	}
+
+	suspend fun personsByNameCR(request: ServerRequest): ServerResponse {
+		val name = request.pathVariable("name")
+		return ServerResponse.ok().bodyAndAwait (populationService.getByPersonsNameCR(name))
 	}
 }

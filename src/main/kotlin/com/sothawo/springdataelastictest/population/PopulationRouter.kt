@@ -2,12 +2,7 @@ package com.sothawo.springdataelastictest.population
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.reactive.function.server.RequestPredicates.DELETE
-import org.springframework.web.reactive.function.server.RequestPredicates.GET
-import org.springframework.web.reactive.function.server.RequestPredicates.PUT
-import org.springframework.web.reactive.function.server.RequestPredicates.path
-import org.springframework.web.reactive.function.server.RouterFunctions.nest
-import org.springframework.web.reactive.function.server.RouterFunctions.route
+import org.springframework.web.reactive.function.server.router
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -16,11 +11,11 @@ import org.springframework.web.reactive.function.server.RouterFunctions.route
 class PopulationRouter {
 
 	@Bean
-	fun populationRouter(handler: PopulationHandler) =
-		nest(
-			path("/population"),
-			route(DELETE(""), handler::deleteAll)
-				.andRoute(PUT("/{numHouses}/{numPersons}"), handler::createPersonsInHouses)
-				.andRoute(GET("/{name}"), handler::personsByName)
-		)
+	fun populationRouter(handler: PopulationHandler) = router {
+		path("/population").nest {
+			DELETE("", handler::deleteAll)
+			PUT("/{numHouses}/{numPersons}", handler::createPersonsInHouses)
+			GET("/{name}", handler::personsByName)
+		}
+	}
 }

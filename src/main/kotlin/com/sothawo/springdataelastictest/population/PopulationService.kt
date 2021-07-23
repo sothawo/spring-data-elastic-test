@@ -1,9 +1,13 @@
 package com.sothawo.springdataelastictest.population
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.toCollection
+import kotlinx.coroutines.reactive.asFlow
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.util.function.BiConsumer
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -47,22 +51,40 @@ class PopulationService(private val personRepository: PopulationPersonRepository
 	}
 
 	fun getByPersonsName(name: String): Flux<HouseDTO> {
-
-		return personRepository.searchByLastName(name)
-			.collectMap { it.house!! }
-			.map { it.keys }
+		return personRepository.searchByLastNameOrFirstName(name, name)
+			.mapNotNull { it.house }
+			.collectList()
 			.flatMapMany { houseIds ->
-				houseRepository.findAllById(houseIds)
-					.flatMap { house ->
-						personRepository.searchByHouse(house.id!!)
-							.collectList()
-							.map { persons ->
-								HouseDTO(
-									house.id!!, house.zip, house.city, house.street, house.streetNumber,
-									persons.map { HouseDTO.PersonDTO(it.id!!, it.lastName, it.firstName) }
-								)
-							}
-					}
+				if (houseIds.isEmpty()) {
+					Flux.empty()
+				} else {
+					houseRepository.findAllById(houseIds)
+						.flatMap { house ->
+							personRepository.searchByHouse(house.id!!)
+								.collectList()
+								.map { persons ->
+									HouseDTO(
+										house.id!!, house.zip, house.city, house.street, house.streetNumber,
+										persons.map { HouseDTO.PersonDTO(it.id!!, it.lastName, it.firstName) }
+									)
+								}
+						}
+				}
 			}
 	}
+
+	suspend fun getByPersonsNameCR(name: String): Flow<HouseDTO> {
+		val houseIds = personsByLastNameOrFirstName(name).mapNotNull { it.house }.toCollection(mutableListOf())
+		return housesById(houseIds).map { house ->
+			HouseDTO(
+				house.id!!, house.zip, house.city, house.street, house.streetNumber,
+				personsByHouse(house.id!!)
+					.map { HouseDTO.PersonDTO(it.id!!, it.lastName, it.firstName) }.toCollection(mutableListOf())
+			)
+		}
+	}
+
+	suspend fun personsByLastNameOrFirstName(name: String) = personRepository.searchByLastNameOrFirstName(name, name).asFlow()
+	suspend fun housesById(houseIds: Collection<String>) = houseRepository.findAllById(houseIds).asFlow()
+	suspend fun personsByHouse(houseId: String) = personRepository.searchByHouse(houseId).asFlow()
 }

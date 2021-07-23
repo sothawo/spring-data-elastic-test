@@ -82,7 +82,7 @@ class PopulationServiceTest {
 	fun `should return HouseDTO for searched person`() {
 		val person1 = Person("person-1", "Smith", "John", "house-42")
 		val person2 = Person("person-2", "Miller", "Jane", "house-42")
-		whenever(personRepository.searchByLastName("Smith")).thenReturn(Flux.just(person1))
+		whenever(personRepository.searchByLastNameOrFirstName("Smith", "Smith")).thenReturn(Flux.just(person1))
 		whenever(personRepository.searchByHouse("house-42")).thenReturn(Flux.just(person1, person2))
 
 		val house = House("house-42", "12345", "SomeCity", "SomeStreet", "42")

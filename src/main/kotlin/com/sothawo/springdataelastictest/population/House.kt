@@ -32,7 +32,7 @@ data class House(
     ) {
     companion object {
 
-        private val FAKER: Faker = Faker(Locale.GERMANY)
+        private val FAKER: Faker = Faker(Locale.ENGLISH)
 
         fun create(id: String): House = House(
             id = id,
