@@ -7,30 +7,40 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Document(indexName = "foo")
 public class Foo {
-    @Id
-    @ReadOnlyProperty
-    private String id;
+	@Id
+	@ReadOnlyProperty
+	private String id;
 
-    @Field(type = FieldType.Date, format = DateFormat.date_optional_time, index = false)
-    private LocalDate executionDate;
+	@Field(type = FieldType.Date, format = DateFormat.custom, pattern = "uuuu-MM-dd'T'HH:mm:ss")
+	private LocalDateTime startTime;
 
-    public String getId() {
-        return id;
-    }
+	private LocalDateTime endTime;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public LocalDate getExecutionDate() {
-        return executionDate;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public void setExecutionDate(LocalDate executionDate) {
-        this.executionDate = executionDate;
-    }
+	public LocalDateTime getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(LocalDateTime startTime) {
+		this.startTime = startTime;
+	}
+
+	public LocalDateTime getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(LocalDateTime endTime) {
+		this.endTime = endTime;
+	}
 }

@@ -8,7 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.data.convert.WritingConverter;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
@@ -16,6 +18,8 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.RefreshPolicy;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
+import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
+import org.springframework.data.elasticsearch.core.convert.ElasticsearchDateConverter;
 import org.springframework.data.elasticsearch.core.mapping.KebabCaseFieldNamingStrategy;
 import org.springframework.data.mapping.model.CamelCaseSplittingFieldNamingStrategy;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
@@ -23,6 +27,8 @@ import org.springframework.http.HttpHeaders;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.function.Supplier;
 
 /**
@@ -67,13 +73,12 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
         return RestClients.create(clientConfiguration).rest();
     }
 
-//    @Override
-//    public ElasticsearchCustomConversions elasticsearchCustomConversions() {
-//        Collection<Converter<?, ?>> converters = new ArrayList<>();
-//        converters.add(new ToLowerConverter());
-//        return new ElasticsearchCustomConversions(converters);
-//    }
-
+    @Override
+    public ElasticsearchCustomConversions elasticsearchCustomConversions() {
+        Collection<Converter<?, ?>> converters = new ArrayList<>();
+        converters.add(new LocalDateTimeConverter());
+        return new ElasticsearchCustomConversions(converters);
+    }
 
     @Override
     public ElasticsearchOperations elasticsearchOperations(ElasticsearchConverter elasticsearchConverter, RestHighLevelClient elasticsearchClient) {
@@ -101,5 +106,16 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
     @Override
     protected FieldNamingStrategy fieldNamingStrategy() {
         return new KebabCaseFieldNamingStrategy();
+    }
+
+    @WritingConverter
+    static class LocalDateTimeConverter implements Converter<LocalDateTime, String> {
+
+        private final ElasticsearchDateConverter converter = ElasticsearchDateConverter.of("uuuu-MM-d'T'HH:mm:ss");
+
+        @Override
+        public String convert(LocalDateTime source) {
+            return converter.format(source);
+        }
     }
 }
