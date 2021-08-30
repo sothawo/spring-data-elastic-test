@@ -21,7 +21,6 @@ import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverte
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchDateConverter;
 import org.springframework.data.elasticsearch.core.mapping.KebabCaseFieldNamingStrategy;
-import org.springframework.data.mapping.model.CamelCaseSplittingFieldNamingStrategy;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.http.HttpHeaders;
 
@@ -37,85 +36,89 @@ import java.util.function.Supplier;
 @Configuration
 public class RestClientConfig extends AbstractElasticsearchConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RestClientConfig.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RestClientConfig.class);
 
-    @Override
-    @Bean
-    public RestHighLevelClient elasticsearchClient() {
+	@Override
+	@Bean
+	public RestHighLevelClient elasticsearchClient() {
 
-        HttpHeaders defaultHeaders = new HttpHeaders();
-        defaultHeaders.add("header-name", "header-value");
+		HttpHeaders defaultHeaders = new HttpHeaders();
+		defaultHeaders.add("header-name", "header-value");
 
-        Supplier<HttpHeaders> currentTimeHeaders = () -> {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("currentTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-            return headers;
-        };
+		Supplier<HttpHeaders> currentTimeHeaders = () -> {
+			HttpHeaders headers = new HttpHeaders();
+			headers.add("currentTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+			return headers;
+		};
 
-        ClientConfiguration clientConfiguration = ClientConfiguration.builder() //
-            .connectedTo("localhost:9200") //
+		ClientConfiguration clientConfiguration = ClientConfiguration.builder() //
+			.connectedTo("localhost:9200") //
 
-            // OpenSearch
+			// OpenSearch
 //            .usingSsl(NotVerifyingSSLContext.getSslContext()) //
 //            .withBasicAuth("admin", "admin") //
 
 //            .usingSsl()
 //            .usingSsl(NotVerifyingSSLContext.getSslContext()) //
-            .withProxy("localhost:8080")
+			.withProxy("localhost:8080")
 //            .withPathPrefix("ela")
-            .withBasicAuth("elastic", "hcraescitsale") //
+			.withBasicAuth("elastic", "hcraescitsale") //
 //            .withDefaultHeaders(defaultHeaders)
-            .withHeaders(currentTimeHeaders)
+			.withHeaders(currentTimeHeaders)
 //            .withConnectTimeout(Duration.ofSeconds(10))
 //            .withSocketTimeout(Duration.ofSeconds(1)) //
-            .build();
+			.withClientConfigurer((RestClients.RestClientConfigurationCallback) clientBuilder -> {
+				LOGGER.info("I could now configure a {}", clientBuilder.getClass().getName());
+				return clientBuilder;
+			})
+			.build();
 
-        return RestClients.create(clientConfiguration).rest();
-    }
+		return RestClients.create(clientConfiguration).rest();
+	}
 
-    @Override
-    public ElasticsearchCustomConversions elasticsearchCustomConversions() {
-        Collection<Converter<?, ?>> converters = new ArrayList<>();
-        converters.add(new LocalDateTimeConverter());
-        return new ElasticsearchCustomConversions(converters);
-    }
+	@Override
+	public ElasticsearchCustomConversions elasticsearchCustomConversions() {
+		Collection<Converter<?, ?>> converters = new ArrayList<>();
+		converters.add(new LocalDateTimeConverter());
+		return new ElasticsearchCustomConversions(converters);
+	}
 
-    @Override
-    public ElasticsearchOperations elasticsearchOperations(ElasticsearchConverter elasticsearchConverter, RestHighLevelClient elasticsearchClient) {
-        ElasticsearchRestTemplate template = new ElasticsearchRestTemplate(elasticsearchClient, elasticsearchConverter) {
-            @Override
-            public <T> T execute(ClientCallback<T> callback) {
-                try {
-                    return super.execute(callback);
-                } catch (DataAccessResourceFailureException e) {
-                    // retry
-                    LOGGER.warn("Retrying because of {}", e.getMessage());
-                    return super.execute(callback);
-                }
-            }
-        };
-        template.setRefreshPolicy(refreshPolicy());
-        return template;
-    }
+	@Override
+	public ElasticsearchOperations elasticsearchOperations(ElasticsearchConverter elasticsearchConverter, RestHighLevelClient elasticsearchClient) {
+		ElasticsearchRestTemplate template = new ElasticsearchRestTemplate(elasticsearchClient, elasticsearchConverter) {
+			@Override
+			public <T> T execute(ClientCallback<T> callback) {
+				try {
+					return super.execute(callback);
+				} catch (DataAccessResourceFailureException e) {
+					// retry
+					LOGGER.warn("Retrying because of {}", e.getMessage());
+					return super.execute(callback);
+				}
+			}
+		};
+		template.setRefreshPolicy(refreshPolicy());
+		return template;
+	}
 
-    @Override
-    protected RefreshPolicy refreshPolicy() {
-        return RefreshPolicy.IMMEDIATE;
-    }
+	@Override
+	protected RefreshPolicy refreshPolicy() {
+		return RefreshPolicy.IMMEDIATE;
+	}
 
-    @Override
-    protected FieldNamingStrategy fieldNamingStrategy() {
-        return new KebabCaseFieldNamingStrategy();
-    }
+	@Override
+	protected FieldNamingStrategy fieldNamingStrategy() {
+		return new KebabCaseFieldNamingStrategy();
+	}
 
-    @WritingConverter
-    static class LocalDateTimeConverter implements Converter<LocalDateTime, String> {
+	@WritingConverter
+	static class LocalDateTimeConverter implements Converter<LocalDateTime, String> {
 
-        private final ElasticsearchDateConverter converter = ElasticsearchDateConverter.of("uuuu-MM-d'T'HH:mm:ss");
+		private final ElasticsearchDateConverter converter = ElasticsearchDateConverter.of("uuuu-MM-d'T'HH:mm:ss");
 
-        @Override
-        public String convert(LocalDateTime source) {
-            return converter.format(source);
-        }
-    }
+		@Override
+		public String convert(LocalDateTime source) {
+			return converter.format(source);
+		}
+	}
 }

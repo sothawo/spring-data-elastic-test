@@ -5,6 +5,7 @@ package com.sothawo.springdataelastictest.person;
 
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,5 +70,11 @@ public class PersonController {
         var searchHits = operations.search(query, Person.class);
         return searchHits.get().map(SearchHit::getContent);
     }
+
+	@GetMapping("/{name}")
+	public SearchHits<Person> byName(@PathVariable("name") final String name) {
+		return repository.queryByLastNameOrFirstNameOrderByBirthDate(name, name);
+	}
+
 
 }
