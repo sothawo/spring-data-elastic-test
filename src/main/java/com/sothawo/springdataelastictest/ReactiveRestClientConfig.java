@@ -3,6 +3,8 @@
  */
 package com.sothawo.springdataelastictest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.health.ReactiveHealthContributor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +27,8 @@ import java.time.format.DateTimeFormatter;
 @Configuration
 public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfiguration {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ReactiveRestClientConfig.class);
+
     @Bean
     public ClientConfiguration clientConfiguration() {
         return ClientConfiguration.builder() //
@@ -33,14 +37,18 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
 //             .usingSsl(NotVerifyingSSLContext.getSslContext()) //
             .withProxy("localhost:8080")
 //            .withPathPrefix("ela")
-            .withBasicAuth("pj", "pj0706") //
-            .withWebClientConfigurer(webClient -> {
-                ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
-                    .codecs(configurer -> configurer.defaultCodecs()
-                        .maxInMemorySize(-1))
-                    .build();
-                return webClient.mutate().exchangeStrategies(exchangeStrategies).build();
-            })
+            .withBasicAuth("elastic", "hcraescitsale") //
+					.withClientConfigurer((ReactiveRestClients.WebClientConfigurationCallback)webClient -> {
+						LOGGER.info("I could now configure a {}", webClient.getClass().getName());
+						return webClient;
+					})
+//            .withClientConfigurer((ReactiveRestClients.WebClientConfigurationCallback)webClient -> {
+//                ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+//                    .codecs(configurer -> configurer.defaultCodecs()
+//                        .maxInMemorySize(-1))
+//                    .build();
+//                return webClient.mutate().exchangeStrategies(exchangeStrategies).build();
+//            })
             .withHeaders(() -> {
                 HttpHeaders headers = new HttpHeaders();
                 headers.add("currentTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
