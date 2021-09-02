@@ -3,9 +3,11 @@
  */
 package com.sothawo.springdataelastictest.person;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.SearchPage;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -76,5 +78,12 @@ public class PersonController {
 		return repository.queryByLastNameOrFirstNameOrderByBirthDate(name, name);
 	}
 
-
+	@GetMapping("/fuzzy/count/{name}")
+	public Long countByNameFuzzy(@PathVariable("name") String name) {
+			return repository.countByLastNameFuzzy(name);
+	}
+	@GetMapping("/fuzzy/{name}")
+	public SearchPage<Person> byNameFuzzy(@PathVariable("name") String name) {
+			return repository.findByLastNameFuzzy(name, Pageable.unpaged());
+	}
 }

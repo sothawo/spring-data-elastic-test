@@ -22,10 +22,10 @@ public interface PersonRepository extends ElasticsearchRepository<Person, Long>,
     @Highlight(fields = {@HighlightField(name = "firstName"), @HighlightField(name = "lastName")})
     SearchHits<Person> queryByLastNameOrFirstNameOrderByBirthDate(String lastName, String firstName);
 
-    @Query("{\"fuzzy\":{\"lastName\":\"?0\"}}")
-    SearchHits<Person> findByLastNameFuzzy(final String lastName);
+    @Query("{\"fuzzy\":{\"last-name\":\"?0\"}}")
+    SearchPage<Person> findByLastNameFuzzy(final String lastName, Pageable pageable);
 
-    @CountQuery("{\"fuzzy\":{\"lastName\":\"?0\"}}")
+    @CountQuery("{\"fuzzy\":{\"last-name\":\"?0\"}}")
     long countByLastNameFuzzy(final String lastName);
 
     List<Person> findAllByOrderByFirstName();
