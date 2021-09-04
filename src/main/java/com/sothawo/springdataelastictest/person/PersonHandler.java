@@ -3,6 +3,7 @@
  */
 package com.sothawo.springdataelastictest.person;
 
+import org.springframework.data.elasticsearch.core.AggregationsContainer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -35,4 +36,8 @@ public class PersonHandler {
     public Mono<ServerResponse> allWithAge(ServerRequest request) {
         return ok().body(service.allWithAge(), Person.class);
     }
+
+	public Mono<ServerResponse> lastNameCounts(ServerRequest request) {
+		return ok().body(service.lastNameCounts(), AggregationsContainer.class);
+	}
 }

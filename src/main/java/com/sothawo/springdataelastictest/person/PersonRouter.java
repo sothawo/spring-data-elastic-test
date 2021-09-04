@@ -17,12 +17,13 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.*
 @Configuration("PersonRouterConfiguration")
 public class PersonRouter {
 
-    @Bean
-    public RouterFunction<ServerResponse> personRouter(PersonHandler handler) {
-        return nest(path("/persons"),
-            route(GET("/create/{count}"), handler::create)
-                .andRoute(GET("/all"), handler::all)
-                .andRoute(GET("/all-with-age"), handler::allWithAge)
-        );
-    }
+	@Bean
+	public RouterFunction<ServerResponse> personRouter(PersonHandler handler) {
+		return nest(path("/persons"),
+			route(GET("/create/{count}"), handler::create)
+				.andRoute(GET("/all"), handler::all)
+				.andRoute(GET("/all-with-age"), handler::allWithAge)
+				.andRoute(GET("/last-name-counts"), handler::lastNameCounts)
+		);
+	}
 }
