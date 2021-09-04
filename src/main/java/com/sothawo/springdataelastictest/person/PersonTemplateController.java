@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.clients.elasticsearch7.ElasticsearchAggregations;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.Criteria;
@@ -38,87 +39,88 @@ import static org.elasticsearch.search.aggregations.AggregationBuilders.*;
 @RequestMapping("/template")
 public class PersonTemplateController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PersonTemplateController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PersonTemplateController.class);
 
-    private final ElasticsearchOperations operations;
-    private final IndexCoordinates index = IndexCoordinates.of("person");
+	private final ElasticsearchOperations operations;
+	private final IndexCoordinates index = IndexCoordinates.of("person");
 
-    public PersonTemplateController(ElasticsearchOperations operations) {
-        this.operations = operations;
-    }
+	public PersonTemplateController(ElasticsearchOperations operations) {
+		this.operations = operations;
+	}
 
-    @PostMapping("/person")
-    public String save(@RequestBody Person person) {
-        IndexQuery indexQuery = new IndexQueryBuilder().withId(person.getId().toString()).withObject(person).build();
-        return operations.index(indexQuery, index);
-    }
+	@PostMapping("/person")
+	public String save(@RequestBody Person person) {
+		IndexQuery indexQuery = new IndexQueryBuilder().withId(person.getId().toString()).withObject(person).build();
+		return operations.index(indexQuery, index);
+	}
 
-    @GetMapping("/person/{id}")
-    public ResponseEntity<Person> findById(@PathVariable("id") final Long id) {
-        return ResponseEntity.of(Optional.ofNullable(operations.get(id.toString(), Person.class, index)));
+	@GetMapping("/person/{id}")
+	public ResponseEntity<Person> findById(@PathVariable("id") final Long id) {
+		return ResponseEntity.of(Optional.ofNullable(operations.get(id.toString(), Person.class, index)));
 
-    }
+	}
 
-    @GetMapping("/persons")
-    public SearchHits<Person> persons() {
-        NativeSearchQuery query = new NativeSearchQueryBuilder().withQuery(matchAllQuery()).build();
-        long count = operations.count(query, index);
-        query.setPageable(PageRequest.of(0, (int) count));
-        return operations.search(query, Person.class, index);
-    }
+	@GetMapping("/persons")
+	public SearchHits<Person> persons() {
+		NativeSearchQuery query = new NativeSearchQueryBuilder().withQuery(matchAllQuery()).build();
+		long count = operations.count(query, index);
+		query.setPageable(PageRequest.of(0, (int) count));
+		return operations.search(query, Person.class, index);
+	}
 
-    @GetMapping("/persons/{name}")
-    public SearchHits<Person> personByName(@PathVariable String name) {
-        ElasticsearchConverter elasticsearchConverter = operations.getElasticsearchConverter();
-        Criteria criteria = new Criteria("lastName").is(name);
-        CriteriaQuery query = new CriteriaQuery(criteria);
-        query.setExplain(true);
+	@GetMapping("/persons/{name}")
+	public SearchHits<Person> personByName(@PathVariable String name) {
+		ElasticsearchConverter elasticsearchConverter = operations.getElasticsearchConverter();
+		Criteria criteria = new Criteria("lastName").is(name);
+		CriteriaQuery query = new CriteriaQuery(criteria);
+		query.setExplain(true);
 
-        return operations.search(query, Person.class, index);
-    }
+		return operations.search(query, Person.class, index);
+	}
 
-    @GetMapping("/persons/aggs")
-    public SearchHits<Person> aggregationsTest() {
-        String aggsName = "first_names";
-        NativeSearchQuery query = new NativeSearchQueryBuilder()
-            .withQuery(matchAllQuery())
-            .addAggregation(terms(aggsName).field("first-name")) //
-            .build();
-        query.setMaxResults(0);
+	@GetMapping("/persons/aggs")
+	public SearchHits<Person> aggregationsTest() {
+		String aggsName = "first_names";
+		NativeSearchQuery query = new NativeSearchQueryBuilder()
+			.withQuery(matchAllQuery())
+			.withAggregations(terms(aggsName).field("first-name")) //
+			.build();
+		query.setMaxResults(0);
 
-        SearchHits<Person> searchHits = operations.search(query, Person.class, IndexCoordinates.of("person"));
-        if (searchHits.hasAggregations()) {
-            Terms terms = searchHits.getAggregations().get(aggsName);
-            terms.getBuckets().forEach(bucket -> {
-                System.out.println("bucket " + bucket.getKeyAsString() + ", doc_count: " + bucket.getDocCount());
-            });
-        }
-        return searchHits;
-    }
+		SearchHits<Person> searchHits = operations.search(query, Person.class, IndexCoordinates.of("person"));
+		if (searchHits.hasAggregations()) {
+			var aggregations = ((ElasticsearchAggregations) searchHits.getAggregations()).aggregations();
+			Terms terms = aggregations.get(aggsName);
+			terms.getBuckets().forEach(bucket -> {
+				System.out.println("bucket " + bucket.getKeyAsString() + ", doc_count: " + bucket.getDocCount());
+			});
+		}
+		return searchHits;
+	}
 
-    @GetMapping("/persons/count")
-    public long count() {
-        return operations.count(new NativeSearchQueryBuilder().withQuery(matchAllQuery()).build(), index);
-    }
+	@GetMapping("/persons/count")
+	public long count() {
+		return operations.count(new NativeSearchQueryBuilder().withQuery(matchAllQuery()).build(), index);
+	}
 
-    @GetMapping("/test")
-    public void test() {
-        var person = new Person();
-        person.setInternalId(42L);
-        person.setFirstName("John");
-        person.setLastName("Doe");
-        var electricCar = new Car.ElectricCar();
-        electricCar.setModel("Elecar");
-        electricCar.setRange(500);
-        var combustionCar = new Car.CombustionCar();
-        combustionCar.setModel("Oily");
-        combustionCar.setFuelType("Diesel");
-        person.setCars(List.of(electricCar, combustionCar));
+	@GetMapping("/test")
+	public void test() {
+		var person = new Person();
+		person.setInternalId(42L);
+		person.setFirstName("John");
+		person.setLastName("Doe");
+		var electricCar = new Car.ElectricCar();
+		electricCar.setModel("Elecar");
+		electricCar.setRange(500);
+		var combustionCar = new Car.CombustionCar();
+		combustionCar.setModel("Oily");
+		combustionCar.setFuelType("Diesel");
+		person.setCars(List.of(electricCar, combustionCar));
 
-        var saved = operations.save(person);
-        LOGGER.info("saved: {}", saved.toString());
+		var saved = operations.save(person);
+		LOGGER.info("saved: {}", saved.toString());
 
-        var loaded = operations.get(saved.getId().toString(), Person.class);
-        LOGGER.info("loaded: {}", loaded.toString());
-    }
+		var loaded = operations.get(saved.getId().toString(), Person.class);
+		LOGGER.info("loaded: {}", loaded.toString());
+	}
 }

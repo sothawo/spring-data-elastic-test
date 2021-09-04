@@ -28,9 +28,8 @@ public class PersonCustomRepositoryImpl implements PersonCustomRepository {
     @Override
     public SearchPage<Person> findByFirstNameWithLastNameCounts(String firstName, Pageable pageable) {
 
-        Query query = new NativeSearchQueryBuilder()
-            .addAggregation(terms("lastNames").field("lastName").size(10)) //
-            .withQuery(QueryBuilders.matchQuery("firstName", firstName))
+        Query query = new NativeSearchQueryBuilder().withAggregations(terms("lastNames").field("last-name").size(10)) //
+            .withQuery(QueryBuilders.matchQuery("first-name", firstName))
             .withPageable(pageable)
             .build();
 
