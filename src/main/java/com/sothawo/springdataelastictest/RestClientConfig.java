@@ -67,10 +67,10 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 			.withHeaders(currentTimeHeaders)
 //            .withConnectTimeout(Duration.ofSeconds(10))
 //            .withSocketTimeout(Duration.ofSeconds(1)) //
-			.withClientConfigurer((RestClients.RestClientConfigurationCallback) clientBuilder -> {
+			.withClientConfigurer(RestClients.RestClientConfigurationCallback.from(clientBuilder -> {
 				LOGGER.info("I could now configure a {}", clientBuilder.getClass().getName());
 				return clientBuilder;
-			})
+			}))
 			.build();
 
 		return RestClients.create(clientConfiguration).rest();
