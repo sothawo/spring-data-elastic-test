@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
+import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient;
 import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClients;
 import org.springframework.data.elasticsearch.config.AbstractReactiveElasticsearchConfiguration;
@@ -37,8 +38,16 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
 //            .withPathPrefix("ela")
 			.withBasicAuth("elastic", "hcraescitsale") //
 			.withClientConfigurer(ReactiveRestClients.WebClientConfigurationCallback.from(webClient -> {
-				LOGGER.info("I could now configure a {}", webClient.getClass().getName());
+				LOGGER.info("Callback 1: I could now configure a {}", webClient.getClass().getName());
 				return webClient;
+			}))
+			.withClientConfigurer(ReactiveRestClients.WebClientConfigurationCallback.from(webClient -> {
+				LOGGER.info("Callback 2: I could now configure a {}", webClient.getClass().getName());
+				return webClient;
+			}))
+			.withClientConfigurer(RestClients.RestClientConfigurationCallback.from(clientBuilder -> {
+				LOGGER.info("Callback 3: THIS SHOULD NOT BE CALLED!");
+				return clientBuilder;
 			}))
 //            .withClientConfigurer((ReactiveRestClients.WebClientConfigurationCallback)webClient -> {
 //                ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
