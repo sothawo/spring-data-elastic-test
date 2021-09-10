@@ -13,6 +13,7 @@ import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.convert.WritingConverter;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
+import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClients;
 import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
@@ -68,7 +69,11 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 //            .withConnectTimeout(Duration.ofSeconds(10))
 //            .withSocketTimeout(Duration.ofSeconds(1)) //
 			.withClientConfigurer(RestClients.RestClientConfigurationCallback.from(clientBuilder -> {
-				LOGGER.info("I could now configure a {}", clientBuilder.getClass().getName());
+				LOGGER.info("Callback 1: I could now configure a {}", clientBuilder.getClass().getName());
+				return clientBuilder;
+			}))
+			.withClientConfigurer(RestClients.RestClientConfigurationCallback.from(clientBuilder -> {
+				LOGGER.info("Callback 2: I could now configure a {}", clientBuilder.getClass().getName());
 				return clientBuilder;
 			}))
 			.build();
