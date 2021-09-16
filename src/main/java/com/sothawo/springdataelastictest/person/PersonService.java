@@ -67,4 +67,8 @@ public class PersonService {
 					.getBuckets().stream() //
 					.map(bucket -> Pair.of(bucket.getKeyAsString(), bucket.getDocCount()))));
 	}
+
+	public Mono<Person> byIdWithrouting(String id, String routing) {
+		return repository.findByIdWithRouting(id, routing);
+	}
 }

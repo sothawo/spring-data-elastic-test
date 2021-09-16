@@ -24,6 +24,7 @@ public class PersonRouter {
 				.andRoute(GET("/all"), handler::all)
 				.andRoute(GET("/all-with-age"), handler::allWithAge)
 				.andRoute(GET("/last-name-counts"), handler::lastNameCounts)
+				.andRoute(GET("/routing/{id}"), handler::byIdWithRouting)
 		);
 	}
 }

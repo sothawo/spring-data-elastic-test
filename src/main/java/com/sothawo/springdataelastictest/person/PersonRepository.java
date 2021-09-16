@@ -8,5 +8,5 @@ import org.springframework.data.elasticsearch.repository.ReactiveElasticsearchRe
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-public interface PersonRepository extends ReactiveElasticsearchRepository<Person, Long> {
+public interface PersonRepository extends ReactiveElasticsearchRepository<Person, Long>, PersonCustomRepository {
 }
