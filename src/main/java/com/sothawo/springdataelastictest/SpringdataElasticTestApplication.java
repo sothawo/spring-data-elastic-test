@@ -19,9 +19,9 @@ import org.springframework.security.core.userdetails.User;
 import reactor.blockhound.BlockHound;
 import reactor.blockhound.BlockingOperationError;
 
-@SpringBootApplication(exclude = ElasticsearchDataAutoConfiguration.class)
-@EnableReactiveElasticsearchRepositories
 @EnableReactiveElasticsearchAuditing
+@SpringBootApplication(exclude = ElasticsearchDataAutoConfiguration.class)
+@EnableReactiveElasticsearchRepositories(repositoryBaseClass = RoutingAwareReactiveElasticsearchRepositoryImpl.class)
 public class SpringdataElasticTestApplication {
 
     @Autowired

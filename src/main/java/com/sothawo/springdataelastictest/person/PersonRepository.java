@@ -3,10 +3,10 @@
  */
 package com.sothawo.springdataelastictest.person;
 
-import org.springframework.data.elasticsearch.repository.ReactiveElasticsearchRepository;
+import com.sothawo.springdataelastictest.RoutingAwareReactiveElasticsearchRepository;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-public interface PersonRepository extends ReactiveElasticsearchRepository<Person, Long>, PersonCustomRepository {
+public interface PersonRepository extends RoutingAwareReactiveElasticsearchRepository<Person, Long> {
 }

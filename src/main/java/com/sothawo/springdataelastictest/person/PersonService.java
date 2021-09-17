@@ -69,6 +69,6 @@ public class PersonService {
 	}
 
 	public Mono<Person> byIdWithrouting(String id, String routing) {
-		return repository.findByIdWithRouting(id, routing);
+		return repository.findByIdWithRouting(Long.valueOf(id), routing);
 	}
 }
