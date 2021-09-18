@@ -6,6 +6,8 @@ package com.sothawo.springdataelastictest.so;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.indices.AnalyzeRequest;
 import org.elasticsearch.client.indices.AnalyzeResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -24,6 +27,8 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping("/foo")
 public class FooController {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(FooController.class);
 
 	private final FooRepository fooRepository;
 	private final ElasticsearchOperations operations;
@@ -52,16 +57,16 @@ public class FooController {
 	public void test() {
 		var foo = new Foo();
 		foo.setId("4711");
-		foo.setStartTime(LocalDateTime.of(2021, 7, 13, 6, 0, 0));
-		foo.setEndTime(LocalDateTime.of(2021, 7, 13, 12, 13, 14));
+		var bar1 = new Foo.Bar();
+		bar1.setValue("bar-1");
+		foo.addBar(bar1);
+		var bar2 = new Foo.Bar();
+		bar2.setValue("bar-2");
+		foo.addBar(bar2);
 		fooRepository.save(foo);
 
-		fooRepository.search(
-			LocalDateTime.of(2021, 7, 13, 0, 0, 0),
-			LocalDateTime.of(2021, 7, 13, 23, 59, 59));
+		var foundFoo = fooRepository.findById("4711").orElseThrow();
 
-		AnalyzeRequest request = AnalyzeRequest.withGlobalAnalyzer("stop", "some text to analyse");
-		ElasticsearchRestTemplate restTemplate = (ElasticsearchRestTemplate) this.operations;
-		AnalyzeResponse analyzeResponse = restTemplate.execute(client -> client.indices().analyze(request, RequestOptions.DEFAULT));
+		LOGGER.info(foundFoo.toString());
 	}
 }
