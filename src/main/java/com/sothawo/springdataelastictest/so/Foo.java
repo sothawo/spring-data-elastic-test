@@ -1,30 +1,30 @@
 package com.sothawo.springdataelastictest.so;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.lang.Nullable;
 
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDate;
 
 @Document(indexName = "foo")
 public class Foo {
 	@Id
-	@ReadOnlyProperty
 	private String id;
 
-	@Field(type = FieldType.Date, format = {}, pattern = "uuuu-MM-dd'T'HH:mm:ss")
-	private LocalDateTime startTime;
+	@Nullable
+	@Field(type = FieldType.Text)
+	private String text;
 
-//	@Field(type = FieldType.Nested)
-	private Set<Bar> bars = new HashSet<>();
+	@Nullable
+	@Field(type = FieldType.Text)
+	private String moreText;
 
-	@Field(type = FieldType.Date, format = {}, pattern = "uuuu-MM-dd'T'HH:mm:ss")
-	private LocalDateTime endTime;
+	@Nullable
+	@Field(type = FieldType.Date, format = {DateFormat.basic_date})
+	private LocalDate someData;
 
 	public String getId() {
 		return id;
@@ -34,60 +34,30 @@ public class Foo {
 		this.id = id;
 	}
 
-	public LocalDateTime getStartTime() {
-		return startTime;
+	@Nullable
+	public String getText() {
+		return text;
 	}
 
-	public void setStartTime(LocalDateTime startTime) {
-		this.startTime = startTime;
+	public void setText(@Nullable String text) {
+		this.text = text;
 	}
 
-	public LocalDateTime getEndTime() {
-		return endTime;
+	@Nullable
+	public LocalDate getSomeData() {
+		return someData;
 	}
 
-	public void setEndTime(LocalDateTime endTime) {
-		this.endTime = endTime;
+	public void setSomeData(@Nullable LocalDate someData) {
+		this.someData = someData;
 	}
 
-	public Set<Bar> getBars() {
-		return bars;
+	@Nullable
+	public String getMoreText() {
+		return moreText;
 	}
 
-	public void setBars(Set<Bar> bars) {
-		this.bars = bars;
-	}
-
-	public void addBar(Bar bar) {
-		this.bars.add(bar);
-	}
-
-	@Override
-	public String toString() {
-		return "Foo{" +
-			"id='" + id + '\'' +
-			", startTime=" + startTime +
-			", bars=" + bars +
-			", endTime=" + endTime +
-			'}';
-	}
-
-	public static class Bar {
-		private String value;
-
-		public String getValue() {
-			return value;
-		}
-
-		public void setValue(String value) {
-			this.value = value;
-		}
-
-		@Override
-		public String toString() {
-			return "Bar{" +
-				"value='" + value + '\'' +
-				'}';
-		}
+	public void setMoreText(@Nullable String moreText) {
+		this.moreText = moreText;
 	}
 }
