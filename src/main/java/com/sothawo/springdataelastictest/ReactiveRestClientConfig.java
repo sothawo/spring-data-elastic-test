@@ -12,44 +12,43 @@ import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsea
 import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClients;
 import org.springframework.data.elasticsearch.config.AbstractReactiveElasticsearchConfiguration;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
-import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Configuration
 public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfiguration {
-    @Override
-    public ReactiveElasticsearchClient reactiveElasticsearchClient() {
-        final ClientConfiguration clientConfiguration = ClientConfiguration.builder() //
-            .connectedTo("localhost:9400") //
-            .withProxy("localhost:8080")
-            // .withPathPrefix("ela")
-            // .usingSsl(NotVerifyingSSLContext.getSslContext()) //
-            // .withBasicAuth("elastic", "stHfzUWETvvX9aAacSTW") //
-            .withWebClientConfigurer(webClient -> {
-                ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
-                    .codecs(configurer -> configurer.defaultCodecs()
-                        .maxInMemorySize(-1))
-                    .build();
-                return webClient.mutate().exchangeStrategies(exchangeStrategies).build();
-            })
-            .withHeaders(() -> {
-                HttpHeaders headers = new HttpHeaders();
-                headers.add("currentTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-                return headers;
-            })
-            .build();
-        return ReactiveRestClients.create(clientConfiguration);
+	@Override
+	public ReactiveElasticsearchClient reactiveElasticsearchClient() {
+		final ClientConfiguration clientConfiguration = ClientConfiguration.builder() //
+			.connectedTo("localhost:9200") //
+			.withProxy("localhost:8080")
+			// .withPathPrefix("ela")
+			// .usingSsl(NotVerifyingSSLContext.getSslContext()) //
+			.withBasicAuth("elastic", "hcraescitsale") //
+			.withWebClientConfigurer(webClient -> {
+				ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+					.codecs(configurer -> configurer.defaultCodecs()
+						.maxInMemorySize(-1))
+					.build();
+				return webClient.mutate().exchangeStrategies(exchangeStrategies).build();
+			})
+			.withHeaders(() -> {
+				HttpHeaders headers = new HttpHeaders();
+				headers.add("currentTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+				return headers;
+			})
+			.withSocketTimeout(Duration.ofMinutes(5))
+			.build();
+		return ReactiveRestClients.create(clientConfiguration);
 
-    }
+	}
 
 //    @Override
 //    public ElasticsearchCustomConversions elasticsearchCustomConversions() {
@@ -58,19 +57,19 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
 //        return new ElasticsearchCustomConversions(converters);
 //    }
 
-    enum StringReverseConverter implements Converter<String, String> {
+	enum StringReverseConverter implements Converter<String, String> {
 
-        INSTANCE;
+		INSTANCE;
 
-        @Override
-        public String convert(String source) {
-            return new StringBuilder(source).reverse().toString();
-        }
-    }
+		@Override
+		public String convert(String source) {
+			return new StringBuilder(source).reverse().toString();
+		}
+	}
 
-    // mvcConversionService needs this
-    @Bean
-    public ElasticsearchRestTemplate elasticsearchTemplate() {
-        return new ElasticsearchRestTemplate(RestClients.create(ClientConfiguration.localhost()).rest());
-    }
+	// mvcConversionService needs this
+	@Bean
+	public ElasticsearchRestTemplate elasticsearchTemplate() {
+		return new ElasticsearchRestTemplate(RestClients.create(ClientConfiguration.localhost()).rest());
+	}
 }

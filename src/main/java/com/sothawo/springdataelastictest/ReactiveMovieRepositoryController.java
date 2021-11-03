@@ -5,7 +5,11 @@ package com.sothawo.springdataelastictest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +23,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.elasticsearch.index.query.QueryBuilders.*;
+
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
@@ -26,61 +32,72 @@ import java.util.List;
 @RequestMapping("/movie")
 public class ReactiveMovieRepositoryController {
 
-    private RecativeMovieRepository movieRepository;
+	private final ReactiveElasticsearchOperations operations;
+	private final RecativeMovieRepository movieRepository;
 
-    public ReactiveMovieRepositoryController(RecativeMovieRepository movieRepository) {
-        this.movieRepository = movieRepository;
-    }
+	static int testPageOffset = 0;
 
-    @GetMapping("movies")
-    public Flux<Movie> allMovies() {
-        return movieRepository.findAll();
-    }
+	public ReactiveMovieRepositoryController(ReactiveElasticsearchOperations operations, RecativeMovieRepository movieRepository) {
+		this.operations = operations;
+		this.movieRepository = movieRepository;
+	}
 
-    @PostMapping("/movies")
-    public String saveMovie(@RequestBody Movie movie) {
-        return movieRepository.save(movie).block().getTitle();
-    }
+	@GetMapping("movies")
+	public Flux<Movie> allMovies() {
+		return movieRepository.findAll();
+	}
 
-    @GetMapping("/title/{title}")
-    public Flux<SearchHit<Movie>> byTitle(@PathVariable("title") String title) {
-        return movieRepository.findByTitle(title);
-    }
+	@PostMapping("/movies")
+	public String saveMovie(@RequestBody Movie movie) {
+		return movieRepository.save(movie).block().getTitle();
+	}
 
-    private Flux<SearchHit<Movie>> getMovieFluxWithPageables(@PathVariable("title") String title) {
-        List<SearchHit<Movie>> movieList = new ArrayList<>();
-        Long count = movieRepository.countByTitle(title).block();
-        int page = 0;
-        while (movieList.size() < count) {
-            Flux<SearchHit<Movie>> movies = movieRepository.findByTitle(title, PageRequest.of(page++, 5));
-            movieList.addAll(movies.collectList().block());
-        }
-        return Flux.fromStream(movieList.stream());
-    }
+	@GetMapping("/title/{title}")
+	public Flux<SearchHit<Movie>> byTitle(@PathVariable("title") String title) {
+		return movieRepository.findByTitle(title);
+	}
 
-    @GetMapping("/title3/{title}")
-    public Flux<SearchHit<Movie>> byTitle3(@PathVariable("title") String title) {
-        return movieRepository.findFirst3ByTitle(title);
-    }
+	private Flux<SearchHit<Movie>> getMovieFluxWithPageables(@PathVariable("title") String title) {
+		List<SearchHit<Movie>> movieList = new ArrayList<>();
+		Long count = movieRepository.countByTitle(title).block();
+		int page = 0;
+		while (movieList.size() < count) {
+			Flux<SearchHit<Movie>> movies = movieRepository.findByTitle(title, PageRequest.of(page++, 5));
+			movieList.addAll(movies.collectList().block());
+		}
+		return Flux.fromStream(movieList.stream());
+	}
 
-    @GetMapping("/newest3/{title}")
-    public Flux<SearchHit<Movie>> newest3ByTitle(@PathVariable("title") String title) {
-        return movieRepository.findFirst3ByTitleOrderByYearDesc(title);
-    }
+	@GetMapping("/title3/{title}")
+	public Flux<SearchHit<Movie>> byTitle3(@PathVariable("title") String title) {
+		return movieRepository.findFirst3ByTitle(title);
+	}
 
-    @PostMapping("load")
-    public String loadMovies() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
+	@GetMapping("/newest3/{title}")
+	public Flux<SearchHit<Movie>> newest3ByTitle(@PathVariable("title") String title) {
+		return movieRepository.findFirst3ByTitleOrderByYearDesc(title);
+	}
 
-        List<Movie> movies = objectMapper.readValue(new File("movies.json"),
-            objectMapper.getTypeFactory().constructCollectionType(List.class, Movie.class));
+	@PostMapping("/load")
+	public String loadMovies() throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
 
-        long id = 1;
+		List<Movie> movies = objectMapper.readValue(new File("movies.json"),
+			objectMapper.getTypeFactory().constructCollectionType(List.class, Movie.class));
 
-        for (Movie movie : movies) {
-            movie.setId(String.valueOf(id++));
-        }
-        movieRepository.saveAll(movies).blockLast() ;
-        return "#movies: " + movies.size();
-    }
+		long id = 1;
+
+		for (Movie movie : movies) {
+			movie.setId(String.valueOf(id++));
+		}
+		movieRepository.saveAll(movies).blockLast();
+		return "#movies: " + movies.size();
+	}
+
+	@GetMapping("/test")
+	public Flux<SearchHit<Movie>> test() {
+		Query query = new NativeSearchQueryBuilder().withQuery(matchAllQuery()).build();
+		query.setPageable(PageRequest.of(testPageOffset++, 7));
+		return operations.search(query, Movie.class);
+	}
 }
