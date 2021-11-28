@@ -4,11 +4,16 @@
 package com.sothawo.springdataelastictest.person;
 
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.backend.elasticsearch7.ElasticsearchAggregation;
+import org.springframework.data.elasticsearch.backend.elasticsearch7.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.clients.elasticsearch7.ElasticsearchAggregation;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -23,6 +28,8 @@ import static org.elasticsearch.search.aggregations.AggregationBuilders.*;
  */
 @Service
 public class PersonService {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(PersonService.class);
 
 	private final PersonRepository repository;
 	private final ReactiveElasticsearchOperations operations;
@@ -70,5 +77,15 @@ public class PersonService {
 
 	public Mono<Person> byIdWithrouting(String id, String routing) {
 		return repository.findByIdWithRouting(Long.valueOf(id), routing);
+	}
+
+	public Flux<SearchHit<Person>> test() {
+		Query query = new CriteriaQuery(new Criteria("lastName").is("Moeller")).setPageable(PageRequest.of(0, 5));
+
+		return operations.searchForHits(query, Person.class)
+			.flatMapMany(reactiveSearchHits -> {
+				LOGGER.info("total number of hits: {}", reactiveSearchHits.getTotalHits());
+				return reactiveSearchHits.getSearchHits();
+			});
 	}
 }

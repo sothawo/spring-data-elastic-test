@@ -3,7 +3,7 @@
  */
 package com.sothawo.springdataelastictest.join;
 
-import org.springframework.data.elasticsearch.core.ReactiveElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -17,10 +17,10 @@ import reactor.core.publisher.Mono;
 public class StatementHandler {
 
     private final StatementRepository repository;
-    private final ReactiveElasticsearchTemplate operations;
+    private final ReactiveElasticsearchOperations operations;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public StatementHandler(StatementRepository repository, ReactiveElasticsearchTemplate operations) {
+    public StatementHandler(StatementRepository repository, ReactiveElasticsearchOperations operations) {
         this.repository = repository;
         this.operations = operations;
     }

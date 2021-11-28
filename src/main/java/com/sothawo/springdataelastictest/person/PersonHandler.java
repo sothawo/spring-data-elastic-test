@@ -4,6 +4,7 @@
 package com.sothawo.springdataelastictest.person;
 
 import org.springframework.data.elasticsearch.core.AggregationsContainer;
+import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -45,5 +46,9 @@ public class PersonHandler {
 		var id = request.pathVariable("id");
 		var routing = request.queryParam("routing").orElseThrow();
 		return ok().body(service.byIdWithrouting(id, routing), Person.class);
+	}
+
+	public Mono<ServerResponse> test(ServerRequest request) {
+		return ok().body(service.test(), SearchHit.class);
 	}
 }
