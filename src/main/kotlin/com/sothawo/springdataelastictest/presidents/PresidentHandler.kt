@@ -6,7 +6,6 @@ import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.queryParamOrNull
 import reactor.core.publisher.Mono
-import java.lang.Boolean
 import kotlin.let
 
 @Component
@@ -28,7 +27,7 @@ class PresidentHandler(
 
     fun searchByName(request: ServerRequest): Mono<ServerResponse> {
         val name = request.pathVariable("name")
-        val requestCache = request.queryParamOrNull("requestCache")?.let { it -> Boolean.parseBoolean(it) }
+        val requestCache = request.queryParamOrNull("requestCache")?.let { it -> it.toBoolean() }
 
         return ServerResponse.ok()
             .body(service.searchByName(name, requestCache), SearchHit::class.java)
