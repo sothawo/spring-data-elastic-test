@@ -25,8 +25,9 @@ public class PersonHandler {
 	}
 
 	public Mono<ServerResponse> create(ServerRequest request) {
-		var count = Integer.parseInt(request.pathVariable("count"));
-		return service.create(count).then(ok().build());
+		var start = Integer.parseInt(request.queryParam("start").orElseThrow());
+		var count = Integer.parseInt(request.queryParam("count").orElseThrow());
+		return service.create(start,count).then(ok().build());
 	}
 
 	public Mono<ServerResponse> all(ServerRequest request) {
@@ -45,5 +46,10 @@ public class PersonHandler {
 		var id = request.pathVariable("id");
 		var routing = request.queryParam("routing").orElseThrow();
 		return ok().body(service.byIdWithrouting(id, routing), Person.class);
+	}
+
+	public Mono<ServerResponse> byName(ServerRequest request) {
+		var name = request.pathVariable("name");
+		return ok().body(service.byName(name), Person.class);
 	}
 }

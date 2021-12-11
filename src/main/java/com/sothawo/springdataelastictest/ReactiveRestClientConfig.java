@@ -16,6 +16,7 @@ import org.springframework.data.elasticsearch.core.RefreshPolicy;
 import org.springframework.data.mapping.model.CamelCaseSplittingFieldNamingStrategy;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -49,13 +50,13 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
 				LOGGER.info("Callback 3: THIS SHOULD NOT BE CALLED!");
 				return clientBuilder;
 			}))
-//            .withClientConfigurer((ReactiveRestClients.WebClientConfigurationCallback)webClient -> {
-//                ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
-//                    .codecs(configurer -> configurer.defaultCodecs()
-//                        .maxInMemorySize(-1))
-//                    .build();
-//                return webClient.mutate().exchangeStrategies(exchangeStrategies).build();
-//            })
+			.withClientConfigurer((ReactiveRestClients.WebClientConfigurationCallback) webClient -> {
+				ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+					.codecs(configurer -> configurer.defaultCodecs()
+						.maxInMemorySize(-1))
+					.build();
+				return webClient.mutate().exchangeStrategies(exchangeStrategies).build();
+			})
 			.withHeaders(() -> {
 				HttpHeaders headers = new HttpHeaders();
 				headers.add("currentTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
