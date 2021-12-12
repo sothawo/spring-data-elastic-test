@@ -5,11 +5,11 @@ package com.sothawo.springdataelastictest.person;
 
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.backend.elasticsearch7.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHitSupport;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.SearchPage;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
 
 import static org.elasticsearch.search.aggregations.AggregationBuilders.*;

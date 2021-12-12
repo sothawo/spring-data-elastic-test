@@ -3,6 +3,8 @@
  */
 package com.sothawo.springdataelastictest;
 
+import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,12 +13,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.convert.WritingConverter;
+import org.springframework.data.elasticsearch.backend.elasticsearch7.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.backend.elasticsearch7.client.RestClients;
+import org.springframework.data.elasticsearch.backend.elasticsearch7.config.AbstractElasticsearchConfiguration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
-import org.springframework.data.elasticsearch.client.RestClients;
-import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClients;
-import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.RefreshPolicy;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
@@ -25,6 +26,7 @@ import org.springframework.data.elasticsearch.core.mapping.KebabCaseFieldNamingS
 import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.http.HttpHeaders;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -53,18 +55,22 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 		};
 
 		ClientConfiguration clientConfiguration = ClientConfiguration.builder() //
-			.connectedTo("localhost:9200") //
+
+			// Elasticsearch
+//			.connectedTo("localhost:9200") //
+//			.withBasicAuth("elastic", "hcraescitsale") //
 
 			// OpenSearch
-//            .usingSsl(NotVerifyingSSLContext.getSslContext()) //
-//            .withBasicAuth("admin", "admin") //
+			.connectedTo("localhost:9400") //
+			.usingSsl(NotVerifyingSSLContext.getSslContext()) //
+			.withBasicAuth("admin", "admin") //
 
-//            .usingSsl()
-//            .usingSsl(NotVerifyingSSLContext.getSslContext()) //
-			.withProxy("localhost:8080")
+//			.usingSsl()
+//			.usingSsl(NotVerifyingSSLContext.getSslContext()) //
 //            .withPathPrefix("ela")
-			.withBasicAuth("elastic", "hcraescitsale") //
 //            .withDefaultHeaders(defaultHeaders)
+
+			.withProxy("localhost:8080")
 			.withHeaders(currentTimeHeaders)
 //            .withConnectTimeout(Duration.ofSeconds(10))
 //            .withSocketTimeout(Duration.ofSeconds(1)) //
@@ -78,7 +84,22 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 			}))
 			.build();
 
-		return RestClients.create(clientConfiguration).rest();
+		var restHighLevelClient = RestClients.create(clientConfiguration).rest();
+
+		try {
+			restHighLevelClient.info(RequestOptions.DEFAULT);
+		} catch (IOException e) {
+			LOGGER.warn("Error on first info request", e);
+		} catch (ElasticsearchException e) {
+			LOGGER.warn("Elasticsearch Exception", e);
+			try {
+				restHighLevelClient.info(RequestOptions.DEFAULT);
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+
+		return restHighLevelClient;
 	}
 
 	@Override

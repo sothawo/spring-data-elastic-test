@@ -3,13 +3,9 @@
  */
 package com.sothawo.springdataelastictest.so;
 
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.indices.AnalyzeRequest;
-import org.elasticsearch.client.indices.AnalyzeResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,9 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)

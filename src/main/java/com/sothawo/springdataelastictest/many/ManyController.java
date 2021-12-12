@@ -5,11 +5,11 @@ package com.sothawo.springdataelastictest.many;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.backend.elasticsearch7.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.backend.elasticsearch7.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.backend.elasticsearch7.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.SearchScrollHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

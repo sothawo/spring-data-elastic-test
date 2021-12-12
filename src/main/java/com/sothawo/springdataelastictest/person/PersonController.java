@@ -12,7 +12,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.SearchPage;
-import org.springframework.data.elasticsearch.core.clients.elasticsearch7.ElasticsearchAggregations;
+import org.springframework.data.elasticsearch.backend.elasticsearch7.ElasticsearchAggregations;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.util.Pair;
