@@ -57,13 +57,13 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 		ClientConfiguration clientConfiguration = ClientConfiguration.builder() //
 
 			// Elasticsearch
-//			.connectedTo("localhost:9200") //
-//			.withBasicAuth("elastic", "hcraescitsale") //
+			.connectedTo("localhost:9200") //
+			.withBasicAuth("elastic", "hcraescitsale") //
 
 			// OpenSearch
-			.connectedTo("localhost:9400") //
-			.usingSsl(NotVerifyingSSLContext.getSslContext()) //
-			.withBasicAuth("admin", "admin") //
+//			.connectedTo("localhost:9400") //
+//			.usingSsl(NotVerifyingSSLContext.getSslContext()) //
+//			.withBasicAuth("admin", "admin") //
 
 //			.usingSsl()
 //			.usingSsl(NotVerifyingSSLContext.getSslContext()) //
