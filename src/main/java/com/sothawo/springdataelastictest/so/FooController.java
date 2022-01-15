@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.util.List;
+
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
@@ -47,6 +50,7 @@ public class FooController {
 	}
 
 	@GetMapping("/test")
-	public void test() {
+	public List<Foo> test() {
+		return fooRepository.findByJoinedDateBetween(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 12, 31));
 	}
 }
