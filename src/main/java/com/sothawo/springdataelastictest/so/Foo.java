@@ -26,6 +26,10 @@ public class Foo {
 	@Field(type = FieldType.Date, format = {DateFormat.basic_date})
 	private LocalDate someData;
 
+	@Nullable
+	@Field(type = FieldType.Date, pattern = "uuuu-MM-dd", format = {})
+	private LocalDate joinedDate;
+
 	public String getId() {
 		return id;
 	}
@@ -59,5 +63,14 @@ public class Foo {
 
 	public void setMoreText(@Nullable String moreText) {
 		this.moreText = moreText;
+	}
+
+	@Nullable
+	public LocalDate getJoinedDate() {
+		return joinedDate;
+	}
+
+	public void setJoinedDate(@Nullable LocalDate joinedDate) {
+		this.joinedDate = joinedDate;
 	}
 }
