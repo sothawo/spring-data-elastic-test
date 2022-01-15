@@ -7,13 +7,15 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.backend.elasticsearch7.ElasticsearchAggregation;
-import org.springframework.data.elasticsearch.backend.elasticsearch7.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.AbstractReactiveElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchAggregation;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.RefreshPolicy;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -39,13 +41,20 @@ public class PersonService {
 		this.operations = operations;
 	}
 
-	public Mono<Void> create(int count) {
+	public Flux<Long> create(int count) {
+		var template = (AbstractReactiveElasticsearchTemplate) this.operations;
+		var refreshPolicy = template.getRefreshPolicy();
+		template.setRefreshPolicy(RefreshPolicy.NONE);
+
 		return repository.deleteAll()
-			.then(Flux.range(1, count)
+			.thenMany(Flux.range(1, count)
+				.map(Person::create)
 				.window(1000)
-				.map(ids -> ids.map(Person::create))
 				.flatMap(repository::saveAll)
-				.then());
+				.map(Person::getId))
+			.doOnComplete(() -> {
+				template.setRefreshPolicy(refreshPolicy);
+			});
 	}
 
 	public Flux<Person> all() {

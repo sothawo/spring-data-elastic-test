@@ -5,6 +5,7 @@ package com.sothawo.springdataelastictest.person;
 
 import org.springframework.data.elasticsearch.core.AggregationsContainer;
 import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -27,7 +28,7 @@ public class PersonHandler {
 
 	public Mono<ServerResponse> create(ServerRequest request) {
 		var count = Integer.parseInt(request.pathVariable("count"));
-		return service.create(count).then(ok().build());
+		return ok().contentType(MediaType.APPLICATION_NDJSON).body(service.create(count), Long.class);
 	}
 
 	public Mono<ServerResponse> all(ServerRequest request) {

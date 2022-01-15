@@ -10,9 +10,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.ReactiveAuditorAware;
-import org.springframework.data.elasticsearch.backend.elasticsearch7.ReactiveElasticsearchTemplate;
 import org.springframework.data.elasticsearch.config.EnableReactiveElasticsearchAuditing;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.ReactiveElasticsearchTemplate;
 import org.springframework.data.elasticsearch.repository.config.EnableReactiveElasticsearchRepositories;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -33,6 +33,7 @@ public class SpringdataElasticTestApplication {
         BlockHound.install(
             builder -> builder.allowBlockingCallsInside("org.elasticsearch.Build", "<clinit>")
                 .allowBlockingCallsInside("org.elasticsearch.common.xcontent.XContentBuilder", "<clinit>")
+                .allowBlockingCallsInside("org.elasticsearch.xcontent.XContentBuilder", "<clinit>")
                 .allowBlockingCallsInside("com.github.javafaker.service.FakeValues", "loadValues")
                 .blockingMethodCallback(it -> {
                     throw new BlockingOperationError(it);
