@@ -126,8 +126,9 @@ public class PersonRepositoryController {
 	}
 
 	@GetMapping("persons/firstname/{name}")
-	public Stream<Person> firstName(@PathVariable("name") String name) {
-		return personRepository.queryWithFirstName(name);
+	public SearchHits<Person> firstName(@PathVariable("name") String name) {
+//		return personRepository.queryWithFirstName(name);
+		return personRepository.namedQueryWithFirstName(name);
 	}
 
 	@GetMapping("persons/lastname/{name}")

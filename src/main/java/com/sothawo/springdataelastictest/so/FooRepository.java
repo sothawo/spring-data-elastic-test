@@ -30,4 +30,5 @@ public interface FooRepository extends ElasticsearchRepository<Foo, String> {
 
 	List<Foo> findByJoinedDateBetween(LocalDate fromJoinedDate, LocalDate toJoinedDate);
 
+	SearchHits<Foo> getUserQuery(Integer fieldId);
 }

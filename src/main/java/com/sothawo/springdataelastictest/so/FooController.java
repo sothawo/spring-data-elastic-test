@@ -53,4 +53,9 @@ public class FooController {
 	public List<Foo> test() {
 		return fooRepository.findByJoinedDateBetween(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 12, 31));
 	}
+
+	@GetMapping("/userquery/{id}")
+	public SearchHits<Foo> userQuery(@PathVariable Integer id) {
+		return fooRepository.getUserQuery(id);
+	}
 }

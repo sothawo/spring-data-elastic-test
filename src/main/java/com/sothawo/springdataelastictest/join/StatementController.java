@@ -4,11 +4,11 @@
 package com.sothawo.springdataelastictest.join;
 
 import org.apache.lucene.search.join.ScoreMode;
-import org.springframework.data.elasticsearch.backend.elasticsearch7.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.backend.elasticsearch7.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.join.JoinField;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.routing.RoutingResolver;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

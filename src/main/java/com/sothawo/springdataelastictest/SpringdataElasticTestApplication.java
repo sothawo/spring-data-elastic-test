@@ -20,7 +20,7 @@ import java.util.Optional;
 
 
 @SpringBootApplication(exclude = ElasticsearchDataAutoConfiguration.class)
-@EnableElasticsearchRepositories
+@EnableElasticsearchRepositories(namedQueriesLocation = "classpath:named-queries.properties")
 @EnableElasticsearchAuditing
 @EnableScheduling
 public class SpringdataElasticTestApplication {

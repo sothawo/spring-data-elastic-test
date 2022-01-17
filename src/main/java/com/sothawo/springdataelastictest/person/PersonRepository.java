@@ -43,4 +43,5 @@ public interface PersonRepository extends ElasticsearchRepository<Person, Long>,
         "    }}\n")
     Stream<Person> queryWithFirstName(String name);
 
+		SearchHits<Person> namedQueryWithFirstName(String firstName);
 }
