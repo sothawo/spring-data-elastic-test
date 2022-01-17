@@ -7,9 +7,9 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.AbstractReactiveElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.ElasticsearchAggregation;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.ReactiveElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.RefreshPolicy;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.query.Criteria;
@@ -42,14 +42,14 @@ public class PersonService {
 	}
 
 	public Flux<Long> create(int count) {
-		var template = (AbstractReactiveElasticsearchTemplate) this.operations;
+		var template = (ReactiveElasticsearchTemplate) this.operations;
 		var refreshPolicy = template.getRefreshPolicy();
 		template.setRefreshPolicy(RefreshPolicy.NONE);
 
 		return repository.deleteAll()
 			.thenMany(Flux.range(1, count)
 				.map(Person::create)
-				.window(1000)
+				.buffer(500)
 				.flatMap(repository::saveAll)
 				.map(Person::getId))
 			.doOnComplete(() -> {
