@@ -1,13 +1,12 @@
 package com.sothawo.springdataelastictest.so;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.lang.Nullable;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Document(indexName = "foo")
 public class Foo {
@@ -23,12 +22,8 @@ public class Foo {
 	private String moreText;
 
 	@Nullable
-	@Field(type = FieldType.Date, format = {DateFormat.basic_date})
-	private LocalDate someData;
-
-	@Nullable
-	@Field(type = FieldType.Date, pattern = "uuuu-MM-dd", format = {})
-	private LocalDate joinedDate;
+	@Field(type = FieldType.Date, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSS", format = {})
+	private LocalDateTime someDate;
 
 	public String getId() {
 		return id;
@@ -48,12 +43,12 @@ public class Foo {
 	}
 
 	@Nullable
-	public LocalDate getSomeData() {
-		return someData;
+	public LocalDateTime getSomeDate() {
+		return someDate;
 	}
 
-	public void setSomeData(@Nullable LocalDate someData) {
-		this.someData = someData;
+	public void setSomeDate(@Nullable LocalDateTime someDate) {
+		this.someDate = someDate;
 	}
 
 	@Nullable
@@ -63,14 +58,5 @@ public class Foo {
 
 	public void setMoreText(@Nullable String moreText) {
 		this.moreText = moreText;
-	}
-
-	@Nullable
-	public LocalDate getJoinedDate() {
-		return joinedDate;
-	}
-
-	public void setJoinedDate(@Nullable LocalDate joinedDate) {
-		this.joinedDate = joinedDate;
 	}
 }

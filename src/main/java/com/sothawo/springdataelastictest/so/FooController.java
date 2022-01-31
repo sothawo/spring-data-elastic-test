@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,6 +46,14 @@ public class FooController {
 		return fooRepository.findById(id).orElse(null);
 	}
 
+	@GetMapping("/now")
+	public Foo now() {
+		var foo = new Foo();
+		foo.setId("42");
+		foo.setSomeDate(LocalDateTime.now());
+		return fooRepository.save(foo);
+	}
+
 	@GetMapping
 	public SearchHits<Foo> all() {
 		return fooRepository.searchBy();
@@ -51,7 +61,7 @@ public class FooController {
 
 	@GetMapping("/test")
 	public List<Foo> test() {
-		return fooRepository.findByJoinedDateBetween(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 12, 31));
+		return Collections.emptyList();
 	}
 
 	@GetMapping("/userquery/{id}")
