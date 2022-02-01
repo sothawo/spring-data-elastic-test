@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class FooController {
 	public Foo now() {
 		var foo = new Foo();
 		foo.setId("42");
-		foo.setSomeDate(LocalDateTime.now());
+		foo.setSomeDate(ZonedDateTime.now());
 		return fooRepository.save(foo);
 	}
 

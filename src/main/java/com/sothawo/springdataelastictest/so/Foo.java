@@ -4,9 +4,14 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.ValueConverter;
+import org.springframework.data.elasticsearch.core.mapping.PropertyValueConverter;
 import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Document(indexName = "foo")
 public class Foo {
@@ -22,8 +27,9 @@ public class Foo {
 	private String moreText;
 
 	@Nullable
-	@Field(type = FieldType.Date, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSS", format = {})
-	private LocalDateTime someDate;
+	@Field(type = FieldType.Date, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSX||uuuu-MM-dd'T'HH:mm:ss.SSS", format = {})
+	@ValueConverter(CustomZonedDateTimeConverter.class)
+	private ZonedDateTime someDate;
 
 	public String getId() {
 		return id;
@@ -43,11 +49,11 @@ public class Foo {
 	}
 
 	@Nullable
-	public LocalDateTime getSomeDate() {
+	public ZonedDateTime getSomeDate() {
 		return someDate;
 	}
 
-	public void setSomeDate(@Nullable LocalDateTime someDate) {
+	public void setSomeDate(@Nullable ZonedDateTime someDate) {
 		this.someDate = someDate;
 	}
 
@@ -58,5 +64,33 @@ public class Foo {
 
 	public void setMoreText(@Nullable String moreText) {
 		this.moreText = moreText;
+	}
+}
+
+class CustomZonedDateTimeConverter implements PropertyValueConverter {
+
+	private final DateTimeFormatter formatterWithZone = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSSX");
+	private final DateTimeFormatter formatterWithoutZone = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSS");
+
+	@Override
+	public Object write(Object value) {
+		if (value instanceof ZonedDateTime zonedDateTime) {
+			return formatterWithZone.format(zonedDateTime);
+		} else {
+			return value;
+		}
+	}
+
+	@Override
+	public Object read(Object value) {
+		if (value instanceof String s) {
+			try {
+				return formatterWithZone.parse(s, ZonedDateTime::from);
+			} catch (Exception e) {
+				return formatterWithoutZone.parse(s, LocalDateTime::from).atZone(ZoneId.of("UTC"));
+			}
+		} else {
+			return value;
+		}
 	}
 }
