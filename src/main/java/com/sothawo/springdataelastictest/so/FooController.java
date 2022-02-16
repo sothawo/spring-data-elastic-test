@@ -7,6 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.Query;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +22,8 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -68,5 +73,11 @@ public class FooController {
 	@GetMapping("/userquery/{id}")
 	public SearchHits<Foo> userQuery(@PathVariable Integer id) {
 		return fooRepository.getUserQuery(id);
+	}
+
+	@DeleteMapping
+	public void deleteAll() {
+		Query query = new NativeSearchQueryBuilder().withQuery(matchAllQuery()).build();
+		operations.delete(query, Foo.class);
 	}
 }

@@ -47,6 +47,8 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 
 		HttpHeaders defaultHeaders = new HttpHeaders();
 		defaultHeaders.add("header-name", "header-value");
+		defaultHeaders.add("Accept", "application/vnd.elasticsearch+json;compatible-with=7");
+		defaultHeaders.add("Content-Type", "application/vnd.elasticsearch+json;compatible-with=7");
 
 		Supplier<HttpHeaders> currentTimeHeaders = () -> {
 			HttpHeaders headers = new HttpHeaders();
@@ -112,16 +114,16 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 	@Override
 	public ElasticsearchOperations elasticsearchOperations(ElasticsearchConverter elasticsearchConverter, RestHighLevelClient elasticsearchClient) {
 		ElasticsearchRestTemplate template = new ElasticsearchRestTemplate(elasticsearchClient, elasticsearchConverter) {
-			@Override
-			public <T> T execute(ClientCallback<T> callback) {
-				try {
-					return super.execute(callback);
-				} catch (DataAccessResourceFailureException e) {
-					// retry
-					LOGGER.warn("Retrying because of {}", e.getMessage());
-					return super.execute(callback);
-				}
-			}
+//			@Override
+//			public <T> T execute(ClientCallback<T> callback) {
+//				try {
+//					return super.execute(callback);
+//				} catch (DataAccessResourceFailureException e) {
+//					// retry
+//					LOGGER.warn("Retrying because of {}", e.getMessage());
+//					return super.execute(callback);
+//				}
+//			}
 		};
 		template.setRefreshPolicy(refreshPolicy());
 		return template;
