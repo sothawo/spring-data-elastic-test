@@ -46,7 +46,6 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 	public RestHighLevelClient elasticsearchClient() {
 
 		HttpHeaders defaultHeaders = new HttpHeaders();
-		defaultHeaders.add("header-name", "header-value");
 		defaultHeaders.add("Accept", "application/vnd.elasticsearch+json;compatible-with=7");
 		defaultHeaders.add("Content-Type", "application/vnd.elasticsearch+json;compatible-with=7");
 
@@ -61,6 +60,7 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 			// Elasticsearch
 			.connectedTo("localhost:9200") //
 			.withBasicAuth("elastic", "hcraescitsale") //
+			.withDefaultHeaders(defaultHeaders) //
 
 			// OpenSearch
 //			.connectedTo("localhost:9400") //
@@ -69,8 +69,6 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 
 //			.usingSsl()
 //			.usingSsl(NotVerifyingSSLContext.getSslContext()) //
-//            .withPathPrefix("ela")
-//            .withDefaultHeaders(defaultHeaders)
 
 			.withProxy("localhost:8080")
 			.withHeaders(currentTimeHeaders)
