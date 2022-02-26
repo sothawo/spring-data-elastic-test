@@ -7,6 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -79,5 +82,12 @@ public class FooController {
 	public void deleteAll() {
 		Query query = new NativeSearchQueryBuilder().withQuery(matchAllQuery()).build();
 		operations.delete(query, Foo.class);
+	}
+
+	@GetMapping("/generic")
+	public SearchHits<GenericEntity> allGeneric() {
+		var criteria = Criteria.where("need").is("alcohol");
+		Query query = new CriteriaQuery(criteria);
+		return operations.search(query, GenericEntity.class, IndexCoordinates.of("foo"));
 	}
 }
