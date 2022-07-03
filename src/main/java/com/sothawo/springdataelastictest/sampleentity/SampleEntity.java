@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -53,7 +54,7 @@ public record SampleEntity(
 
     @Nullable SeqNoPrimaryTerm seqNoPrimaryTerm
 ) implements Persistable<String> {
-    @PersistenceConstructor
+    @PersistenceCreator
     public SampleEntity {
     }
 

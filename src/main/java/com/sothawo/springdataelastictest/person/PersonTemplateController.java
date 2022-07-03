@@ -3,21 +3,26 @@
  */
 package com.sothawo.springdataelastictest.person;
 
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import co.elastic.clients.elasticsearch._types.aggregations.Aggregate;
+import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
+import co.elastic.clients.elasticsearch._types.aggregations.Buckets;
+import co.elastic.clients.elasticsearch._types.aggregations.StringTermsAggregate;
+import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.ElasticsearchAggregations;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregations;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.data.elasticsearch.core.query.BaseQuery;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,8 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
-import static org.elasticsearch.search.aggregations.AggregationBuilders.*;
+import static org.springframework.data.elasticsearch.client.elc.QueryBuilders.*;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -62,7 +66,7 @@ public class PersonTemplateController {
 
 	@GetMapping("/persons")
 	public SearchHits<Person> persons() {
-		NativeSearchQuery query = new NativeSearchQueryBuilder().withQuery(matchAllQuery()).build();
+		BaseQuery query = (BaseQuery) operations.matchAllQuery();
 		long count = operations.count(query, index);
 		query.setPageable(PageRequest.of(0, (int) count));
 		return operations.search(query, Person.class, index);
@@ -81,18 +85,39 @@ public class PersonTemplateController {
 	@GetMapping("/persons/aggs")
 	public SearchHits<Person> aggregationsTest() {
 		String aggsName = "first_names";
-		NativeSearchQuery query = new NativeSearchQueryBuilder()
-			.withQuery(matchAllQuery())
-			.withAggregations(terms(aggsName).field("first-name")) //
+		BaseQuery query = NativeQuery.builder()
+			.withQuery(matchAllQueryAsQuery())
+			.withAggregation(aggsName, Aggregation.of( a -> a
+				.terms(ta -> ta.field("first-name"))))
 			.build();
 		query.setMaxResults(0);
 
 		SearchHits<Person> searchHits = operations.search(query, Person.class, IndexCoordinates.of("person"));
 		if (searchHits.hasAggregations()) {
 			var aggregations = ((ElasticsearchAggregations) searchHits.getAggregations()).aggregations();
-			Terms terms = aggregations.get(aggsName);
-			terms.getBuckets().forEach(bucket -> {
-				System.out.println("bucket " + bucket.getKeyAsString() + ", doc_count: " + bucket.getDocCount());
+			aggregations.forEach(elasticsearchAggregation -> {
+				var aggregation = elasticsearchAggregation.aggregation();
+				if (aggregation.getName().equals(aggsName)) {
+					var aggregate = aggregation.getAggregate();
+
+					if (aggregate.isSterms()) {
+						aggregate.sterms().buckets().array().forEach(bucket -> {
+							System.out.println("bucket " + bucket.key() + ", doc_count: " + bucket.docCount());
+						});
+					}
+
+					if (aggregate.isDterms()) {
+						aggregate.dterms().buckets().array().forEach(bucket -> {
+							System.out.println("bucket " + bucket.key() + ", doc_count: " + bucket.docCount());
+						});
+					}
+
+					if (aggregate.isLterms()) {
+						aggregate.lterms().buckets().array().forEach(bucket -> {
+							System.out.println("bucket " + bucket.key() + ", doc_count: " + bucket.docCount());
+						});
+					}
+				}
 			});
 		}
 		return searchHits;
@@ -100,7 +125,7 @@ public class PersonTemplateController {
 
 	@GetMapping("/persons/count")
 	public long count() {
-		return operations.count(new NativeSearchQueryBuilder().withQuery(matchAllQuery()).build(), index);
+		return operations.count(operations.matchAllQuery(), index);
 	}
 
 	@GetMapping("/test")

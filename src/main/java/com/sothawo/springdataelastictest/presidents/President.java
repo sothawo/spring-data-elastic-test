@@ -5,6 +5,7 @@ package com.sothawo.springdataelastictest.presidents;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -25,7 +26,7 @@ public record President(
     @Field(type = FieldType.Integer_Range)
     Term term) {
 
-    @PersistenceConstructor
+    @PersistenceCreator
     public President {
     }
 

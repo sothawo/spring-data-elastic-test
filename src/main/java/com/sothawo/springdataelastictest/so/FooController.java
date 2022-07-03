@@ -10,7 +10,7 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +26,6 @@ import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -80,8 +79,7 @@ public class FooController {
 
 	@DeleteMapping
 	public void deleteAll() {
-		Query query = new NativeSearchQueryBuilder().withQuery(matchAllQuery()).build();
-		operations.delete(query, Foo.class);
+		operations.delete(operations.matchAllQuery(), Foo.class);
 	}
 
 	@GetMapping("/generic")

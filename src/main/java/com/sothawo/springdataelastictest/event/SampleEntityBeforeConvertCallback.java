@@ -4,10 +4,11 @@
 package com.sothawo.springdataelastictest.event;
 
 import com.sothawo.springdataelastictest.sampleentity.SampleEntity;
-import org.elasticsearch.common.UUIDs;
 import org.springframework.data.elasticsearch.core.event.BeforeConvertCallback;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -15,13 +16,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class SampleEntityBeforeConvertCallback implements BeforeConvertCallback<SampleEntity> {
 
-    @Override
-    public SampleEntity onBeforeConvert(SampleEntity sampleEntity, IndexCoordinates indexCoordinates) {
+	@Override
+	public SampleEntity onBeforeConvert(SampleEntity sampleEntity, IndexCoordinates indexCoordinates) {
 
-        if (sampleEntity.getId() == null) {
-            return sampleEntity.withId(UUIDs.randomBase64UUID());
-        }
+		if (sampleEntity.getId() == null) {
+			return sampleEntity.withId(UUID.randomUUID().toString());
+		}
 
-        return sampleEntity;
-    }
+		return sampleEntity;
+	}
 }

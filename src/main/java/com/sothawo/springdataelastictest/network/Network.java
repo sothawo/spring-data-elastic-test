@@ -17,6 +17,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDateTime;
+import java.time.Instant;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -31,14 +32,14 @@ public class Network implements Persistable<String> {
 
     @CreatedDate
     @BasicDateTime("creationDate")
-    private LocalDateTime created;
+    private Instant created;
 
     @CreatedBy
     private String createdBy;
 
     @LastModifiedDate
     @BasicDateTime("modifiedDate")
-    private LocalDateTime lastModified;
+    private Instant lastModified;
 
     @LastModifiedBy
     private String lastModifiedBy;
@@ -59,11 +60,11 @@ public class Network implements Persistable<String> {
         this.cidr = cidr;
     }
 
-    public LocalDateTime getCreated() {
+    public Instant getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDateTime created) {
+    public void setCreated(Instant created) {
         this.created = created;
     }
 
@@ -75,11 +76,11 @@ public class Network implements Persistable<String> {
         this.createdBy = createdBy;
     }
 
-    public LocalDateTime getLastModified() {
+    public Instant getLastModified() {
         return lastModified;
     }
 
-    public void setLastModified(LocalDateTime lastModified) {
+    public void setLastModified(Instant lastModified) {
         this.lastModified = lastModified;
     }
 

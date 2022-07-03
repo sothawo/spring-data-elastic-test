@@ -3,12 +3,14 @@
  */
 package com.sothawo.springdataelastictest.join;
 
-import org.apache.lucene.search.join.ScoreMode;
+import co.elastic.clients.elasticsearch._types.query_dsl.ChildScoreMode;
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
+import co.elastic.clients.elasticsearch.core.search.ScoreMode;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.join.JoinField;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.core.routing.RoutingResolver;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
-import static org.elasticsearch.join.query.JoinQueryBuilders.*;
+import static org.springframework.data.elasticsearch.client.elc.QueryBuilders.*;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -117,8 +118,14 @@ public class StatementController {
 
     @GetMapping("/votes")
 SearchHits<Statement> hasVotes() {
-			NativeSearchQuery query = new NativeSearchQueryBuilder()
-        .withQuery(hasChildQuery("vote", matchAllQuery(), ScoreMode.None))
+
+			Query query = NativeQuery.builder()
+        .withQuery(co.elastic.clients.elasticsearch._types.query_dsl.Query.of(qb -> qb //
+					.hasChild(hc -> hc
+						.queryName("vote") //
+						.query(matchAllQueryAsQuery()) //
+						.scoreMode(ChildScoreMode.None)//
+					)))
         .build();
 
     return operations.search(query, Statement.class);

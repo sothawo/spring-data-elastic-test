@@ -3,38 +3,41 @@
  */
 package com.sothawo.springdataelastictest.person;
 
-import org.elasticsearch.index.query.QueryBuilders;
+import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHitSupport;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.SearchPage;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
 
-import static org.elasticsearch.search.aggregations.AggregationBuilders.*;
+import static org.springframework.data.elasticsearch.client.elc.QueryBuilders.*;
+
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 public class PersonCustomRepositoryImpl implements PersonCustomRepository {
 
-    private final ElasticsearchOperations operations;
+	private final ElasticsearchOperations operations;
 
-    public PersonCustomRepositoryImpl(ElasticsearchOperations operations) {
-        this.operations = operations;
-    }
+	public PersonCustomRepositoryImpl(ElasticsearchOperations operations) {
+		this.operations = operations;
+	}
 
-    @Override
-    public SearchPage<Person> findByFirstNameWithLastNameCounts(String firstName, Pageable pageable) {
+	@Override
+	public SearchPage<Person> findByFirstNameWithLastNameCounts(String firstName, Pageable pageable) {
 
-        Query query = new NativeSearchQueryBuilder().withAggregations(terms("lastNames").field("last-name").size(10)) //
-            .withQuery(QueryBuilders.matchQuery("first-name", firstName))
-            .withPageable(pageable)
-            .build();
+		Query query = NativeQuery.builder()
+			.withAggregation("lastNames", Aggregation.of(a -> a
+				.terms(ta -> ta.field("last-name").size(10)))) //
+			.withQuery(matchQueryAsQuery("first-name", firstName, null, null))
+			.withPageable(pageable)
+			.build();
 
-        SearchHits<Person> searchHits = operations.search(query, Person.class);
+		SearchHits<Person> searchHits = operations.search(query, Person.class);
 
-        return SearchHitSupport.searchPageFor(searchHits, pageable);
-    }
+		return SearchHitSupport.searchPageFor(searchHits, pageable);
+	}
 }

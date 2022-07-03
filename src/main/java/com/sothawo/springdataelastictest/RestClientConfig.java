@@ -3,30 +3,21 @@
  */
 package com.sothawo.springdataelastictest;
 
-import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.convert.WritingConverter;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
-import org.springframework.data.elasticsearch.client.RestClients;
-import org.springframework.data.elasticsearch.config.AbstractElasticsearchConfiguration;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchClients;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchConfiguration;
 import org.springframework.data.elasticsearch.core.RefreshPolicy;
-import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchDateConverter;
 import org.springframework.data.elasticsearch.core.mapping.KebabCaseFieldNamingStrategy;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
 import org.springframework.http.HttpHeaders;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -37,30 +28,29 @@ import java.util.function.Supplier;
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Configuration
-public class RestClientConfig extends AbstractElasticsearchConfiguration {
+public class RestClientConfig extends ElasticsearchConfiguration {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RestClientConfig.class);
 
 	@Override
-	@Bean
-	public RestHighLevelClient elasticsearchClient() {
+	public ClientConfiguration clientConfiguration() {
 
 		HttpHeaders defaultHeaders = new HttpHeaders();
-		defaultHeaders.add("Accept", "application/vnd.elasticsearch+json;compatible-with=7");
-		defaultHeaders.add("Content-Type", "application/vnd.elasticsearch+json;compatible-with=7");
+//		defaultHeaders.add("Accept", "application/vnd.elasticsearch+json;compatible-with=7");
+//		defaultHeaders.add("Content-Type", "application/vnd.elasticsearch+json;compatible-with=7");
 
 		Supplier<HttpHeaders> currentTimeHeaders = () -> {
 			HttpHeaders headers = new HttpHeaders();
-			headers.add("currentTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+			headers.add("x-current-time", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 			return headers;
 		};
 
-		ClientConfiguration clientConfiguration = ClientConfiguration.builder() //
+		return ClientConfiguration.builder() //
 
 			// Elasticsearch
 			.connectedTo("localhost:9200") //
 			.withBasicAuth("elastic", "hcraescitsale") //
-			.withDefaultHeaders(defaultHeaders) //
+//			.withDefaultHeaders(defaultHeaders) //
 
 			// OpenSearch
 //			.connectedTo("localhost:9400") //
@@ -74,32 +64,15 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 			.withHeaders(currentTimeHeaders)
 //            .withConnectTimeout(Duration.ofSeconds(10))
 //            .withSocketTimeout(Duration.ofSeconds(1)) //
-			.withClientConfigurer(RestClients.RestClientConfigurationCallback.from(clientBuilder -> {
+			.withClientConfigurer(ElasticsearchClients.ElasticsearchClientConfigurationCallback.from(clientBuilder -> {
 				LOGGER.info("Callback 1: I could now configure a {}", clientBuilder.getClass().getName());
 				return clientBuilder;
 			}))
-			.withClientConfigurer(RestClients.RestClientConfigurationCallback.from(clientBuilder -> {
+			.withClientConfigurer(ElasticsearchClients.ElasticsearchClientConfigurationCallback.from(clientBuilder -> {
 				LOGGER.info("Callback 2: I could now configure a {}", clientBuilder.getClass().getName());
 				return clientBuilder;
 			}))
 			.build();
-
-		var restHighLevelClient = RestClients.create(clientConfiguration).rest();
-
-		try {
-			restHighLevelClient.info(RequestOptions.DEFAULT);
-		} catch (IOException e) {
-			LOGGER.warn("Error on first info request", e);
-		} catch (ElasticsearchException e) {
-			LOGGER.warn("Elasticsearch Exception", e);
-			try {
-				restHighLevelClient.info(RequestOptions.DEFAULT);
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-		}
-
-		return restHighLevelClient;
 	}
 
 	@Override
@@ -107,24 +80,6 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 		Collection<Converter<?, ?>> converters = new ArrayList<>();
 		converters.add(new LocalDateTimeConverter());
 		return new ElasticsearchCustomConversions(converters);
-	}
-
-	@Override
-	public ElasticsearchOperations elasticsearchOperations(ElasticsearchConverter elasticsearchConverter, RestHighLevelClient elasticsearchClient) {
-		ElasticsearchRestTemplate template = new ElasticsearchRestTemplate(elasticsearchClient, elasticsearchConverter) {
-//			@Override
-//			public <T> T execute(ClientCallback<T> callback) {
-//				try {
-//					return super.execute(callback);
-//				} catch (DataAccessResourceFailureException e) {
-//					// retry
-//					LOGGER.warn("Retrying because of {}", e.getMessage());
-//					return super.execute(callback);
-//				}
-//			}
-		};
-		template.setRefreshPolicy(refreshPolicy());
-		return template;
 	}
 
 	@Override

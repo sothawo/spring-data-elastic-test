@@ -5,11 +5,10 @@ package com.sothawo.springdataelastictest.many;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.SearchScrollHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +21,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
-
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
@@ -33,9 +30,9 @@ public class ManyController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ManyController.class);
 
-    private final ElasticsearchRestTemplate template;
+    private final ElasticsearchTemplate template;
 
-    public ManyController(ElasticsearchRestTemplate template) {
+    public ManyController(ElasticsearchTemplate template) {
         this.template = template;
     }
 
@@ -61,7 +58,7 @@ public class ManyController {
     @GetMapping("/count")
     public Long count() {
         IndexCoordinates indexCoordinates = template.getElasticsearchConverter().getMappingContext().getPersistentEntity(Many.class).getIndexCoordinates();
-        NativeSearchQuery query = new NativeSearchQueryBuilder().withQuery(matchAllQuery()).build();
+			Query query = template.matchAllQuery();
 
         long count = 0;
 
