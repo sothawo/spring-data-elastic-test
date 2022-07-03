@@ -16,16 +16,15 @@
 
 package com.sothawo.springdataelastictest;
 
+import co.elastic.clients.elasticsearch._types.HealthStatus;
+import co.elastic.clients.elasticsearch.cluster.HealthResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.cluster.health.ClusterHealthStatus;
 import org.springframework.boot.actuate.health.AbstractReactiveHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.actuate.health.Status;
-import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient;
+import org.springframework.data.elasticsearch.client.elc.ReactiveElasticsearchClient;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
@@ -49,18 +48,18 @@ public class CustomElasticsearchReactiveHealthIndicator extends AbstractReactive
 
     @Override
     protected Mono<Health> doHealthCheck(Health.Builder builder) {
-        return reactiveElasticsearchClient.cluster().health(new ClusterHealthRequest())
+        return reactiveElasticsearchClient.cluster().health(h -> h)
             .map(response -> builder
-                .status(response.getStatus() == ClusterHealthStatus.RED ? Status.OUT_OF_SERVICE : Status.UP)
+                .status(response.status() == HealthStatus.Red ? Status.OUT_OF_SERVICE : Status.UP)
                 .withDetails(getDetails(response))
                 .build())
             .onErrorResume(throwable -> Mono.just(builder.down(throwable).build()));
     }
 
-    private Map<String, ?> getDetails(ClusterHealthResponse clusterHealthResponse) {
+    private Map<String, ?> getDetails(HealthResponse healthResponse) {
         Map<String, ?> details;
         try {
-            details = OBJECT_MAPPER.readerFor(Map.class).readValue(clusterHealthResponse.toString());
+            details = OBJECT_MAPPER.readerFor(Map.class).readValue(healthResponse.toString());
         } catch (JsonProcessingException e) {
             details = Collections.singletonMap("Error parsing response body: ", e.getMessage());
         }

@@ -3,27 +3,26 @@
  */
 package com.sothawo.springdataelastictest.person;
 
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.ElasticsearchAggregation;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchAggregation;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.core.AbstractReactiveElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.ReactiveElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.RefreshPolicy;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
-import static org.elasticsearch.search.aggregations.AggregationBuilders.*;
+import static org.springframework.data.elasticsearch.client.elc.QueryBuilders.*;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -42,7 +41,7 @@ public class PersonService {
 	}
 
 	public Flux<Long> create(int count) {
-		var template = (ReactiveElasticsearchTemplate) this.operations;
+		var template = (AbstractReactiveElasticsearchTemplate) this.operations;
 		var refreshPolicy = template.getRefreshPolicy();
 		template.setRefreshPolicy(RefreshPolicy.NONE);
 
@@ -71,17 +70,22 @@ public class PersonService {
 	}
 
 	public Flux<Pair<String, Long>> lastNameCounts() {
-		var query = new NativeSearchQueryBuilder()
-			.withQuery(matchAllQuery())
-			.withAggregations(terms("lastNames").field("last-name")) //
+
+
+		var query = NativeQuery.builder()
+			.withQuery(matchAllQueryAsQuery())
+			.withAggregation("lastNames", Aggregation.of(a -> a
+				.terms(ta -> ta.field("last-name"))))
 			.build();
 
 		return operations.aggregate(query, Person.class) //
 			.map(aggregationContainer -> ((ElasticsearchAggregation) aggregationContainer).aggregation()) //
-			.flatMap(aggregation -> //
-				Flux.fromStream(((Terms) aggregation) //
-					.getBuckets().stream() //
-					.map(bucket -> Pair.of(bucket.getKeyAsString(), bucket.getDocCount()))));
+			.filter(aggregation -> aggregation.getName().equals("lastNames"))
+			.map(org.springframework.data.elasticsearch.client.elc.Aggregation::getAggregate)
+			.flatMap(aggregate -> //
+				Flux.fromStream(aggregate.sterms() //
+					.buckets().array().stream() //
+					.map(bucket -> Pair.of(bucket.key(), bucket.docCount()))));
 	}
 
 	public Mono<Person> byIdWithrouting(String id, String routing) {
