@@ -35,13 +35,21 @@ public class ReactiveRestClientConfig extends ReactiveElasticsearchConfiguration
 			.withProxy("localhost:8080")
 //            .withPathPrefix("ela")
 			.withBasicAuth("elastic", "hcraescitsale") //
-			.withClientConfigurer(ElasticsearchClients.ElasticsearchClientConfigurationCallback.from(webClient -> {
-				LOGGER.info("Callback 1: I could now configure a {}", webClient.getClass().getName());
-				return webClient;
+			.withClientConfigurer(ElasticsearchClients.ElasticsearchHttpClientConfigurationCallback.from(httpAsyncClientBuilder -> {
+				LOGGER.info("Callback 1: I could now configure a {}", httpAsyncClientBuilder.getClass().getName());
+				return httpAsyncClientBuilder;
 			}))
-			.withClientConfigurer(ElasticsearchClients.ElasticsearchClientConfigurationCallback.from(webClient -> {
-				LOGGER.info("Callback 2: I could now configure a {}", webClient.getClass().getName());
-				return webClient;
+			.withClientConfigurer(ElasticsearchClients.ElasticsearchHttpClientConfigurationCallback.from(httpAsyncClientBuilder -> {
+				LOGGER.info("Callback 2: I could now configure a {}", httpAsyncClientBuilder.getClass().getName());
+				return httpAsyncClientBuilder;
+			}))
+			.withClientConfigurer(ElasticsearchClients.ElasticsearchRestClientConfigurationCallback.from(restClientBuilder -> {
+				LOGGER.info("Callback 3: I could now configure a {}", restClientBuilder.getClass().getName());
+				return restClientBuilder;
+			}))
+			.withClientConfigurer(ElasticsearchClients.ElasticsearchRestClientConfigurationCallback.from(restClientBuilder -> {
+				LOGGER.info("Callback 4: I could now configure a {}", restClientBuilder.getClass().getName());
+				return restClientBuilder;
 			}))
 			.withHeaders(() -> {
 				HttpHeaders headers = new HttpHeaders();

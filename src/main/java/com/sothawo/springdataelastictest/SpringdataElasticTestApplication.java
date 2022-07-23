@@ -2,7 +2,6 @@ package com.sothawo.springdataelastictest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.autoconfigure.elasticsearch.ElasticSearchRestHealthContributorAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -21,7 +20,7 @@ import reactor.blockhound.BlockHound;
 import reactor.blockhound.BlockingOperationError;
 
 @EnableReactiveElasticsearchAuditing
-@SpringBootApplication(exclude = {ElasticsearchDataAutoConfiguration.class, ElasticSearchRestHealthContributorAutoConfiguration.class})
+@SpringBootApplication(exclude = {ElasticsearchDataAutoConfiguration.class})
 @EnableReactiveElasticsearchRepositories(repositoryBaseClass = RoutingAwareReactiveElasticsearchRepositoryImpl.class)
 public class SpringdataElasticTestApplication {
 
