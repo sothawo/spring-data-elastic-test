@@ -3,6 +3,7 @@
  */
 package com.sothawo.springdataelastictest;
 
+import com.sothawo.springdataelastictest.compositeid.CompositeIdConverter;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -31,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -46,8 +48,8 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 	public RestHighLevelClient elasticsearchClient() {
 
 		HttpHeaders defaultHeaders = new HttpHeaders();
-		defaultHeaders.add("Accept", "application/vnd.elasticsearch+json;compatible-with=7");
-		defaultHeaders.add("Content-Type", "application/vnd.elasticsearch+json;compatible-with=7");
+//		defaultHeaders.add("Accept", "application/vnd.elasticsearch+json;compatible-with=7");
+//		defaultHeaders.add("Content-Type", "application/vnd.elasticsearch+json;compatible-with=7");
 
 		Supplier<HttpHeaders> currentTimeHeaders = () -> {
 			HttpHeaders headers = new HttpHeaders();
@@ -106,6 +108,7 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 	public ElasticsearchCustomConversions elasticsearchCustomConversions() {
 		Collection<Converter<?, ?>> converters = new ArrayList<>();
 		converters.add(new LocalDateTimeConverter());
+//		converters.addAll(List.of(new CompositeIdConverter.Reader(), new CompositeIdConverter.Writer()));
 		return new ElasticsearchCustomConversions(converters);
 	}
 
