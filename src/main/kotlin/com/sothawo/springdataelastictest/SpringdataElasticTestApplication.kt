@@ -8,9 +8,9 @@ import org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElastic
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.boot.runApplication
 import org.springframework.context.event.EventListener
-import org.springframework.data.elasticsearch.backend.elasticsearch7.ReactiveElasticsearchTemplate
 import org.springframework.data.elasticsearch.config.EnableReactiveElasticsearchAuditing
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations
+import org.springframework.data.elasticsearch.core.ReactiveElasticsearchTemplate
 import org.springframework.data.elasticsearch.repository.config.EnableReactiveElasticsearchRepositories
 
 
