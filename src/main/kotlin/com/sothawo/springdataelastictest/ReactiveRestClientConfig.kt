@@ -28,27 +28,22 @@ class ReactiveRestClientConfig : AbstractReactiveElasticsearchConfiguration() {
 	@Bean
 	fun clientConfiguration(): ClientConfiguration {
 
-		class Callback : ReactiveRestClients.WebClientConfigurationCallback {
-			override fun configure(webClient: WebClient): WebClient {
-				LOGGER.info("Configuring the WebClient")
-				return webClient.mutate()
-					.exchangeStrategies(ExchangeStrategies.builder()
-						.codecs { configurer ->
-							configurer.defaultCodecs().maxInMemorySize(-1)
-						}
-						.build())
-					.build()
-			}
-
-		}
-
 		return ClientConfiguration.builder() //
 			.connectedTo("localhost:9200") //
 			//            .usingSsl()
 			//             .usingSsl(NotVerifyingSSLContext.getSslContext()) //
 			.withProxy("localhost:8080") //            .withPathPrefix("ela")
 			.withBasicAuth("elastic", "hcraescitsale") //
-			.withClientConfigurer(Callback())
+			.withClientConfigurer(ReactiveRestClients.WebClientConfigurationCallback.from { webClient ->
+				LOGGER.info("Configuring the WebClient")
+				webClient.mutate()
+					.exchangeStrategies(ExchangeStrategies.builder()
+						.codecs { configurer ->
+							configurer.defaultCodecs().maxInMemorySize(-1)
+						}
+						.build())
+					.build()
+			})
 			.withHeaders(Supplier {
 				HttpHeaders().apply {
 					add("currentTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
