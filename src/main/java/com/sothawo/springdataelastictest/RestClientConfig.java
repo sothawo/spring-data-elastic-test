@@ -64,11 +64,11 @@ public class RestClientConfig extends ElasticsearchConfiguration {
 			.withHeaders(currentTimeHeaders)
 //            .withConnectTimeout(Duration.ofSeconds(10))
 //            .withSocketTimeout(Duration.ofSeconds(1)) //
-			.withClientConfigurer(ElasticsearchClients.ElasticsearchClientConfigurationCallback.from(clientBuilder -> {
+			.withClientConfigurer(ElasticsearchClients.ElasticsearchRestClientConfigurationCallback.from(clientBuilder -> {
 				LOGGER.info("Callback 1: I could now configure a {}", clientBuilder.getClass().getName());
 				return clientBuilder;
 			}))
-			.withClientConfigurer(ElasticsearchClients.ElasticsearchClientConfigurationCallback.from(clientBuilder -> {
+			.withClientConfigurer(ElasticsearchClients.ElasticsearchHttpClientConfigurationCallback.from(clientBuilder -> {
 				LOGGER.info("Callback 2: I could now configure a {}", clientBuilder.getClass().getName());
 				return clientBuilder;
 			}))

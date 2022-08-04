@@ -3,6 +3,7 @@
  */
 package com.sothawo.springdataelastictest.customid;
 
+import org.springframework.data.annotation.AccessType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -14,35 +15,43 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
  */
 @Document(indexName = "custom-id")
 public class CustomId {
-    @Id
-//    @ReadOnlyProperty
-    private String elasticId;
-    @Field("id")
-    private String documentId;
-    @Field(type = FieldType.Text)
-    private String text;
+	@Field(type = FieldType.Keyword)
+	private String part1;
 
-    public String getElasticId() {
-        return elasticId;
-    }
+	@Field(type = FieldType.Keyword)
+	private String part2;
 
-    public void setElasticId(String elasticId) {
-        this.elasticId = elasticId;
-    }
+	@Field(type = FieldType.Text)
+	private String text;
 
-    public String getDocumentId() {
-        return documentId;
-    }
+	@Id
+	@ReadOnlyProperty
+	@AccessType(AccessType.Type.PROPERTY)
+	public String getId() {
+		return part1 + '-' + part2;
+	}
 
-    public void setDocumentId(String documentId) {
-        this.documentId = documentId;
-    }
+	public String getPart1() {
+		return part1;
+	}
 
-    public String getText() {
-        return text;
-    }
+	public void setPart1(String part1) {
+		this.part1 = part1;
+	}
 
-    public void setText(String text) {
-        this.text = text;
-    }
+	public String getPart2() {
+		return part2;
+	}
+
+	public void setPart2(String part2) {
+		this.part2 = part2;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
 }

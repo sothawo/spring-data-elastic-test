@@ -20,7 +20,7 @@
 		<!-- need Jackson 2.12 for java records -->
 		<jackson-bom.version>2.12.3</jackson-bom.version>
 
-		<elasticsearch.version>8.2.3</elasticsearch.version>
+		<elasticsearch.version>8.3.3</elasticsearch.version>
 		<springdata.commons>3.0.0-SNAPSHOT</springdata.commons>
 		<spring-data-elasticsearch>5.0.0-SNAPSHOT</spring-data-elasticsearch>
 	</properties>
