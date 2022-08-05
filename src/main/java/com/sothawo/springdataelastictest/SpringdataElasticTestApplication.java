@@ -20,7 +20,7 @@ import reactor.blockhound.BlockHound;
 import reactor.blockhound.BlockingOperationError;
 
 @EnableReactiveElasticsearchAuditing
-@SpringBootApplication(exclude = {ElasticsearchDataAutoConfiguration.class})
+@SpringBootApplication
 @EnableReactiveElasticsearchRepositories(repositoryBaseClass = RoutingAwareReactiveElasticsearchRepositoryImpl.class)
 public class SpringdataElasticTestApplication {
 
