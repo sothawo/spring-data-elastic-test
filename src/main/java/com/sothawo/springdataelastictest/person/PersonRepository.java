@@ -15,33 +15,35 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public interface PersonRepository extends ElasticsearchRepository<Person, Long>, PersonCustomRepository {
-    Stream<Person> findByLastName(final String lastName);
+	Stream<Person> findByLastName(final String lastName);
 
-    SearchHits<Person> findByLastNameOrFirstName(String lastName, String firstName);
+	SearchHits<Person> findByLastNameOrFirstName(String lastName, String firstName);
 
-    @Highlight(fields = {@HighlightField(name = "firstName"), @HighlightField(name = "lastName")})
-    SearchHits<Person> queryByLastNameOrFirstNameOrderByBirthDate(String lastName, String firstName);
+	@Highlight(fields = {@HighlightField(name = "firstName"), @HighlightField(name = "lastName")})
+	SearchHits<Person> queryByLastNameOrFirstNameOrderByBirthDate(String lastName, String firstName);
 
-    @Query("{\"fuzzy\":{\"last-name\":\"?0\"}}")
-    SearchPage<Person> findByLastNameFuzzy(final String lastName, Pageable pageable);
+	@Query("{\"fuzzy\":{\"last-name\":\"?0\"}}")
+	SearchPage<Person> findByLastNameFuzzy(final String lastName, Pageable pageable);
 
-    @CountQuery("{\"fuzzy\":{\"last-name\":\"?0\"}}")
-    long countByLastNameFuzzy(final String lastName);
+	@CountQuery("{\"fuzzy\":{\"last-name\":\"?0\"}}")
+	long countByLastNameFuzzy(final String lastName);
 
-    List<Person> findAllByOrderByFirstName();
+	List<Person> findAllByOrderByFirstName();
 
-    Stream<SearchHit<Person>> findByBirthDateAfter(LocalDate date);
+	Stream<SearchHit<Person>> findByBirthDateAfter(LocalDate date);
 
-    SearchPage<Person> searchByLastName(String name, Pageable pageable);
+	SearchPage<Person> searchByLastName(String name, Pageable pageable);
 
 
-    @Query("{\"match\": {\n" +
-        "      \"firstName\": {\n" +
-        "        \"query\": \"?0\",\n" +
-        "        \"operator\": \"and\"\n" +
-        "      }\n" +
-        "    }}\n")
-    Stream<Person> queryWithFirstName(String name);
+	@Query("""
+		{"match": {
+		      "firstName": {
+		        "query": "?0",
+		        "operator": "and"
+		      }
+		    }}
+		""")
+	Stream<Person> queryWithFirstName(String name);
 
-		SearchHits<Person> namedQueryWithFirstName(String firstName);
+	SearchHits<Person> namedQueryWithFirstName(String firstName);
 }
