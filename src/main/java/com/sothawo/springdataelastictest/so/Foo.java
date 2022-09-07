@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 @Document(indexName = "foo")
 public class Foo {
@@ -25,6 +26,32 @@ public class Foo {
 	@Nullable
 	@Field(type = FieldType.Text)
 	private String moreText;
+
+	@Nullable
+	@Field(type = FieldType.Object)
+	private Map<String, Object> map1;
+
+	@Nullable
+	@Field(type = FieldType.Object)
+	private Map<String, Object> map2;
+
+	@Nullable
+	public Map<String, Object> getMap1() {
+		return map1;
+	}
+
+	public void setMap1(@Nullable Map<String, Object> map1) {
+		this.map1 = map1;
+	}
+
+	@Nullable
+	public Map<String, Object> getMap2() {
+		return map2;
+	}
+
+	public void setMap2(@Nullable Map<String, Object> map2) {
+		this.map2 = map2;
+	}
 
 	@Nullable
 	@Field(type = FieldType.Date, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSX||uuuu-MM-dd'T'HH:mm:ss.SSS", format = {})

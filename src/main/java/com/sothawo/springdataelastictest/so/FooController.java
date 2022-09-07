@@ -7,9 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,10 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -70,6 +67,11 @@ public class FooController {
 
 	@GetMapping("/test")
 	public List<Foo> test() {
+var foo = new Foo();
+foo.setId("42");
+foo.setMap1(null);
+foo.setMap2(new LinkedHashMap<>());
+operations.save(foo);
 		return Collections.emptyList();
 	}
 
@@ -84,10 +86,14 @@ public class FooController {
 		operations.delete(query, Foo.class);
 	}
 
-	@GetMapping("/generic")
-	public SearchHits<GenericEntity> allGeneric() {
-		var criteria = Criteria.where("need").is("alcohol");
-		Query query = new CriteriaQuery(criteria);
-		return operations.search(query, GenericEntity.class, IndexCoordinates.of("foo"));
+	@GetMapping("/fields")
+	public SearchHits<Foo> fields() {
+		var query = new NativeSearchQueryBuilder()
+			.withQuery(matchAllQuery())
+			.withFields("moreText")
+			.withSourceFilter(new FetchSourceFilter(new String[]{}, new String[]{"*"}))
+			.build();
+
+		return operations.search(query, Foo.class);
 	}
 }
