@@ -30,6 +30,7 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
 
 	@Bean
 	public ClientConfiguration clientConfiguration() {
+
 		return ClientConfiguration.builder() //
 			.connectedTo("localhost:9200") //
 //            .usingSsl()
@@ -59,6 +60,10 @@ public class ReactiveRestClientConfig extends AbstractReactiveElasticsearchConfi
 			.withHeaders(() -> {
 				HttpHeaders headers = new HttpHeaders();
 				headers.add("currentTime", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+				headers.add("Accept", "application/vnd.elasticsearch+json;compatible-with=7");
+				headers.add("Content-Type", "application/vnd.elasticsearch+json;"
+																								 + "compatible-with=7");
+
 				return headers;
 			})
 			.build();
