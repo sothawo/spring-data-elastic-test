@@ -11,9 +11,9 @@ import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchClients;
 import org.springframework.data.elasticsearch.client.elc.ReactiveElasticsearchConfiguration;
 import org.springframework.data.elasticsearch.core.RefreshPolicy;
+import org.springframework.data.elasticsearch.support.HttpHeaders;
 import org.springframework.data.mapping.model.CamelCaseSplittingFieldNamingStrategy;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
-import org.springframework.http.HttpHeaders;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,7 +26,6 @@ public class ReactiveRestClientConfig extends ReactiveElasticsearchConfiguration
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReactiveRestClientConfig.class);
 
-	@Bean
 	public ClientConfiguration clientConfiguration() {
 		return ClientConfiguration.builder() //
 			.connectedTo("localhost:9200") //

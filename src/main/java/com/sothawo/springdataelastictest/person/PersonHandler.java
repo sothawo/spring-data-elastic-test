@@ -31,6 +31,15 @@ public class PersonHandler {
 		return ok().contentType(MediaType.APPLICATION_NDJSON).body(service.create(count), Long.class);
 	}
 
+	public Mono<ServerResponse> save(ServerRequest request) {
+		return request.bodyToMono(Person.class)
+			.map(service::save)
+			.flatMap(person ->
+				ok().contentType(MediaType.APPLICATION_JSON).body(person, Person.class)
+			);
+	}
+
+
 	public Mono<ServerResponse> all(ServerRequest request) {
 		return ok().body(service.all(), Person.class);
 	}

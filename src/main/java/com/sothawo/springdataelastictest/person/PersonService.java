@@ -56,6 +56,10 @@ public class PersonService {
 			});
 	}
 
+	public Mono<Person> save(Person person) {
+		return repository.save(person);
+	}
+
 	public Flux<Person> all() {
 		return repository.findAll();
 	}
