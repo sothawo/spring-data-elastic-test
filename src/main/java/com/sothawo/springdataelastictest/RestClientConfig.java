@@ -15,8 +15,8 @@ import org.springframework.data.elasticsearch.core.RefreshPolicy;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchDateConverter;
 import org.springframework.data.elasticsearch.core.mapping.KebabCaseFieldNamingStrategy;
+import org.springframework.data.elasticsearch.support.HttpHeaders;
 import org.springframework.data.mapping.model.FieldNamingStrategy;
-import org.springframework.http.HttpHeaders;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
