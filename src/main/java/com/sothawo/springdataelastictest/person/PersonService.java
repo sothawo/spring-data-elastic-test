@@ -89,7 +89,7 @@ public class PersonService {
 			.flatMap(aggregate -> //
 				Flux.fromStream(aggregate.sterms() //
 					.buckets().array().stream() //
-					.map(bucket -> Pair.of(bucket.key(), bucket.docCount()))));
+					.map(bucket -> Pair.of(bucket.key().stringValue(), bucket.docCount()))));
 	}
 
 	public Mono<Person> byIdWithrouting(String id, String routing) {
