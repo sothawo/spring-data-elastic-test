@@ -116,7 +116,7 @@ public class PersonController {
 					if (aggregate.isSterms()) {
 						var buckets = aggregate.sterms().buckets();
 						buckets.array().forEach(stringTermsBucket -> {
-							lastNameCounts.put(stringTermsBucket.key(), stringTermsBucket.docCount());
+							lastNameCounts.put(stringTermsBucket.key().stringValue(), stringTermsBucket.docCount());
 						});
 					}
 				}

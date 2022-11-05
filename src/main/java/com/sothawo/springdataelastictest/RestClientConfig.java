@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Supplier;
 
+import static org.springframework.data.elasticsearch.client.elc.ElasticsearchClients.*;
+
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
@@ -64,11 +66,11 @@ public class RestClientConfig extends ElasticsearchConfiguration {
 			.withHeaders(currentTimeHeaders)
 //            .withConnectTimeout(Duration.ofSeconds(10))
 //            .withSocketTimeout(Duration.ofSeconds(1)) //
-			.withClientConfigurer(ElasticsearchClients.ElasticsearchRestClientConfigurationCallback.from(clientBuilder -> {
+			.withClientConfigurer(ElasticsearchRestClientConfigurationCallback.from(clientBuilder -> {
 				LOGGER.info("Callback 1: I could now configure a {}", clientBuilder.getClass().getName());
 				return clientBuilder;
 			}))
-			.withClientConfigurer(ElasticsearchClients.ElasticsearchHttpClientConfigurationCallback.from(clientBuilder -> {
+			.withClientConfigurer(ElasticsearchHttpClientConfigurationCallback.from(clientBuilder -> {
 				LOGGER.info("Callback 2: I could now configure a {}", clientBuilder.getClass().getName());
 				return clientBuilder;
 			}))
