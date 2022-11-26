@@ -2,7 +2,7 @@ package com.sothawo.springdataelastictest.population
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.reactive.function.server.router
+import org.springframework.web.reactive.function.server.coRouter
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -11,8 +11,8 @@ import org.springframework.web.reactive.function.server.router
 class PopulationRouter {
 
 	@Bean
-	fun populationRouter(handler: PopulationHandler) = router {
-		path("/population").nest {
+	fun populationRouterCR(handler: PopulationHandler) = coRouter {
+		"/population".nest {
 			DELETE("", handler::deleteAll)
 			PUT("/{numHouses}/{numPersons}", handler::createPersonsInHouses)
 			GET("/{name}", handler::personsByName)

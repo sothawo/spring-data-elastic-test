@@ -3,7 +3,9 @@ package com.sothawo.springdataelastictest.population
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.function.server.ServerResponse.*
 import org.springframework.web.reactive.function.server.bodyAndAwait
+import org.springframework.web.reactive.function.server.buildAndAwait
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -13,25 +15,20 @@ import reactor.core.publisher.Mono
 @Component
 class PopulationHandler(private val populationService: PopulationService) {
 
-	fun deleteAll(request: ServerRequest): Mono<ServerResponse> =
+	suspend fun deleteAll(request: ServerRequest): ServerResponse {
 		populationService.deleteAll()
-			.then(ServerResponse.ok().build())
+		return ok().buildAndAwait()
+	}
 
-	fun createPersonsInHouses(request: ServerRequest): Mono<ServerResponse> {
+	suspend fun createPersonsInHouses(request: ServerRequest): ServerResponse {
 
 		val numHouses = request.pathVariable("numHouses").toInt()
 		val numPersons = request.pathVariable("numPersons").toInt()
-		return populationService.createPersonsInHouses(numPersons, numHouses)
-			.then(ServerResponse.ok().build())
+		populationService.createPersonsInHouses(numPersons, numHouses)
+		return ok().buildAndAwait()
 	}
-
-	fun personsByName(request: ServerRequest): Mono<ServerResponse> {
+	suspend fun personsByName(request: ServerRequest): ServerResponse {
 		val name = request.pathVariable("name")
-		return ServerResponse.ok().body (populationService.getByPersonsName(name), Flux::class.java)
-	}
-
-	suspend fun personsByNameCR(request: ServerRequest): ServerResponse {
-		val name = request.pathVariable("name")
-		return ServerResponse.ok().bodyAndAwait (populationService.getByPersonsNameCR(name))
+		return ok().bodyAndAwait(populationService.getByPersonsName(name))
 	}
 }

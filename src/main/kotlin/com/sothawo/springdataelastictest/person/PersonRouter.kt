@@ -2,7 +2,7 @@ package com.sothawo.springdataelastictest.person
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.reactive.function.server.router
+import org.springframework.web.reactive.function.server.coRouter
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -10,12 +10,12 @@ import org.springframework.web.reactive.function.server.router
 @Configuration("PersonRouterConfiguration")
 class PersonRouter {
 
-    @Bean
-    fun personRouter(handler: PersonHandler) = router {
-        "/persons".nest {
-            GET("/create/{count}").invoke(handler::create)
-            GET("/all").invoke(handler::all)
-            GET("/all-with-age").invoke(handler::allWithAge)
-        }
-    }
+	@Bean
+	fun personRouter(handler: PersonHandler) = coRouter {
+		"/persons".nest {
+			GET("/create/{count}", handler::create)
+			GET("/all", handler::all)
+			GET("/all-with-age", handler::allWithAge)
+		}
+	}
 }

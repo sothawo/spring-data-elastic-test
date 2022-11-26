@@ -5,9 +5,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.toCollection
 import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -15,22 +15,24 @@ import reactor.core.publisher.Mono
 @Service
 class PopulationService(private val personRepository: PopulationPersonRepository, private val houseRepository: PopulationHouseRepository) {
 
-	fun deleteAll(): Mono<Void> =
-		personRepository.deleteAll().then(houseRepository.deleteAll())
+	suspend fun deleteAll() {
+		personRepository.deleteAll().awaitSingleOrNull()
+		houseRepository.deleteAll().awaitSingleOrNull()
+	}
 
-	fun createHouses(count: Int): Flux<String> {
+	suspend fun createHouses(count: Int): Flow<String> {
 
 		val houses = Flux.range(1, count)
 			.map { House.create("house-$it") }
 
-		return houseRepository.saveAll(houses)
+		val createdIds: Flux<String> = houseRepository.saveAll(houses)
 			.mapNotNull { it.id }
-
+		return createdIds.asFlow()
 	}
 
-	fun createPersons(count: Int): Flux<String> {
+	suspend fun createPersons(count: Int): Flow<String> {
 
-		return houseRepository.findAll()
+		val createdIds: Flux<String> = houseRepository.findAll()
 			.mapNotNull { it.id }.collectList()
 			.flatMapMany { houseIds ->
 				val persons = Flux.range(1, count)
@@ -43,37 +45,17 @@ class PopulationService(private val personRepository: PopulationPersonRepository
 				personRepository.saveAll(persons)
 					.mapNotNull { it.id }
 			}
+
+		return createdIds.asFlow()
 	}
 
-	fun createPersonsInHouses(numPersons: Int, numHouses: Int): Mono<Void> {
-		return createHouses(numHouses)
-			.then(createPersons(numPersons).then())
+
+	suspend fun createPersonsInHouses(numPersons: Int, numHouses: Int) {
+		createHouses(numHouses)
+		createPersons(numPersons)
 	}
 
-	fun getByPersonsName(name: String): Flux<HouseDTO> {
-		return personRepository.searchByLastNameOrFirstName(name, name)
-			.mapNotNull { it.house }
-			.collectList()
-			.flatMapMany { houseIds ->
-				if (houseIds.isEmpty()) {
-					Flux.empty()
-				} else {
-					houseRepository.findAllById(houseIds)
-						.flatMap { house ->
-							personRepository.searchByHouse(house.id!!)
-								.collectList()
-								.map { persons ->
-									HouseDTO(
-										house.id!!, house.zip, house.city, house.street, house.streetNumber,
-										persons.map { HouseDTO.PersonDTO(it.id!!, it.lastName, it.firstName) }
-									)
-								}
-						}
-				}
-			}
-	}
-
-	suspend fun getByPersonsNameCR(name: String): Flow<HouseDTO> {
+	suspend fun getByPersonsName(name: String): Flow<HouseDTO> {
 		val houseIds = personsByLastNameOrFirstName(name).mapNotNull { it.house }.toCollection(mutableListOf())
 		return housesById(houseIds).map { house ->
 			HouseDTO(

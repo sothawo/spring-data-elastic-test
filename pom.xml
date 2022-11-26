@@ -101,6 +101,7 @@
 			<groupId>org.jetbrains.kotlinx</groupId>
 			<artifactId>kotlinx-coroutines-reactor</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -109,6 +110,11 @@
 		<dependency>
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlinx</groupId>
+			<artifactId>kotlinx-coroutines-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 
@@ -136,10 +142,10 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.nhaarman.mockitokotlin2</groupId>
+			<groupId>org.mockito.kotlin</groupId>
 			<artifactId>mockito-kotlin</artifactId>
 			<scope>test</scope>
-			<version>2.2.0</version>
+			<version>4.0.0</version>
 		</dependency>
 
 

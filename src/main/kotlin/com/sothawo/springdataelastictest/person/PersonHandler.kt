@@ -1,8 +1,8 @@
 package com.sothawo.springdataelastictest.person
 
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.server.ServerRequest
-import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.function.server.*
+import org.springframework.web.reactive.function.server.ServerResponse.ok
 import reactor.core.publisher.Mono
 
 /**
@@ -11,16 +11,17 @@ import reactor.core.publisher.Mono
 @Component
 class PersonHandler(private val  service: PersonService) {
 
-    fun create(request: ServerRequest): Mono<ServerResponse> {
+    suspend fun create(request: ServerRequest): ServerResponse {
         val count = request.pathVariable("count").toInt()
-        return service.create(count).then(ServerResponse.ok().build())
+        service.create(count)
+			return ok().buildAndAwait()
     }
 
-    fun all(request: ServerRequest?): Mono<ServerResponse> {
-        return ServerResponse.ok().body(service.all(), Person::class.java)
+    suspend fun all(request: ServerRequest?): ServerResponse {
+        return ok().json().bodyAndAwait(service.all())
     }
 
-    fun allWithAge(request: ServerRequest?): Mono<ServerResponse> {
-        return ServerResponse.ok().body(service.allWithAge(), Person::class.java)
+    suspend fun allWithAge(request: ServerRequest?): ServerResponse {
+        return ok().bodyAndAwait(service.allWithAge())
     }
 }
