@@ -7,15 +7,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.elasticsearch.client.ClientConfiguration
-import org.springframework.data.elasticsearch.client.reactive.ReactiveElasticsearchClient
-import org.springframework.data.elasticsearch.client.reactive.ReactiveRestClients
-import org.springframework.data.elasticsearch.config.AbstractReactiveElasticsearchConfiguration
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchClients.ElasticsearchRestClientConfigurationCallback
+import org.springframework.data.elasticsearch.client.elc.ReactiveElasticsearchConfiguration
 import org.springframework.data.elasticsearch.core.RefreshPolicy
 import org.springframework.data.elasticsearch.core.mapping.KebabCaseFieldNamingStrategy
+import org.springframework.data.elasticsearch.support.HttpHeaders
 import org.springframework.data.mapping.model.FieldNamingStrategy
-import org.springframework.http.HttpHeaders
 import org.springframework.web.reactive.function.client.ExchangeStrategies
-import org.springframework.web.reactive.function.client.WebClient
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.function.Supplier
@@ -24,9 +22,8 @@ import java.util.function.Supplier
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Configuration
-class ReactiveRestClientConfig : AbstractReactiveElasticsearchConfiguration() {
-	@Bean
-	fun clientConfiguration(): ClientConfiguration {
+class ReactiveRestClientConfig : ReactiveElasticsearchConfiguration() {
+	override fun clientConfiguration(): ClientConfiguration {
 
 		return ClientConfiguration.builder() //
 			.connectedTo("localhost:9200") //
@@ -34,15 +31,9 @@ class ReactiveRestClientConfig : AbstractReactiveElasticsearchConfiguration() {
 			//             .usingSsl(NotVerifyingSSLContext.getSslContext()) //
 			.withProxy("localhost:8080") //            .withPathPrefix("ela")
 			.withBasicAuth("elastic", "hcraescitsale") //
-			.withClientConfigurer(ReactiveRestClients.WebClientConfigurationCallback.from { webClient ->
-				LOGGER.info("Configuring the WebClient")
-				webClient.mutate()
-					.exchangeStrategies(ExchangeStrategies.builder()
-						.codecs { configurer ->
-							configurer.defaultCodecs().maxInMemorySize(-1)
-						}
-						.build())
-					.build()
+			.withClientConfigurer(ElasticsearchRestClientConfigurationCallback.from { restClientBuilder ->
+				LOGGER.info("Configuring the RestClient builder")
+				restClientBuilder
 			})
 			.withHeaders(Supplier {
 				HttpHeaders().apply {
@@ -51,9 +42,6 @@ class ReactiveRestClientConfig : AbstractReactiveElasticsearchConfiguration() {
 			})
 			.build()
 	}
-
-	@Bean
-	override fun reactiveElasticsearchClient(): ReactiveElasticsearchClient = ReactiveRestClients.create(clientConfiguration())
 
 	override fun refreshPolicy(): RefreshPolicy? = RefreshPolicy.IMMEDIATE
 
