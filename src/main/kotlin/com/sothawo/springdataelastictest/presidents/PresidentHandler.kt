@@ -2,9 +2,7 @@ package com.sothawo.springdataelastictest.presidents
 
 import org.springframework.data.elasticsearch.core.SearchHit
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.server.ServerRequest
-import org.springframework.web.reactive.function.server.ServerResponse
-import org.springframework.web.reactive.function.server.queryParamOrNull
+import org.springframework.web.reactive.function.server.*
 import reactor.core.publisher.Mono
 import kotlin.let
 
@@ -12,24 +10,23 @@ import kotlin.let
 class PresidentHandler(
     private val service: PresidentService
 ) {
-    fun load(request: ServerRequest): Mono<ServerResponse> =
-        ServerResponse.ok().body(service.load(), President::class.java)
+    suspend fun load(request: ServerRequest): ServerResponse =
+        ServerResponse.ok().bodyAndAwait(service.load())
 
-    fun byId(request: ServerRequest): Mono<ServerResponse> {
+    suspend fun byId(request: ServerRequest): ServerResponse {
         val id = request.pathVariable("id")
-        return ServerResponse.ok().body(service.byId(id), President::class.java)
+        return ServerResponse.ok().bodyValueAndAwait(service.byId(id))
     }
 
-    fun searchByTerm(request: ServerRequest): Mono<ServerResponse> {
+    suspend fun searchByTerm(request: ServerRequest): ServerResponse {
         val year = request.pathVariable("year").toInt()
-        return ServerResponse.ok().body(service.searchByTerm(year), SearchHit::class.java)
+        return ServerResponse.ok().json().bodyAndAwait(service.searchByTerm(year))
     }
 
-    fun searchByName(request: ServerRequest): Mono<ServerResponse> {
+    suspend fun searchByName(request: ServerRequest): ServerResponse {
         val name = request.pathVariable("name")
         val requestCache = request.queryParamOrNull("requestCache")?.let { it -> it.toBoolean() }
 
-        return ServerResponse.ok()
-            .body(service.searchByName(name, requestCache), SearchHit::class.java)
+        return ServerResponse.ok().bodyAndAwait(service.searchByName(name, requestCache))
     }
 }
