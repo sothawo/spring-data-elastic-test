@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.elasticsearch.config.EnableElasticsearchAuditing;
@@ -20,8 +21,9 @@ import java.util.Optional;
 
 @SpringBootApplication
 @EnableElasticsearchRepositories(namedQueriesLocation = "classpath:named-queries.properties")
-@EnableElasticsearchAuditing
+@EnableElasticsearchAuditing(auditorAwareRef = "myAuditorAware")
 @EnableScheduling
+@ImportRuntimeHints(TestAppRuntimeHints.class)
 public class SpringdataElasticTestApplication {
 
 	@Autowired
@@ -32,7 +34,7 @@ public class SpringdataElasticTestApplication {
 	}
 
 	@Bean
-	AuditorAware<String> auditorAware() {
+	AuditorAware<String> myAuditorAware() {
 		return () -> {
 			String userName = null;
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

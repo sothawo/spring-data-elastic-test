@@ -25,55 +25,60 @@ import java.util.stream.Collectors;
 @RequestMapping("/movie")
 public class MovieRepositoryController {
 
-    private MovieRepository movieRepository;
+	private MovieRepository movieRepository;
 
-    public MovieRepositoryController(MovieRepository movieRepository) {
-        this.movieRepository = movieRepository;
-    }
+	public MovieRepositoryController(MovieRepository movieRepository) {
+		this.movieRepository = movieRepository;
+	}
 
-    @GetMapping("/movies")
-    public Iterable<SearchHit<Movie>> getMovies() {
-        return movieRepository.findBy().collect(Collectors.toList());
-    }
+	@GetMapping("/movies")
+	public Iterable<SearchHit<Movie>> getMovies() {
+		return movieRepository.findBy().collect(Collectors.toList());
+	}
 
-    @PostMapping("/movies")
-    public String saveMovie(@RequestBody Movie movie) {
-        return movieRepository.save(movie).getTitle();
-    }
+	@PostMapping("/movies")
+	public String saveMovie(@RequestBody Movie movie) {
+		return movieRepository.save(movie).getTitle();
+	}
 
-    @GetMapping("/title/{title}")
-    public SearchHits<Movie> byTitle(@PathVariable("title") String title) {
-        return movieRepository.findByTitle(title);
-    }
+	@GetMapping("/title/{title}")
+	public SearchHits<Movie> byTitle(@PathVariable("title") String title) {
+		return movieRepository.findByTitle(title);
+	}
 
-    @GetMapping("/titleLike/{title}")
-    public SearchHits<Movie> byTitleLike(@PathVariable("title") String title) {
-        return movieRepository.findByTitleLike(title);
-    }
+	@GetMapping("/titleLike/{title}")
+	public SearchHits<Movie> byTitleLike(@PathVariable("title") String title) {
+		return movieRepository.findByTitleLike(title);
+	}
 
-    @GetMapping("/title3/{title}")
-    public SearchHits<Movie> byTitle3(@PathVariable("title") String title) {
-        return movieRepository.findFirst3ByTitle(title);
-    }
+	@GetMapping("/title3/{title}")
+	public SearchHits<Movie> byTitle3(@PathVariable("title") String title) {
+		return movieRepository.findFirst3ByTitle(title);
+	}
 
-    @GetMapping("/newest3/{title}")
-    public SearchHits<Movie> newest3ByTitle(@PathVariable("title") String title) {
-        return movieRepository.findFirst3ByTitleOrderByYearDesc(title);
-    }
+	@GetMapping("/newest3/{title}")
+	public SearchHits<Movie> newest3ByTitle(@PathVariable("title") String title) {
+		return movieRepository.findFirst3ByTitleOrderByYearDesc(title);
+	}
 
-    @PostMapping("load")
-    public String loadMovies() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
+	@PostMapping("load")
+	public String loadMovies() throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
 
-        List<Movie> movies = objectMapper.readValue(new File("movies.json"),
-            objectMapper.getTypeFactory().constructCollectionType(List.class, Movie.class));
+		List<Movie> allMovies = objectMapper.readValue(new File("movies.json"),
+				objectMapper.getTypeFactory().constructCollectionType(List.class, Movie.class));
 
-        long id = 1;
+		long id = 1;
 
-        for (Movie movie : movies) {
-            movie.setId(String.valueOf(id++));
-        }
-        movieRepository.saveAll(movies);
-        return "#movies: " + movies.size();
-    }
+		for (Movie movie : allMovies) {
+			movie.setId(String.valueOf(id++));
+		}
+		var groupedMovies =
+				allMovies.stream().collect(Collectors.groupingBy(movie -> Long.valueOf(movie.getId()) / 1000));
+		groupedMovies.forEach((unused, movies) -> {
+			movieRepository.saveAll(movies);
+		});
+
+		return "#movies: " + allMovies.size();
+	}
 }

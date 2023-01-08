@@ -15,8 +15,9 @@
  */
 package com.sothawo.springdataelastictest.cities;
 
-import com.github.javafaker.Address;
-import com.github.javafaker.Faker;
+import com.sothawo.springdataelastictest.fakers.FakeAddress;
+import com.sothawo.springdataelastictest.fakers.FakeCity;
+import com.sothawo.springdataelastictest.fakers.FakePerson;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.Criteria;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -38,56 +38,56 @@ import java.util.function.Function;
 @RequestMapping("/cities")
 public class CityController {
 
-    private final CityRepository repository;
-    private final ElasticsearchOperations operations;
+	private final CityRepository repository;
+	private final ElasticsearchOperations operations;
 
-    public CityController(CityRepository repository, ElasticsearchOperations operations) {
-        this.repository = repository;
-        this.operations = operations;
-    }
+	public CityController(CityRepository repository, ElasticsearchOperations operations) {
+		this.repository = repository;
+		this.operations = operations;
+	}
 
-    @GetMapping("/load")
-    public void load() {
-        repository.deleteAll();
+	@GetMapping("/load")
+	public void load() {
+		repository.deleteAll();
 
-        Faker faker = new Faker(Locale.ENGLISH);
+		Map<String, City> cities = new LinkedHashMap<>();
 
-        Map<String, City> cities = new LinkedHashMap<>();
+		for (int i = 0; i < 50; i++) {
 
-        for (int i = 0; i < 50; i++) {
+			String cityName = FakeCity.city().getName();
+			City city = cities.computeIfAbsent(cityName, City::new);
 
-            String cityName = faker.address().cityName();
-            City city = cities.computeIfAbsent(cityName, City::new);
+			for (int j = 0; j < 10; j++) {
 
-            for (int j = 0; j < 10; j++) {
+				FakeAddress address = FakeAddress.address();
 
-                Address address = faker.address();
+				int number = Integer.parseInt(address.getHouseNumber());
+				number %= 50;
+				number++;
+				House houseKey = new House(address.getStreetName(), String.valueOf(number));
+				House house = city.getHousesMap().computeIfAbsent(houseKey, Function.identity());
 
-                int number = Integer.parseInt(address.streetAddressNumber());
-                number %= 50;
-                number++;
-                House houseKey = new House(address.streetName(), String.valueOf(number));
-                House house = city.getHousesMap().computeIfAbsent(houseKey, Function.identity());
+				for (int k = 0; k < 5; k++) {
+					var person = FakePerson.person();
+					house.getInhabitants().add(new Inhabitant(person.getFirstName(), person.getLastName()));
+				}
+			}
+		}
 
-                for (int k = 0; k < 5; k++) {
-                    house.getInhabitants().add(new Inhabitant(faker.name().firstName(), faker.name().lastName()));
-                }
-            }
-        }
+		cities.values().forEach(City::close);
+		repository.saveAll(cities.values());
+	}
 
-        cities.values().forEach(City::close);
-        repository.saveAll(cities.values());
-    }
+	@GetMapping("/firstName/{firstName}")
+	public SearchHits<City> searchByFirstName(@PathVariable String firstName) {
+		return operations.search(new CriteriaQuery(new Criteria("houses.inhabitants.firstName").is(firstName)),
+				City.class);
+	}
 
-    @GetMapping("/firstName/{firstName}")
-    public SearchHits<City> searchByFirstName(@PathVariable String firstName) {
-        return operations.search(new CriteriaQuery(new Criteria("houses.inhabitants.firstName").is(firstName)), City.class);
-    }
-
-    @GetMapping("/street-keyword/{keyword}")
-    public SearchHits<City> searchByStreetKeyword(@PathVariable String keyword) {
-        return operations.search(new CriteriaQuery(new Criteria("houses.street.keyword").is(keyword)), City.class);
-    }
+	@GetMapping("/street-keyword/{keyword}")
+	public SearchHits<City> searchByStreetKeyword(@PathVariable String keyword) {
+		return operations.search(new CriteriaQuery(new Criteria("houses.street.keyword").is(keyword)), City.class);
+	}
 
 
 }
