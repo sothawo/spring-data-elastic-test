@@ -6,25 +6,23 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>3.0.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.sothawo</groupId>
     <artifactId>spring-data-elastic-test</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>5.1.0-SNAPSHOT</version>
     <name>spring-data-elastic-test</name>
     <description>Test project for Spring Data Elasticsearch</description>
 
     <properties>
         <java.version>17</java.version>
 
-        <elasticsearch.version>8.4.2</elasticsearch.version>
-<!--        <netty>4.1.52.Final</netty>-->
-        <reactor>2020.0.13</reactor>
-<!--        <spring-framework.version>5.3.0-RC2</spring-framework.version>-->
-        <springdata.commons>3.0.0-SNAPSHOT</springdata.commons>
-        <spring-data-elasticsearch>5.0.0-SNAPSHOT</spring-data-elasticsearch>
+        <elasticsearch.version>8.5.3</elasticsearch.version>
+        <!--        <spring-framework.version>5.3.0-RC2</spring-framework.version>-->
+        <springdata.commons>3.1.0-SNAPSHOT</springdata.commons>
+        <spring-data-elasticsearch>5.1.0-SNAPSHOT</spring-data-elasticsearch>
     </properties>
 
     <repositories>
@@ -40,31 +38,7 @@
         </repository>
     </repositories>
 
-    <dependencyManagement>
-        <dependencies>
-<!--
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-bom</artifactId>
-                <version>${netty}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
--->
-<!--
-            <dependency>
-                <groupId>io.projectreactor</groupId>
-                <artifactId>reactor-bom</artifactId>
-                <version>${reactor}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
--->
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -94,11 +68,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.javafaker</groupId>
-            <artifactId>javafaker</artifactId>
-            <version>1.0.2</version>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -127,9 +96,15 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.7.2</version>
+                <configuration>
+                    <jvmArguments>-XX:+AllowRedefinitionToAddDeleteMethods</jvmArguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -4,7 +4,8 @@
 package com.sothawo.springdataelastictest.person;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.github.javafaker.Faker;
+import com.sothawo.springdataelastictest.fakers.FakeBirthDate;
+import com.sothawo.springdataelastictest.fakers.FakePerson;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -32,8 +33,6 @@ import java.util.Locale;
 @Document(indexName = "person")
 @Mapping(runtimeFieldsPath = "/runtime-fields-person.json")
 public class Person implements Persistable<Long> {
-
-    private static final Faker FAKER = new Faker(Locale.GERMANY);
 
     @Id
     @Nullable
@@ -207,12 +206,10 @@ public class Person implements Persistable<Long> {
     public static Person create(long id) {
         Person person = new Person();
         person.setInternalId(id);
-        person.setFirstName(FAKER.name().firstName());
-        person.setLastName(FAKER.name().lastName());
-        var birthday = FAKER.date().birthday();
-        var instant = Instant.ofEpochMilli(birthday.getTime());
-        var localDate = LocalDate.ofInstant(instant, ZoneId.of("UTC"));
-        person.setBirthDate(localDate);
+        var fakePerson = FakePerson.person();
+        person.setFirstName(fakePerson.getFirstName());
+        person.setLastName(fakePerson.getLastName());
+        person.setBirthDate(FakeBirthDate.birthDate());
         return person;
     }
 

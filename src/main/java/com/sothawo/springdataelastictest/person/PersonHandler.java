@@ -27,7 +27,7 @@ public class PersonHandler {
 	}
 
 	public Mono<ServerResponse> create(ServerRequest request) {
-		var count = Integer.parseInt(request.pathVariable("count"));
+		var count = Integer.parseInt(request.queryParam("count").orElse("1"));
 		return ok().contentType(MediaType.APPLICATION_NDJSON).body(service.create(count), Long.class);
 	}
 

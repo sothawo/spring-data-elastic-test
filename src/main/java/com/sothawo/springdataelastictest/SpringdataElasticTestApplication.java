@@ -3,9 +3,9 @@ package com.sothawo.springdataelastictest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.ReactiveAuditorAware;
 import org.springframework.data.elasticsearch.client.elc.ReactiveElasticsearchTemplate;
@@ -19,23 +19,25 @@ import org.springframework.security.core.userdetails.User;
 import reactor.blockhound.BlockHound;
 import reactor.blockhound.BlockingOperationError;
 
-@EnableReactiveElasticsearchAuditing
+@EnableReactiveElasticsearchAuditing(auditorAwareRef = "myReactiveAuditorAware")
 @SpringBootApplication
 @EnableReactiveElasticsearchRepositories(repositoryBaseClass = RoutingAwareReactiveElasticsearchRepositoryImpl.class)
+@ImportRuntimeHints(TestAppRuntimeHints.class)
 public class SpringdataElasticTestApplication {
 
 	@Autowired
 	private ReactiveElasticsearchOperations operations;
 
+	// comment out when running as native application
 	static {
 		BlockHound.install(
-			builder -> builder.allowBlockingCallsInside("org.elasticsearch.Build", "<clinit>")
-				.allowBlockingCallsInside("org.elasticsearch.common.xcontent.XContentBuilder", "<clinit>")
-				.allowBlockingCallsInside("org.elasticsearch.xcontent.XContentBuilder", "<clinit>")
-				.allowBlockingCallsInside("com.github.javafaker.service.FakeValues", "loadValues")
-				.blockingMethodCallback(it -> {
-					throw new BlockingOperationError(it);
-				})
+				builder -> builder.allowBlockingCallsInside("org.elasticsearch.Build", "<clinit>")
+						.allowBlockingCallsInside("org.elasticsearch.common.xcontent.XContentBuilder", "<clinit>")
+						.allowBlockingCallsInside("org.elasticsearch.xcontent.XContentBuilder", "<clinit>")
+						.allowBlockingCallsInside("com.fasterxml.jackson.databind.ObjectMapper", "readValue")
+						.blockingMethodCallback(it -> {
+							throw new BlockingOperationError(it);
+						})
 		);
 	}
 
@@ -44,13 +46,13 @@ public class SpringdataElasticTestApplication {
 	}
 
 	@Bean
-	ReactiveAuditorAware<String> reactiveAuditorAware() {
+	ReactiveAuditorAware<String> myReactiveAuditorAware() {
 		return () -> ReactiveSecurityContextHolder.getContext()
-			.map(SecurityContext::getAuthentication)
-			.filter(Authentication::isAuthenticated)
-			.map(Authentication::getPrincipal)
-			.map(User.class::cast)
-			.map(User::getUsername);
+				.map(SecurityContext::getAuthentication)
+				.filter(Authentication::isAuthenticated)
+				.map(Authentication::getPrincipal)
+				.map(User.class::cast)
+				.map(User::getUsername);
 	}
 
 	@EventListener(ApplicationReadyEvent.class)

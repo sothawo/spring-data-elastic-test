@@ -15,8 +15,9 @@
  */
 package com.sothawo.springdataelastictest.cities;
 
-import com.github.javafaker.Address;
-import com.github.javafaker.Faker;
+import com.sothawo.springdataelastictest.fakers.FakeAddress;
+import com.sothawo.springdataelastictest.fakers.FakeCity;
+import com.sothawo.springdataelastictest.fakers.FakePerson;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.query.Criteria;
@@ -28,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -39,49 +39,55 @@ import java.util.function.Function;
 @RequestMapping("/cities")
 public class CityController {
 
-    private final CityRepository repository;
-    private final ReactiveElasticsearchOperations operations;
+	private final CityRepository repository;
+	private final ReactiveElasticsearchOperations operations;
 
-    public CityController(CityRepository repository, ReactiveElasticsearchOperations operations) {
-        this.repository = repository;
-        this.operations = operations;
-    }
+	public CityController(CityRepository repository, ReactiveElasticsearchOperations operations) {
+		this.repository = repository;
+		this.operations = operations;
+	}
 
-    @GetMapping("/load")
-    public Flux<City> load() {
-        repository.deleteAll();
+	@GetMapping("/load")
+	public Flux<City> load() {
+		repository.deleteAll();
 
-        Faker faker = new Faker(Locale.ENGLISH);
+		Map<String, City> cities = new LinkedHashMap<>();
 
-        Map<String, City> cities = new LinkedHashMap<>();
+		for (int i = 0; i < 50; i++) {
 
-        for (int i = 0; i < 50; i++) {
+			City city = cities.computeIfAbsent(FakeCity.city().getName(), City::new);
 
-            String cityName = faker.address().cityName();
-            City city = cities.computeIfAbsent(cityName, City::new);
+			for (int j = 0; j < 10; j++) {
 
-            for (int j = 0; j < 10; j++) {
+				var fakeAddress = FakeAddress.address();
 
-                Address address = faker.address();
+				int number = Integer.parseInt(fakeAddress.getHouseNumber());
+				number %= 50;
+				number++;
+				House houseKey = new House(fakeAddress.getStreetName(), String.valueOf(number));
+				House house = city.getHousesMap().computeIfAbsent(houseKey, Function.identity());
 
-                int number = Integer.parseInt(address.streetAddressNumber());
-                number %= 50;
-                number++;
-                House houseKey = new House(address.streetName(), String.valueOf(number));
-                House house = city.getHousesMap().computeIfAbsent(houseKey, Function.identity());
+				for (int k = 0; k < 5; k++) {
+					var fakePerson = FakePerson.person();
+					house.getInhabitants().add(new Inhabitant(fakePerson.getFirstName(), fakePerson.getLastName()));
+				}
+			}
+		}
 
-                for (int k = 0; k < 5; k++) {
-                    house.getInhabitants().add(new Inhabitant(faker.name().firstName(), faker.name().lastName()));
-                }
-            }
-        }
+		cities.values().forEach(City::close);
+		return repository.saveAll(cities.values());
+	}
 
-        cities.values().forEach(City::close);
-        return repository.saveAll(cities.values());
-    }
+	@GetMapping("/firstName/{firstName}")
+	public Flux<SearchHit<City>> searchByFirstName(@PathVariable String firstName) {
+		return operations.search(new CriteriaQuery(new Criteria("houses.inhabitants.firstName").is(firstName)),
+				City.class);
+	}
 
-    @GetMapping("/firstName/{firstName}")
-    public Flux<SearchHit<City>> searchByFirstName(@PathVariable String firstName) {
-        return operations.search(new CriteriaQuery(new Criteria("houses.inhabitants.firstName").is(firstName)), City.class);
-    }
+	@GetMapping("/street-keyword/{keyword}")
+	public Flux<SearchHit<City>> searchByStreetKeyword(@PathVariable String keyword) {
+		return operations.search(new CriteriaQuery(new Criteria("houses.street.keyword").is(keyword)), City.class);
+	}
+
+
 }
