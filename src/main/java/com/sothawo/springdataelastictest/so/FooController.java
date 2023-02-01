@@ -10,7 +10,6 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
-import org.springframework.data.elasticsearch.client.erhlc.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.Collections;
-import java.util.List;
 
 
 /**
@@ -68,8 +63,8 @@ public class FooController {
 	}
 
 	@GetMapping("/test")
-	public List<Foo> test() {
-		return Collections.emptyList();
+	public long test() {
+		return operations.count(Query.findAll(), IndexCoordinates.of("not-existing"));
 	}
 
 	@GetMapping("/userquery/{id}")
