@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.0.0</version>
+		<version>3.0.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sothawo</groupId>
@@ -19,7 +19,7 @@
 		<kotlin.version>1.7.21</kotlin.version>
 		<kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 
-		<elasticsearch.version>8.5.0</elasticsearch.version>
+		<elasticsearch.version>8.6.2</elasticsearch.version>
 
 <!--
 		<netty>4.1.52.Final</netty>
