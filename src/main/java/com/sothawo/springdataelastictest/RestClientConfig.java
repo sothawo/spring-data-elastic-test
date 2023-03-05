@@ -3,6 +3,8 @@
  */
 package com.sothawo.springdataelastictest;
 
+import com.sothawo.springdataelastictest.enums.ManufacturerReadingConverter;
+import com.sothawo.springdataelastictest.enums.ManufacturerWritingConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -81,6 +83,8 @@ public class RestClientConfig extends ElasticsearchConfiguration {
 	public ElasticsearchCustomConversions elasticsearchCustomConversions() {
 		Collection<Converter<?, ?>> converters = new ArrayList<>();
 		converters.add(new LocalDateTimeConverter());
+		converters.add(new ManufacturerWritingConverter());
+		converters.add(new ManufacturerReadingConverter());
 		return new ElasticsearchCustomConversions(converters);
 	}
 
