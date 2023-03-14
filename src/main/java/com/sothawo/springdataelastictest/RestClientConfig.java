@@ -83,8 +83,8 @@ public class RestClientConfig extends ElasticsearchConfiguration {
 	public ElasticsearchCustomConversions elasticsearchCustomConversions() {
 		Collection<Converter<?, ?>> converters = new ArrayList<>();
 		converters.add(new LocalDateTimeConverter());
-		converters.add(new ManufacturerWritingConverter());
-		converters.add(new ManufacturerReadingConverter());
+//		converters.add(new ManufacturerWritingConverter());
+//		converters.add(new ManufacturerReadingConverter());
 		return new ElasticsearchCustomConversions(converters);
 	}
 

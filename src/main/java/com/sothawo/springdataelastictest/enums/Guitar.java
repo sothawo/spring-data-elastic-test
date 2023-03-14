@@ -8,9 +8,10 @@ import org.springframework.data.elasticsearch.annotations.ValueConverter;
 
 @Document(indexName = "guitars")
 public record Guitar(
-		@Id String id,
-		@Field(type = FieldType.Keyword)
-		Manufacturer manufacturer,
-		@Field(type = FieldType.Integer)
-		Integer year) {
+	@Id String id,
+	@Field(type = FieldType.Keyword)
+	@ValueConverter(ManufacturerPropertyValueConverter.class)
+	Manufacturer manufacturer,
+	@Field(type = FieldType.Integer)
+	Integer year) {
 }
