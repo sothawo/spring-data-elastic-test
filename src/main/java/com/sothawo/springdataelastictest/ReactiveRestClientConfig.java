@@ -31,7 +31,7 @@ public class ReactiveRestClientConfig extends ReactiveElasticsearchConfiguration
 			.connectedTo("localhost:9200") //
 //            .usingSsl()
 //             .usingSsl(NotVerifyingSSLContext.getSslContext()) //
-			.withProxy("localhost:8080")
+//			.withProxy("localhost:8080")
 //            .withPathPrefix("ela")
 			.withBasicAuth("elastic", "hcraescitsale") //
 			.withClientConfigurer(ElasticsearchClients.ElasticsearchHttpClientConfigurationCallback.from(httpAsyncClientBuilder -> {
