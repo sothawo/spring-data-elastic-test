@@ -31,9 +31,8 @@ public class SpringdataElasticTestApplication {
 	// comment out when running as native application
 	static {
 		BlockHound.install(
-				builder -> builder.allowBlockingCallsInside("org.elasticsearch.Build", "<clinit>")
-						.allowBlockingCallsInside("org.elasticsearch.common.xcontent.XContentBuilder", "<clinit>")
-						.allowBlockingCallsInside("org.elasticsearch.xcontent.XContentBuilder", "<clinit>")
+				builder -> builder
+						.allowBlockingCallsInside("co.elastic.clients.transport.rest_client.RestClientTransport", "performRequestAsync")
 						.allowBlockingCallsInside("com.fasterxml.jackson.databind.ObjectMapper", "readValue")
 						.blockingMethodCallback(it -> {
 							throw new BlockingOperationError(it);

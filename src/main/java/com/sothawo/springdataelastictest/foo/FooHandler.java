@@ -22,6 +22,6 @@ public class FooHandler {
 	}
 
 	public Mono<ServerResponse> test(ServerRequest serverRequest) {
-		return ok().body(service.test3(), Foo.class);
+		return ok().body(service.test(), Foo.class);
 	}
 }
