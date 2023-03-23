@@ -24,6 +24,10 @@ public class Foo {
 	private String moreText;
 
 	@Nullable
+	@Field(name = "dotted.text", type = FieldType.Text)
+	private String dottedText;
+
+	@Nullable
 	@Field(type = FieldType.Date, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSX||uuuu-MM-dd'T'HH:mm:ss.SSS", format = {})
 	@ValueConverter(CustomZonedDateTimeConverter.class)
 	private ZonedDateTime someDate;
@@ -61,5 +65,14 @@ public class Foo {
 
 	public void setMoreText(@Nullable String moreText) {
 		this.moreText = moreText;
+	}
+
+	@Nullable
+	public String getDottedText() {
+		return dottedText;
+	}
+
+	public void setDottedText(@Nullable String dottedText) {
+		this.dottedText = dottedText;
 	}
 }
