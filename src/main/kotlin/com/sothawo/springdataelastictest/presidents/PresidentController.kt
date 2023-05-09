@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("presidents")
 class PresidentController(
-    private val repository: PresidentRepository,
-    private val operations: ElasticsearchOperations,
     private val service: PresidentService,
 ) {
 
