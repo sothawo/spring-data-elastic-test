@@ -53,12 +53,12 @@ public class RestClientConfig extends ElasticsearchConfiguration {
 
 								// Elasticsearch
 								.connectedTo("localhost:9200") //
-								.usingSsl("2D:82:5A:D3:9C:EB:03:E7:B9:B0:80:CE:14:00:05:FA:53:29:94:0D:48:BA:75:5E:A8:44:A7:08:21:48:ED:BA") //
+//								.usingSsl("2D:82:5A:D3:9C:EB:03:E7:B9:B0:80:CE:14:00:05:FA:53:29:94:0D:48:BA:75:5E:A8:44:A7:08:21:48:ED:BA") //
+//								.usingSsl()
+//								.usingSsl(NotVerifyingSSLContext.getSslContext()) //
 								.withBasicAuth("elastic", "hcraescitsale") //
 //			.withDefaultHeaders(defaultHeaders) //
 
-//			.usingSsl()
-//			.usingSsl(NotVerifyingSSLContext.getSslContext()) //
 
 //								.withProxy("localhost:8080")
 								.withHeaders(currentTimeHeaders)
