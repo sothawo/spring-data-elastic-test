@@ -6,6 +6,7 @@ import org.springframework.data.elasticsearch.client.elc.Queries.idsQueryAsQuery
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations
 import org.springframework.data.elasticsearch.core.ScriptType
 import org.springframework.data.elasticsearch.core.query.*
+import org.springframework.data.elasticsearch.core.search
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -37,7 +38,7 @@ class ProductController(
 								)
 								.build()
 
-				val searchHits = operations.search(query, Product::class.java)
+				val searchHits = operations.search<Product>(query)
 
 				return if (searchHits.totalHits > 0) searchHits.getSearchHit(0).content else throw ResourceNotFoundException()
 		}

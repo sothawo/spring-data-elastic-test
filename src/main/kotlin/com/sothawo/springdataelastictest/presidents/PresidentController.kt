@@ -16,20 +16,20 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("presidents")
 class PresidentController(
-    private val service: PresidentService,
+		private val service: PresidentService,
 ) {
 
-    @GetMapping("/load")
-    fun load(): Iterable<President> = service.load()
+		@GetMapping("/load")
+		fun load(): Iterable<President> = service.load()
 
-    @GetMapping("/term/{year}")
-    fun searchByTerm(@PathVariable year: Int): SearchHits<President> = service.searchByTerm(year)
+		@GetMapping("/term/{year}")
+		fun searchByTerm(@PathVariable year: Int) = service.searchByTerm(year).map { it.content }.toList()
 
-    @GetMapping("/name/{name}")
-    fun searchByName(@PathVariable name: String, @RequestParam(required = false) requestCache: Boolean?) = service.searchByname(name, requestCache)
+		@GetMapping("/name/{name}")
+		fun searchByName(@PathVariable name: String, @RequestParam(required = false) requestCache: Boolean?) = service.searchByname(name, requestCache).map { it.content }.toList()
 
-    @GetMapping("/{id}")
-    @Nullable
-    fun byId(@PathVariable id: String) = service.byId(id) ?: throw ResourceNotFoundException()
+		@GetMapping("/{id}")
+		@Nullable
+		fun byId(@PathVariable id: String) = service.byId(id) ?: throw ResourceNotFoundException()
 
 }

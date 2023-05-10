@@ -46,7 +46,6 @@ object NotVerifyingSSLContext {
 
     }
 
-    @Throws(NoSuchAlgorithmException::class, KeyManagementException::class)
     private fun createSSLContext(): SSLContext {
         val sslContext = SSLContext.getInstance("TLS")
 

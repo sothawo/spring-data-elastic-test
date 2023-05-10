@@ -3,8 +3,10 @@ package com.sothawo.springdataelastictest.presidents
 import org.slf4j.LoggerFactory
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations
 import org.springframework.data.elasticsearch.core.SearchHits
+import org.springframework.data.elasticsearch.core.count
 import org.springframework.data.elasticsearch.core.query.Criteria
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery
+import org.springframework.data.elasticsearch.core.search
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
@@ -46,10 +48,9 @@ class PresidentService(
             query.requestCache = it
         }
 
-        val count = operations.count(query, President::class.java)
+        val count = operations.count<President>(query)
         LOGGER.info("#presidents: {}", count)
-        return operations.search(query, President::class.java)
-
+        return operations.search<President>(query)
     }
 
     companion object {

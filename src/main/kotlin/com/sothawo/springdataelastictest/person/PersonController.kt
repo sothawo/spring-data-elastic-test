@@ -3,6 +3,7 @@ package com.sothawo.springdataelastictest.person
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder
 import org.springframework.data.elasticsearch.core.query.Query
+import org.springframework.data.elasticsearch.core.search
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -45,7 +46,7 @@ class PersonController(
 						addFields("age")
 						addSourceFilter(FetchSourceFilterBuilder().withIncludes("*").build())
 				}
-				val searchHits = operations.search(query, Person::class.java)
+				val searchHits = operations.search<Person>(query)
 				return searchHits.get().map { it.content }
 		}
 }
