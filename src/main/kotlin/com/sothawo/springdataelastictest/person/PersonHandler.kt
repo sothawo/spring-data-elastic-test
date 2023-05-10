@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono
 class PersonHandler(private val  service: PersonService) {
 
     suspend fun create(request: ServerRequest): ServerResponse {
-        val count = request.pathVariable("count").toInt()
+        val count = request.pathVariable("count").toLong()
         service.create(count)
 			return ok().buildAndAwait()
     }

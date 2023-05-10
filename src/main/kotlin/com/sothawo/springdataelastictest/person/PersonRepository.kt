@@ -1,8 +1,8 @@
 package com.sothawo.springdataelastictest.person
 
-import org.springframework.data.elasticsearch.repository.ReactiveElasticsearchRepository
+import org.springframework.data.elasticsearch.repository.CoroutineElasticsearchRepository
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-interface PersonRepository : ReactiveElasticsearchRepository<Person, Long>
+interface PersonRepository : CoroutineElasticsearchRepository<Person, Long>

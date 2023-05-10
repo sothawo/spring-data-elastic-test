@@ -5,34 +5,39 @@ import kotlinx.coroutines.reactive.asFlow
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder
 import org.springframework.data.elasticsearch.core.query.Query
+import org.springframework.data.elasticsearch.core.search
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
+import kotlin.math.min
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Service
 class PersonService(
-	private val repository: PersonRepository,
-	private val operations: ReactiveElasticsearchOperations,
+		private val repository: PersonRepository,
+		private val operations: ReactiveElasticsearchOperations,
 ) {
-	suspend fun create(count: Int) {
-		repository.deleteAll()
-			.then(Flux.range(1, count)
-				.window(1000)
-				.map { ids -> ids.map { id -> Person.create(id.toLong()) } }
-				.flatMap(repository::saveAll)
-				.then())
-	}
+		suspend fun create(count: Long) {
+				repository.deleteAll()
+				var fromId = 1L
 
-	suspend fun all() = repository.findAll().asFlow()
-
-	suspend fun allWithAge(): Flow<Person> {
-
-		val query = Query.findAll().apply {
-			addFields("age")
-			addSourceFilter(FetchSourceFilterBuilder().withIncludes("*").build())
+				while (fromId < count) {
+						val toId = min(fromId + 1000, count)
+						val persons = (fromId..toId).map(Person.Companion::create)
+						repository.saveAll(persons)
+						fromId += 1000L
+				}
 		}
-		return operations.search(query, Person::class.java).map { it.content }.asFlow()
-	}
+
+		suspend fun all() = repository.findAll()
+
+		suspend fun allWithAge(): Flow<Person> {
+
+				val query = Query.findAll().apply {
+						addFields("age")
+						addSourceFilter(FetchSourceFilterBuilder().withIncludes("*").build())
+				}
+				return operations.search<Person>(query).map { it.content }.asFlow()
+		}
 }

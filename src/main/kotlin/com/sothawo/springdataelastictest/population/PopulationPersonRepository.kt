@@ -1,13 +1,13 @@
 package com.sothawo.springdataelastictest.population
 
-import org.springframework.data.elasticsearch.repository.ReactiveElasticsearchRepository
-import reactor.core.publisher.Flux
+import kotlinx.coroutines.flow.Flow
+import org.springframework.data.elasticsearch.repository.CoroutineElasticsearchRepository
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-interface PopulationPersonRepository : ReactiveElasticsearchRepository<Person, String> {
+interface PopulationPersonRepository : CoroutineElasticsearchRepository<Person, String> {
 
-	fun searchByLastNameOrFirstName(lastName: String, firstame: String): Flux<Person>
-	fun searchByHouse(id: String): Flux<Person>
+	fun searchByLastNameOrFirstName(lastName: String, firstName: String): Flow<Person>
+	fun searchByHouse(id: String): Flow<Person>
 }
