@@ -3,6 +3,7 @@ package com.sothawo.springdataelastictest.person
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.asFlow
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations
+import org.springframework.data.elasticsearch.core.SearchHit
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilder
 import org.springframework.data.elasticsearch.core.query.Query
 import org.springframework.data.elasticsearch.core.search
@@ -39,5 +40,9 @@ class PersonService(
 						addSourceFilter(FetchSourceFilterBuilder().withIncludes("*").build())
 				}
 				return operations.search<Person>(query).map { it.content }.asFlow()
+		}
+
+		suspend fun byLastName(lastName: String): Flow<SearchHit<Person>> {
+				return repository.findByLastName(lastName)
 		}
 }

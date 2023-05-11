@@ -10,12 +10,13 @@ import org.springframework.web.reactive.function.server.coRouter
 @Configuration("PersonRouterConfiguration")
 class PersonRouter {
 
-	@Bean
-	fun personRouter(handler: PersonHandler) = coRouter {
-		"/persons".nest {
-			GET("/create/{count}", handler::create)
-			GET("/all", handler::all)
-			GET("/all-with-age", handler::allWithAge)
+		@Bean
+		fun personRouter(handler: PersonHandler) = coRouter {
+				"/persons".nest {
+						GET("/create/{count}", handler::create)
+						GET("/all", handler::all)
+						GET("/all-with-age", handler::allWithAge)
+						GET("/by-last-name/{lastName}", handler::byLastName)
+				}
 		}
-	}
 }

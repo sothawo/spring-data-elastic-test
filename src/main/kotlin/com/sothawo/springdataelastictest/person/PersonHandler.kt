@@ -24,4 +24,9 @@ class PersonHandler(private val  service: PersonService) {
     suspend fun allWithAge(request: ServerRequest?): ServerResponse {
         return ok().bodyAndAwait(service.allWithAge())
     }
+
+		suspend fun byLastName(request: ServerRequest): ServerResponse {
+				val lastName = request.pathVariable("lastName")
+				return ok().json().bodyAndAwait(service.byLastName(lastName))
+		}
 }
