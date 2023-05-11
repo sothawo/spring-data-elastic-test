@@ -105,4 +105,8 @@ public class PersonService {
 				return reactiveSearchHits.getSearchHits();
 			});
 	}
+
+		public Flux<SearchHit<Person>> byLastName(String lastName) {
+			return repository.searchByLastName(lastName);
+		}
 }

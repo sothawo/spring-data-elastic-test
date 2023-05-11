@@ -21,12 +21,13 @@ public class PersonRouter {
 	public RouterFunction<ServerResponse> personRouter(PersonHandler handler) {
 		return nest(path("/persons"),
 			route(GET("/create/"), handler::create)
+				.andRoute(POST("/person"), handler::save)
 				.andRoute(GET("/all"), handler::all)
 				.andRoute(GET("/all-with-age"), handler::allWithAge)
 				.andRoute(GET("/last-name-counts"), handler::lastNameCounts)
 				.andRoute(GET("/routing/{id}"), handler::byIdWithRouting)
 				.andRoute(GET("/test"), handler::test)
-				.andRoute(POST("/person"), handler::save)
+				.andRoute(GET("/by-last-name/{lastName}"), handler::byLastName)
 		);
 	}
 }

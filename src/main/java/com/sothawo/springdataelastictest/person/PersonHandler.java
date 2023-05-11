@@ -20,45 +20,50 @@ import static org.springframework.web.reactive.function.server.ServerResponse.*;
 @Component
 public class PersonHandler {
 
-	private final PersonService service;
+		private final PersonService service;
 
-	public PersonHandler(PersonService service) {
-		this.service = service;
-	}
+		public PersonHandler(PersonService service) {
+				this.service = service;
+		}
 
-	public Mono<ServerResponse> create(ServerRequest request) {
-		var count = Integer.parseInt(request.queryParam("count").orElse("1"));
-		return ok().contentType(MediaType.APPLICATION_NDJSON).body(service.create(count), Long.class);
-	}
+		public Mono<ServerResponse> create(ServerRequest request) {
+				var count = Integer.parseInt(request.queryParam("count").orElse("1"));
+				return ok().contentType(MediaType.APPLICATION_NDJSON).body(service.create(count), Long.class);
+		}
 
-	public Mono<ServerResponse> save(ServerRequest request) {
-		return request.bodyToMono(Person.class)
-			.map(service::save)
-			.flatMap(person ->
-				ok().contentType(MediaType.APPLICATION_JSON).body(person, Person.class)
-			);
-	}
+		public Mono<ServerResponse> save(ServerRequest request) {
+				return request.bodyToMono(Person.class)
+								.map(service::save)
+								.flatMap(person ->
+												ok().contentType(MediaType.APPLICATION_JSON).body(person, Person.class)
+								);
+		}
 
 
-	public Mono<ServerResponse> all(ServerRequest request) {
-		return ok().body(service.all(), Person.class);
-	}
+		public Mono<ServerResponse> all(ServerRequest request) {
+				return ok().body(service.all(), Person.class);
+		}
 
-	public Mono<ServerResponse> allWithAge(ServerRequest request) {
-		return ok().body(service.allWithAge(), Person.class);
-	}
+		public Mono<ServerResponse> allWithAge(ServerRequest request) {
+				return ok().body(service.allWithAge(), Person.class);
+		}
 
-	public Mono<ServerResponse> lastNameCounts(ServerRequest request) {
-		return ok().body(service.lastNameCounts(), AggregationsContainer.class);
-	}
+		public Mono<ServerResponse> lastNameCounts(ServerRequest request) {
+				return ok().body(service.lastNameCounts(), AggregationsContainer.class);
+		}
 
-	public Mono<ServerResponse> byIdWithRouting(ServerRequest request) {
-		var id = request.pathVariable("id");
-		var routing = request.queryParam("routing").orElseThrow();
-		return ok().body(service.byIdWithrouting(id, routing), Person.class);
-	}
+		public Mono<ServerResponse> byIdWithRouting(ServerRequest request) {
+				var id = request.pathVariable("id");
+				var routing = request.queryParam("routing").orElseThrow();
+				return ok().body(service.byIdWithrouting(id, routing), Person.class);
+		}
 
-	public Mono<ServerResponse> test(ServerRequest request) {
-		return ok().body(service.test(), SearchHit.class);
-	}
+		public Mono<ServerResponse> test(ServerRequest request) {
+				return ok().body(service.test(), SearchHit.class);
+		}
+
+		public Mono<ServerResponse> byLastName(ServerRequest request) {
+				var lastName = request.pathVariable("lastName");
+				return ok().body(service.byLastName(lastName), SearchHit.class);
+		}
 }
