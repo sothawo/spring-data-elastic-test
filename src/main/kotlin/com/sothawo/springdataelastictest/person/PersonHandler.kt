@@ -1,5 +1,7 @@
 package com.sothawo.springdataelastictest.person
 
+import kotlinx.coroutines.flow.toList
+import org.springframework.data.elasticsearch.core.SearchHit
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.*
 import org.springframework.web.reactive.function.server.ServerResponse.ok
@@ -27,6 +29,7 @@ class PersonHandler(private val  service: PersonService) {
 
 		suspend fun byLastName(request: ServerRequest): ServerResponse {
 				val lastName = request.pathVariable("lastName")
-				return ok().json().bodyAndAwait(service.byLastName(lastName))
+				val searchHits = service.byLastName(lastName)
+				return ok().json().bodyValueAndAwait(searchHits)
 		}
 }
