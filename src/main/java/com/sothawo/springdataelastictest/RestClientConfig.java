@@ -60,7 +60,7 @@ public class RestClientConfig extends ElasticsearchConfiguration {
 //			.withDefaultHeaders(defaultHeaders) //
 
 
-//								.withProxy("localhost:8080")
+								.withProxy("localhost:8080")
 								.withHeaders(currentTimeHeaders)
 //            .withConnectTimeout(Duration.ofSeconds(10))
 //            .withSocketTimeout(Duration.ofSeconds(1)) //
