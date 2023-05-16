@@ -14,7 +14,7 @@ data class Foo(
 	@Id
 	val id: String?,
 	@Version
-	val version: Long,
+	val version: Long?,
 	@Field(type = FieldType.Text)
 	val name: String?,
 	)
