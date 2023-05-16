@@ -1,11 +1,8 @@
 package com.sothawo.springdataelastictest.person
 
-import kotlinx.coroutines.flow.toList
-import org.springframework.data.elasticsearch.core.SearchHit
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.*
 import org.springframework.web.reactive.function.server.ServerResponse.ok
-import reactor.core.publisher.Mono
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
