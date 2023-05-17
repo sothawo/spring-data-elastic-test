@@ -32,68 +32,68 @@ import static org.springframework.data.elasticsearch.client.elc.ElasticsearchCli
 @Configuration
 public class RestClientConfig extends ElasticsearchConfiguration {
 
-		private static final Logger LOGGER = LoggerFactory.getLogger(RestClientConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestClientConfig.class);
 
-		@Override
-		public ClientConfiguration clientConfiguration() {
+    @Override
+    public ClientConfiguration clientConfiguration() {
 
-				HttpHeaders defaultHeaders = new HttpHeaders();
+        HttpHeaders defaultHeaders = new HttpHeaders();
 //		defaultHeaders.add("Accept", "application/vnd.elasticsearch+json;compatible-with=7");
 //		defaultHeaders.add("Content-Type", "application/vnd.elasticsearch+json;compatible-with=7");
 
-				Supplier<HttpHeaders> currentTimeHeaders = () -> {
-						HttpHeaders headers = new HttpHeaders();
-						headers.add("x-current-time", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-						return headers;
-				};
+        Supplier<HttpHeaders> currentTimeHeaders = () -> {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("x-current-time", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+            return headers;
+        };
 
-				return ClientConfiguration.builder() //
+        return ClientConfiguration.builder() //
 
-								// Elasticsearch
-								.connectedTo("localhost:9200") //
+                // Elasticsearch
+                .connectedTo("localhost:9200") //
 //								.usingSsl(NotVerifyingSSLContext.getSslContext()) //
-								.withBasicAuth("elastic", "hcraescitsale") //
+                .withBasicAuth("elastic", "hcraescitsale") //
 //			.withDefaultHeaders(defaultHeaders) //
-//								.withProxy("localhost:8080")
-								.withHeaders(currentTimeHeaders)
+                .withProxy("localhost:8080")
+                .withHeaders(currentTimeHeaders)
 //            .withConnectTimeout(Duration.ofSeconds(10))
 //            .withSocketTimeout(Duration.ofSeconds(1)) //
-								.withClientConfigurer(ElasticsearchRestClientConfigurationCallback.from(clientBuilder -> {
-										LOGGER.info("Callback 1: I could now configure a {}", clientBuilder.getClass().getName());
-										return clientBuilder;
-								}))
-								.withClientConfigurer(ElasticsearchHttpClientConfigurationCallback.from(clientBuilder -> {
-										LOGGER.info("Callback 2: I could now configure a {}", clientBuilder.getClass().getName());
-										return clientBuilder;
-								}))
-								.build();
-		}
+                .withClientConfigurer(ElasticsearchRestClientConfigurationCallback.from(clientBuilder -> {
+                    LOGGER.info("Callback 1: I could now configure a {}", clientBuilder.getClass().getName());
+                    return clientBuilder;
+                }))
+                .withClientConfigurer(ElasticsearchHttpClientConfigurationCallback.from(clientBuilder -> {
+                    LOGGER.info("Callback 2: I could now configure a {}", clientBuilder.getClass().getName());
+                    return clientBuilder;
+                }))
+                .build();
+    }
 
-		@Override
-		public ElasticsearchCustomConversions elasticsearchCustomConversions() {
-				Collection<Converter<?, ?>> converters = new ArrayList<>();
-				converters.add(new LocalDateTimeConverter());
-				return new ElasticsearchCustomConversions(converters);
-		}
+    @Override
+    public ElasticsearchCustomConversions elasticsearchCustomConversions() {
+        Collection<Converter<?, ?>> converters = new ArrayList<>();
+        converters.add(new LocalDateTimeConverter());
+        return new ElasticsearchCustomConversions(converters);
+    }
 
-		@Override
-		protected RefreshPolicy refreshPolicy() {
-				return RefreshPolicy.IMMEDIATE;
-		}
+    @Override
+    protected RefreshPolicy refreshPolicy() {
+        return RefreshPolicy.IMMEDIATE;
+    }
 
-		@Override
-		protected FieldNamingStrategy fieldNamingStrategy() {
-				return new KebabCaseFieldNamingStrategy();
-		}
+    @Override
+    protected FieldNamingStrategy fieldNamingStrategy() {
+        return new KebabCaseFieldNamingStrategy();
+    }
 
-		@WritingConverter
-		static class LocalDateTimeConverter implements Converter<LocalDateTime, String> {
+    @WritingConverter
+    static class LocalDateTimeConverter implements Converter<LocalDateTime, String> {
 
-				private final ElasticsearchDateConverter converter = ElasticsearchDateConverter.of("uuuu-MM-d'T'HH:mm:ss");
+        private final ElasticsearchDateConverter converter = ElasticsearchDateConverter.of("uuuu-MM-d'T'HH:mm:ss");
 
-				@Override
-				public String convert(LocalDateTime source) {
-						return converter.format(source);
-				}
-		}
+        @Override
+        public String convert(LocalDateTime source) {
+            return converter.format(source);
+        }
+    }
 }
