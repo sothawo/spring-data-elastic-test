@@ -14,12 +14,12 @@ class PopulationService(private val personRepository: PopulationPersonRepository
 				houseRepository.deleteAll()
 		}
 
-		suspend fun createHouses(count: Int): Flow<String> {
+		suspend fun createHouses(count: Int): List<String> {
 				val houses = IntRange(1, count).map { House.create("house-$it") }
-				return houseRepository.saveAll(houses).mapNotNull { it.id }
+			return houseRepository.saveAll(houses).mapNotNull { it.id }.toCollection(mutableListOf())
 		}
 
-		suspend fun createPersons(count: Int): Flow<String> {
+		suspend fun createPersons(count: Int): List<String> {
 
 				val houseIds = mutableListOf<String>()
 				houseRepository.findAll().mapNotNull { it.id }.toCollection(houseIds)
@@ -29,7 +29,7 @@ class PopulationService(private val personRepository: PopulationPersonRepository
 						.map { person ->
 								person.house = houseIds.random()
 								personRepository.save(person).id
-						}.asFlow().mapNotNull { it }
+						}.asFlow().mapNotNull { it }.toCollection(mutableListOf())
 		}
 
 

@@ -44,7 +44,7 @@ class PresidentService(
 			return repository.findById(id) ?: throw ResourceNotFoundException()
 	}
 
-		suspend fun searchByTerm(year: Int) = repository.searchByTerm(year).asFlow()
+		suspend fun searchByTerm(year: Int) = repository.searchByTerm(year)
 
 		suspend fun searchByName(name: String, requestCache: Boolean?): Flow<SearchHit<President>> {
 				val query = CriteriaQuery(Criteria("name").`is`(name))
