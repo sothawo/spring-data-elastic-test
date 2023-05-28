@@ -23,6 +23,7 @@ public class StatementRouter {
                 .GET("/{id}/{routing}", statementHandler::getByIdAndRouting)
                 .GET("/{id}", statementHandler::getByIdAndRouting)
                 .DELETE("/{id}/{routing}", statementHandler::deleteByIdAndRouting)
+                .DELETE("/{id}/", statementHandler::deleteByIdAndRouting)
                 .DELETE("/clear", statementHandler::clear)
                 .DELETE(statementHandler::delete)
                 .POST(statementHandler::save)

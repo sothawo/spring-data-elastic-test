@@ -29,6 +29,7 @@ public class SpringdataElasticTestApplication {
 	private ReactiveElasticsearchOperations operations;
 
 	// comment out when running as native application
+/*
 	static {
 		BlockHound.install(
 				builder -> builder
@@ -39,6 +40,7 @@ public class SpringdataElasticTestApplication {
 						})
 		);
 	}
+*/
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringdataElasticTestApplication.class, args);
