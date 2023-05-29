@@ -61,15 +61,8 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 			.connectedTo("localhost:9200") //
 			.withBasicAuth("elastic", "hcraescitsale") //
 			.withDefaultHeaders(defaultHeaders) //
-
-			// OpenSearch
-//			.connectedTo("localhost:9400") //
-//			.usingSsl(NotVerifyingSSLContext.getSslContext()) //
-//			.withBasicAuth("admin", "admin") //
-
 //			.usingSsl()
 //			.usingSsl(NotVerifyingSSLContext.getSslContext()) //
-
 			.withProxy("localhost:8080")
 			.withHeaders(currentTimeHeaders)
 //            .withConnectTimeout(Duration.ofSeconds(10))
@@ -109,27 +102,29 @@ public class RestClientConfig extends AbstractElasticsearchConfiguration {
 		return new ElasticsearchCustomConversions(converters);
 	}
 
+/*
 	@Override
 	public ElasticsearchOperations elasticsearchOperations(ElasticsearchConverter elasticsearchConverter, RestHighLevelClient elasticsearchClient) {
 		ElasticsearchRestTemplate template = new ElasticsearchRestTemplate(elasticsearchClient, elasticsearchConverter) {
-//			@Override
-//			public <T> T execute(ClientCallback<T> callback) {
-//				try {
-//					return super.execute(callback);
-//				} catch (DataAccessResourceFailureException e) {
-//					// retry
-//					LOGGER.warn("Retrying because of {}", e.getMessage());
-//					return super.execute(callback);
-//				}
-//			}
+			@Override
+			public <T> T execute(ClientCallback<T> callback) {
+				try {
+					return super.execute(callback);
+				} catch (DataAccessResourceFailureException e) {
+					// retry
+					LOGGER.warn("Retrying because of {}", e.getMessage());
+					return super.execute(callback);
+				}
+			}
 		};
 		template.setRefreshPolicy(refreshPolicy());
 		return template;
 	}
+*/
 
 	@Override
 	protected RefreshPolicy refreshPolicy() {
-		return RefreshPolicy.IMMEDIATE;
+		return RefreshPolicy.WAIT_UNTIL;
 	}
 
 	@Override
