@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.0-SNAPSHOT</version>
+		<version>3.1.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sothawo</groupId>
 	<artifactId>spring-data-elastic-test</artifactId>
-	<version>5.1.0</version>
+	<version>5.1.2</version>
 	<name>spring-data-elastic-test</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -18,8 +18,8 @@
 		<java.version>17</java.version>
 
 		<elasticsearch-client.version>8.7.0</elasticsearch-client.version>
-		<springdata.commons>3.1.0</springdata.commons>
-		<spring-data-elasticsearch>5.1.0</spring-data-elasticsearch>
+		<springdata.commons>3.1.2</springdata.commons>
+		<spring-data-elasticsearch>5.1.2</spring-data-elasticsearch>
 	</properties>
 
 	<repositories>
