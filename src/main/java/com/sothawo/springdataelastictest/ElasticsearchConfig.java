@@ -3,8 +3,6 @@
  */
 package com.sothawo.springdataelastictest;
 
-import co.elastic.clients.json.jackson.JacksonJsonpMapper;
-import co.elastic.clients.transport.TransportUtils;
 import com.sothawo.springdataelastictest.enums.ManufacturerReadingConverter;
 import com.sothawo.springdataelastictest.enums.ManufacturerWritingConverter;
 import org.slf4j.Logger;
@@ -34,9 +32,9 @@ import static org.springframework.data.elasticsearch.client.elc.ElasticsearchCli
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Configuration
-public class RestClientConfig extends ElasticsearchConfiguration {
+public class ElasticsearchConfig extends ElasticsearchConfiguration {
 
-		private static final Logger LOGGER = LoggerFactory.getLogger(RestClientConfig.class);
+		private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchConfig.class);
 
 		@Override
 		public ClientConfiguration clientConfiguration() {

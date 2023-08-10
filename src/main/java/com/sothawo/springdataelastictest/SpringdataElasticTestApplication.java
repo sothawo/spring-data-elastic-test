@@ -3,6 +3,7 @@ package com.sothawo.springdataelastictest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchClientAutoConfiguration;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportRuntimeHints;
@@ -19,7 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Optional;
 
 
-@SpringBootApplication
+@SpringBootApplication(exclude = ElasticsearchClientAutoConfiguration.class)
 @EnableElasticsearchRepositories(namedQueriesLocation = "classpath:named-queries.properties")
 @EnableElasticsearchAuditing(auditorAwareRef = "myAuditorAware")
 @EnableScheduling
