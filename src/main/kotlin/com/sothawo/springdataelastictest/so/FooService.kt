@@ -28,4 +28,8 @@ val query = NativeQuery.builder().withQuery { q1 ->
 }.build()
 				return operations.search(query, Foo::class.java)
 		}
+
+		fun test() {
+				operations.save(Foo("42", "text"))
+		}
 }

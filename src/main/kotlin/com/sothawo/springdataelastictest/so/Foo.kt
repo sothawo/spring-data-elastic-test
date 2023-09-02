@@ -8,9 +8,10 @@ import org.springframework.data.elasticsearch.annotations.FieldType
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-@Document(indexName = "foo")
+@Document(indexName = "foo", storeIdInSource = false)
 data class Foo(
 		@Id
+		@Field(type =  FieldType.Keyword)
 		private val id: String?,
 
 		@Field(type = FieldType.Text)

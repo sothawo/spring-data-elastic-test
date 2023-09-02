@@ -15,4 +15,9 @@ class FooController(
 ) {
 		@GetMapping("/native")
 		fun nativeQuery(): MutableList<SearchHit<Foo>> = service.nativeQuery().searchHits
+
+		@GetMapping("/test")
+		fun test() {
+				service.test()
+		}
 }
