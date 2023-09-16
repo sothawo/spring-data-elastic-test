@@ -3,8 +3,11 @@
  */
 package com.sothawo.springdataelastictest;
 
+import co.elastic.clients.json.JsonpMapper;
+import co.elastic.clients.transport.ElasticsearchTransport;
 import com.sothawo.springdataelastictest.enums.ManufacturerReadingConverter;
 import com.sothawo.springdataelastictest.enums.ManufacturerWritingConverter;
+import org.elasticsearch.client.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -83,6 +86,11 @@ public class ElasticsearchConfig extends ElasticsearchConfiguration {
 				converters.add(new ManufacturerWritingConverter());
 				converters.add(new ManufacturerReadingConverter());
 				return new ElasticsearchCustomConversions(converters);
+		}
+
+		@Override
+		public ElasticsearchTransport elasticsearchTransport(RestClient restClient, JsonpMapper jsonpMapper) {
+				return new DelegatingTransport(super.elasticsearchTransport(restClient, jsonpMapper));
 		}
 
 		@Override
