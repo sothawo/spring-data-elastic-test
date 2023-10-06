@@ -3,11 +3,13 @@
  */
 package com.sothawo.springdataelastictest.so;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 import java.time.LocalDateTime;
+import java.util.stream.Stream;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -39,4 +41,6 @@ public interface FooRepository extends ElasticsearchRepository<Foo, String> {
 		""")
 	SearchHits<Foo> searchByDottedTextQuery(String text);
 	SearchHits<Foo> searchByDottedText(String text);
+
+		Stream<Foo> searchByText(String text, Pageable page);
 }
