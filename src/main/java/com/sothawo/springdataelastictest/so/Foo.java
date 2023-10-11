@@ -12,6 +12,7 @@ import java.time.ZonedDateTime;
 
 @Document(indexName = "foo")
 public class Foo {
+	@Nullable
 	@Id
 	private String id;
 
@@ -32,6 +33,7 @@ public class Foo {
 	@ValueConverter(CustomZonedDateTimeConverter.class)
 	private ZonedDateTime someDate;
 
+	@Nullable
 	public String getId() {
 		return id;
 	}

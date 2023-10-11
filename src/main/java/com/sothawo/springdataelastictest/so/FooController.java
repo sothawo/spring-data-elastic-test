@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.RefreshPolicy;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.Criteria;
@@ -42,8 +43,8 @@ public class FooController {
 	}
 
 	@PostMapping
-	public void add(@RequestBody Foo foo) {
-		fooRepository.save(foo);
+	public Foo add(@RequestBody Foo foo) {
+		return fooRepository.save(foo);
 	}
 
 	@RequestMapping("/{id}")
@@ -65,8 +66,24 @@ public class FooController {
 	}
 
 	@GetMapping("/test")
-	public Stream<Foo> test() {
-			return fooRepository.searchByText("foo", PageRequest.of(0, 4000));
+	public void test() {
+			var foo = new Foo();
+
+			foo.setId("1");
+			foo.setText("immediate - default");
+			fooRepository.save(foo);
+
+			foo.setId("2");
+			foo.setText("wait_until");
+			fooRepository.save(foo, RefreshPolicy.WAIT_UNTIL);
+
+			foo.setId("3");
+			foo.setText("none");
+			fooRepository.save(foo, RefreshPolicy.NONE);
+
+			foo.setId("4");
+			foo.setText("immediate - default");
+			fooRepository.save(foo);
 	}
 
 	@GetMapping("/userquery/{id}")
