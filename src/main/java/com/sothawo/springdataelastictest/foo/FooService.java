@@ -3,45 +3,27 @@
  */
 package com.sothawo.springdataelastictest.foo;
 
-import org.springframework.data.elasticsearch.core.RefreshPolicy;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Service
 public class FooService {
-		private final FooRepository repository;
+    private final FooRepository repository;
 
-		public FooService(FooRepository repository) {
-				this.repository = repository;
-		}
+    public FooService(FooRepository repository) {
+        this.repository = repository;
+    }
 
-		public Mono<Void> test() {
-				var foo = new Foo();
-
-				foo.setId("1");
-				foo.setText("immediate - default");
-				return repository.save(foo)
-								.flatMap(f -> {
-														foo.setId("2");
-														foo.setText("none");
-														return repository.save(foo, RefreshPolicy.NONE);
-												}
-								)
-								.flatMap(f -> {
-														foo.setId("3");
-														foo.setText("wait_until");
-														return repository.save(foo, RefreshPolicy.WAIT_UNTIL);
-												}
-								)
-								.flatMap(f -> {
-														foo.setId("4");
-														foo.setText("immediate - default");
-														return repository.save(foo);
-												}
-								)
-								.then();
-		}
+    public Flux<SearchHit<Foo>> test() {
+        var foo = new Foo();
+        foo.setId("1");
+        foo.setLongValue(42L);
+        return repository.save(foo)
+                .thenMany(repository.searchBy(Sort.by("longValue")));
+    }
 }
