@@ -5,24 +5,16 @@ package com.sothawo.springdataelastictest.so;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.RefreshPolicy;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.Query;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
-import java.util.stream.Stream;
 
 
 /**
@@ -32,74 +24,63 @@ import java.util.stream.Stream;
 @RequestMapping("/foo")
 public class FooController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(FooController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FooController.class);
 
-	private final FooRepository fooRepository;
-	private final ElasticsearchOperations operations;
+    private final FooRepository fooRepository;
+    private final ElasticsearchOperations operations;
 
-	public FooController(FooRepository fooRepository, ElasticsearchOperations operations) {
-		this.fooRepository = fooRepository;
-		this.operations = operations;
-	}
+    public FooController(FooRepository fooRepository, ElasticsearchOperations operations) {
+        this.fooRepository = fooRepository;
+        this.operations = operations;
+    }
 
-	@PostMapping
-	public Foo add(@RequestBody Foo foo) {
-		return fooRepository.save(foo);
-	}
+    @PostMapping
+    public Foo add(@RequestBody Foo foo) {
+        return fooRepository.save(foo);
+    }
 
-	@RequestMapping("/{id}")
-	public Foo get(@PathVariable String id) {
-		return fooRepository.findById(id).orElse(null);
-	}
+    @RequestMapping("/{id}")
+    public Foo get(@PathVariable String id) {
+        return fooRepository.findById(id).orElse(null);
+    }
 
-	@GetMapping("/now")
-	public Foo now() {
-		var foo = new Foo();
-		foo.setId("42");
-		foo.setSomeDate(ZonedDateTime.now());
-		return fooRepository.save(foo);
-	}
+    @GetMapping("/now")
+    public Foo now() {
+        var foo = new Foo();
+        foo.setId("42");
+        foo.setSomeDate(ZonedDateTime.now());
+        return fooRepository.save(foo);
+    }
 
-	@GetMapping
-	public SearchHits<Foo> all() {
-		return fooRepository.searchBy();
-	}
+    @GetMapping
+    public SearchHits<Foo> all() {
+        return fooRepository.searchBy();
+    }
 
-	@GetMapping("/test")
-	public void test() {
-			var foo = new Foo();
+    @GetMapping("/test")
+    public SearchHits<Foo> test() {
+        var foo = new Foo();
+        foo.setId("1");
+        foo.setLongValue(42L);
+        fooRepository.save(foo);
 
-			foo.setId("1");
-			foo.setText("immediate - default");
-			fooRepository.save(foo);
+        return fooRepository.searchBy(Sort.by("longValue"));
+    }
 
-			foo.setId("2");
-			foo.setText("wait_until");
-			fooRepository.save(foo, RefreshPolicy.WAIT_UNTIL);
+    @GetMapping("/userquery/{id}")
+    public SearchHits<Foo> userQuery(@PathVariable Integer id) {
+        return fooRepository.getUserQuery(id);
+    }
 
-			foo.setId("3");
-			foo.setText("none");
-			fooRepository.save(foo, RefreshPolicy.NONE);
+    @DeleteMapping
+    public void deleteAll() {
+        operations.delete(operations.matchAllQuery(), Foo.class);
+    }
 
-			foo.setId("4");
-			foo.setText("immediate - default");
-			fooRepository.save(foo);
-	}
-
-	@GetMapping("/userquery/{id}")
-	public SearchHits<Foo> userQuery(@PathVariable Integer id) {
-		return fooRepository.getUserQuery(id);
-	}
-
-	@DeleteMapping
-	public void deleteAll() {
-		operations.delete(operations.matchAllQuery(), Foo.class);
-	}
-
-	@GetMapping("/generic")
-	public SearchHits<GenericEntity> allGeneric() {
-		var criteria = Criteria.where("need").is("alcohol");
-		Query query = new CriteriaQuery(criteria);
-		return operations.search(query, GenericEntity.class, IndexCoordinates.of("foo"));
-	}
+    @GetMapping("/generic")
+    public SearchHits<GenericEntity> allGeneric() {
+        var criteria = Criteria.where("need").is("alcohol");
+        Query query = new CriteriaQuery(criteria);
+        return operations.search(query, GenericEntity.class, IndexCoordinates.of("foo"));
+    }
 }

@@ -4,6 +4,7 @@
 package com.sothawo.springdataelastictest.so;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
@@ -44,4 +45,6 @@ public interface FooRepository extends ElasticsearchRepository<Foo, String> {
     SearchHits<Foo> searchByDottedText(String text);
 
     Stream<Foo> searchByText(String text, Pageable page);
+
+    SearchHits<Foo> searchBy(Sort sort);
 }
