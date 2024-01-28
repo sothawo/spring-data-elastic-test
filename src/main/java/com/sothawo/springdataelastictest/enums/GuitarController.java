@@ -23,12 +23,18 @@ public class GuitarController {
 		var fender = new Guitar("3", Manufacturer.FENDER, 2006);
 		var yamaha = new Guitar("4", Manufacturer.YAMAHA, 2005);
 		var hoefner = new Guitar("5", Manufacturer.HOEFNER, 1977);
+		var tanglewood = new Guitar("6", Manufacturer.TANGLEWOOD, 2023);
 
-		repository.saveAll(List.of(takamine, guild, fender, yamaha, hoefner));
+		repository.saveAll(List.of(takamine, guild, fender, yamaha, hoefner, tanglewood));
 
 		repository.findAllByOrderByYearAsc().forEach(guitar -> {
-			System.out.println(String.format("In %d I bought a guitar manufactured by %s in %s",
-					guitar.year(), guitar.manufacturer().getDisplayName(), guitar.manufacturer().getCountry()));
+			System.out.printf("In %d I got a guitar manufactured by %s in %s%n",
+					guitar.year(), guitar.manufacturer().getDisplayName(), guitar.manufacturer().getCountry());
 		});
+	}
+
+	@GetMapping("/random")
+	List<Guitar> random() {
+		return repository.findByRandomManufacturer();
 	}
 }

@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.data.elasticsearch.client.elc.QueryBuilders.*;
+import static org.springframework.data.elasticsearch.client.elc.Queries.*;
 
 
 /**

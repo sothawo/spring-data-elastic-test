@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static org.springframework.data.elasticsearch.client.elc.QueryBuilders.*;
+import static org.springframework.data.elasticsearch.client.elc.Queries.*;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
