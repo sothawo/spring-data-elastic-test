@@ -47,4 +47,15 @@ public interface FooRepository extends ElasticsearchRepository<Foo, String> {
     Stream<Foo> searchByText(String text, Pageable page);
 
     SearchHits<Foo> searchBy(Sort sort);
+
+@Query("""
+        {
+            "match": {
+            "text": {
+                "query": "#{#foo}"
+                }
+            }
+        }
+        """)
+SearchHits<Foo>searchByFoo(String foo);
 }

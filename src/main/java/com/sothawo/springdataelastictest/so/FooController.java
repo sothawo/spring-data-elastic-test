@@ -7,14 +7,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.IndexOperations;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
-import org.springframework.data.elasticsearch.core.query.Query;
+import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -62,9 +63,10 @@ public class FooController {
         var foo = new Foo();
         foo.setId("1");
         foo.setLongValue(42L);
+        foo.setText("lemon");
         fooRepository.save(foo);
 
-        return fooRepository.searchBy(Sort.by("longValue"));
+        return fooRepository.searchByFoo("lemon");
     }
 
     @GetMapping("/userquery/{id}")
